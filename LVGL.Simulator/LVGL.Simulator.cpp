@@ -26,6 +26,10 @@
 #include "lvgl/demos/lv_demos.h"
 #include "lv_drivers/win32drv/win32drv.h"
 
+extern "C"{
+#include "pikascript_entry.h"
+}
+
 #if _MSC_VER >= 1200
 // Restore compilation warnings.
 #pragma warning(pop)
@@ -48,6 +52,8 @@ int main()
     }
 
     lv_win32_add_all_input_devices_to_group(NULL);
+
+    pikascript_entry();
 
     /*
      * Demos, benchmarks, and tests.
