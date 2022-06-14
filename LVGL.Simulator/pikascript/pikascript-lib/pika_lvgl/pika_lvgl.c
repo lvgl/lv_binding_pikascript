@@ -26,8 +26,8 @@ void pika_lvgl_arc_set_size(PikaObj* self, int size_x, int size_y) {
 }
 
 PikaObj* pika_lvgl_scr_act(PikaObj* self) {
-    PikaObj* self = newNormalObj(New_TinyObj);
+    PikaObj* new_obj = newNormalObj(New_TinyObj);
     lv_obj_t* lv_obj = lv_scr_act();
-    obj_setPtr(self, "lv_obj", lv_obj);
-    return self;
+    obj_setPtr(new_obj, "lv_obj", lv_obj);
+    return new_obj;
 }
