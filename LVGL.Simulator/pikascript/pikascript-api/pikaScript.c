@@ -17,6 +17,7 @@ PikaObj *pikaScriptInit(void){
 #if PIKA_INIT_STRING_ENABLE
     obj_run(__pikaMain,
             "import PikaStdLib\n"
+            "import pika_lvgl\n"
             "print('hello PikaScript!')\n"
             "mem = PikaStdLib.MemChecker()\n"
             "print('mem used max:')\n"

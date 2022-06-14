@@ -46,6 +46,9 @@
     <ClInclude Include="pikascript\pikascript-lib\PikaStdLib\PikaStdData_String_Util.h" />
     <ClInclude Include="pikascript\pikascript-core\__instruction_table.cfg" />
     <ClInclude Include="pikascript_entry.h" />
+    <ClInclude Include="pikascript\pikascript-api\pika_lvgl.h" />
+    <ClInclude Include="pikascript\pikascript-api\pika_lvgl_arc.h" />
+    <ClInclude Include="pikascript\pikascript-api\pika_lvgl_lv_obj.h" />
   </ItemGroup>
   <ItemGroup>
     <Manifest Include="LVGL.Simulator.manifest" />
@@ -103,6 +106,10 @@
     <ClCompile Include="pikascript\pikascript-lib\PikaStdLib\PikaStdLib_SysObj.c" />
     <ClCompile Include="pikascript\pikascript-lib\PikaStdLib\PikaStdTask_Task.c" />
     <ClCompile Include="pikascript_entry.c" />
+    <ClCompile Include="pikascript\pikascript-lib\pika_lvgl\pika_lvgl.c" />
+    <ClCompile Include="pikascript\pikascript-api\pika_lvgl-api.c" />
+    <ClCompile Include="pikascript\pikascript-api\pika_lvgl_arc-api.c" />
+    <ClCompile Include="pikascript\pikascript-api\pika_lvgl_lv_obj-api.c" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="LVGL.Simulator.rc" />

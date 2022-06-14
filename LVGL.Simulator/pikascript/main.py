@@ -1,4 +1,5 @@
 import PikaStdLib
+import pika_lvgl
 
 print('hello PikaScript!')
 

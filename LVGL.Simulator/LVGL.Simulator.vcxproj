@@ -16,7 +16,7 @@
   <Import Project="Mile.Project.Windows.Legacy\Mile.Project.Cpp.props" />
   <Import Project="freetype.props" />
   <PropertyGroup>
-    <IncludePath>$(MSBuildThisFileDirectory)pikascript\pikascript-lib/PikaStdLib;$(MSBuildThisFileDirectory)pikascript\pikascript-core;$(MSBuildThisFileDirectory)pikascript\pikascript-api;$(MSBuildThisFileDirectory);$(IncludePath)</IncludePath>
+    <IncludePath>$(MSBuildThisFileDirectory)pikascript\pikascript-lib/PikaStdLib;$(MSBuildThisFileDirectory)pikascript\pikascript-core;$(MSBuildThisFileDirectory)pikascript\pikascript-api;$(MSBuildThisFileDirectory)lvgl;$(MSBuildThisFileDirectory);$(IncludePath)</IncludePath>
   </PropertyGroup>
   <ItemDefinitionGroup>
     <ClCompile>
@@ -28,6 +28,9 @@
     </ClCompile>
     <PreBuildEvent>
       <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">cd $(MSBuildThisFileDirectory)pikascript &amp;&amp; rust-msc-latest-win10.exe</Command>
+    </PreBuildEvent>
+    <PreBuildEvent>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">cd $(MSBuildThisFileDirectory)pikascript &amp;&amp; rust-msc-latest-win10.exe</Command>
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <Import Project="LVGL.Portable.vcxitems" />
@@ -61,6 +64,9 @@
     <ClInclude Include="pikascript\pikascript-api\PikaStdLib_SysObj.h" />
     <ClInclude Include="pikascript\pikascript-api\PikaStdTask.h" />
     <ClInclude Include="pikascript\pikascript-api\PikaStdTask_Task.h" />
+    <ClInclude Include="pikascript\pikascript-api\pika_lvgl.h" />
+    <ClInclude Include="pikascript\pikascript-api\pika_lvgl_arc.h" />
+    <ClInclude Include="pikascript\pikascript-api\pika_lvgl_lv_obj.h" />
     <ClInclude Include="pikascript\pikascript-core\BaseObj.h" />
     <ClInclude Include="pikascript\pikascript-core\dataArg.h" />
     <ClInclude Include="pikascript\pikascript-core\dataArgs.h" />
@@ -105,6 +111,9 @@
     <ClCompile Include="pikascript\pikascript-api\PikaStdLib_SysObj-api.c" />
     <ClCompile Include="pikascript\pikascript-api\PikaStdTask-api.c" />
     <ClCompile Include="pikascript\pikascript-api\PikaStdTask_Task-api.c" />
+    <ClCompile Include="pikascript\pikascript-api\pika_lvgl-api.c" />
+    <ClCompile Include="pikascript\pikascript-api\pika_lvgl_arc-api.c" />
+    <ClCompile Include="pikascript\pikascript-api\pika_lvgl_lv_obj-api.c" />
     <ClCompile Include="pikascript\pikascript-api\__asset_pikaModules_py_a.c" />
     <ClCompile Include="pikascript\pikascript-core\BaseObj.c" />
     <ClCompile Include="pikascript\pikascript-core\dataArg.c" />
@@ -133,6 +142,7 @@
     <ClCompile Include="pikascript\pikascript-lib\PikaStdLib\PikaStdLib_StringObj.c" />
     <ClCompile Include="pikascript\pikascript-lib\PikaStdLib\PikaStdLib_SysObj.c" />
     <ClCompile Include="pikascript\pikascript-lib\PikaStdLib\PikaStdTask_Task.c" />
+    <ClCompile Include="pikascript\pikascript-lib\pika_lvgl\pika_lvgl.c" />
     <ClCompile Include="pikascript_entry.c" />
   </ItemGroup>
   <ItemGroup>

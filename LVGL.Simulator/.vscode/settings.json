@@ -1,0 +1,9 @@
+{
+    "makefile.extensionOutputFolder": "./.vscode",
+    "files.associations": {
+        "lvgl.h": "c",
+        "pika_lvgl_arc.h": "c",
+        "pika_lvgl_lv_obj.h": "c",
+        "pika_lvgl.h": "c"
+    }
+}
