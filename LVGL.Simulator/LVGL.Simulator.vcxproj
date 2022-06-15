@@ -69,6 +69,7 @@
     <ClInclude Include="pikascript\pikascript-api\pika_lvgl_bar.h" />
     <ClInclude Include="pikascript\pikascript-api\pika_lvgl_btn.h" />
     <ClInclude Include="pikascript\pikascript-api\pika_lvgl_checkbox.h" />
+    <ClInclude Include="pikascript\pikascript-api\pika_lvgl_dropdown.h" />
     <ClInclude Include="pikascript\pikascript-api\pika_lvgl_lv_obj.h" />
     <ClInclude Include="pikascript\pikascript-core\BaseObj.h" />
     <ClInclude Include="pikascript\pikascript-core\dataArg.h" />
@@ -119,6 +120,7 @@
     <ClCompile Include="pikascript\pikascript-api\pika_lvgl_bar-api.c" />
     <ClCompile Include="pikascript\pikascript-api\pika_lvgl_btn-api.c" />
     <ClCompile Include="pikascript\pikascript-api\pika_lvgl_checkbox-api.c" />
+    <ClCompile Include="pikascript\pikascript-api\pika_lvgl_dropdown-api.c" />
     <ClCompile Include="pikascript\pikascript-api\pika_lvgl_lv_obj-api.c" />
     <ClCompile Include="pikascript\pikascript-api\__asset_pikaModules_py_a.c" />
     <ClCompile Include="pikascript\pikascript-core\BaseObj.c" />
@@ -153,6 +155,7 @@
     <ClCompile Include="pikascript\pikascript-lib\pika_lvgl\pika_lvgl_bar.c" />
     <ClCompile Include="pikascript\pikascript-lib\pika_lvgl\pika_lvgl_btn.c" />
     <ClCompile Include="pikascript\pikascript-lib\pika_lvgl\pika_lvgl_checkbox.c" />
+    <ClCompile Include="pikascript\pikascript-lib\pika_lvgl\pika_lvgl_dropdown.c" />
     <ClCompile Include="pikascript\pikascript-lib\pika_lvgl\pika_lvgl_lv_obj.c" />
     <ClCompile Include="pikascript_entry.c" />
   </ItemGroup>

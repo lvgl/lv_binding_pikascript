@@ -13,6 +13,7 @@ Arg* pika_lvgl_arc(PikaObj *self);
 Arg* pika_lvgl_bar(PikaObj *self);
 Arg* pika_lvgl_btn(PikaObj *self);
 Arg* pika_lvgl_checkbox(PikaObj *self);
+Arg* pika_lvgl_dropdown(PikaObj *self);
 Arg* pika_lvgl_lv_obj(PikaObj *self);
 PikaObj* pika_lvgl_scr_act(PikaObj *self);
 

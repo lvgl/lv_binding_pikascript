@@ -23,10 +23,9 @@ PikaObj *pikaScriptInit(void){
             "mem = PikaStdLib.MemChecker()\n"
             "print('mem used max:')\n"
             "mem.max()\n"
-            "# Create an Arc\n"
-            "cb = lv.checkbox(lv.scr_act())\n"
-            "cb.set_text(\"Apple\")\n"
-            "cb.update_layout()\n"
+            "dd = lv.dropdown(lv.scr_act())\n"
+            "dd.set_options(\"Apple\\nBanana\\nOrange\\nCherry\")\n"
+            "dd.center()\n"
             "mem.now()\n"
             "\n");
 #else 
