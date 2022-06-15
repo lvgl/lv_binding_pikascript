@@ -5,10 +5,12 @@ mem = PikaStdLib.MemChecker()
 
 def event_cb_1(evt):
     print('in evt1')
+    print('mem used now: %0.2f kB' % (mem.getNow()))
 
 
 def event_cb_2(evt):
     print('in evt2')
+    print('mem used now: %0.2f kB' % (mem.getNow()))
 
 
 btn1 = lv.btn(lv.scr_act())
