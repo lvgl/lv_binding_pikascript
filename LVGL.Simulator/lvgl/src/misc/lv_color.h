@@ -256,12 +256,12 @@ typedef struct _lv_color_filter_dsc_t {
 
 
 typedef enum {
-    LV_PALETTE_RED,
-    LV_PALETTE_PINK,
+    LV_PALETTE_RED,  
+    LV_PALETTE_PINK, 
     LV_PALETTE_PURPLE,
     LV_PALETTE_DEEP_PURPLE,
     LV_PALETTE_INDIGO,
-    LV_PALETTE_BLUE,
+    LV_PALETTE_BLUE, 
     LV_PALETTE_LIGHT_BLUE,
     LV_PALETTE_CYAN,
     LV_PALETTE_TEAL,

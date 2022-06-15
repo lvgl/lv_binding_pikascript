@@ -1,4 +1,3 @@
-from tkinter import CENTER
 from PikaObj import *
 
 
@@ -28,6 +27,34 @@ class ALIGN:
     OUT_RIGHT_TOP: int
     OUT_RIGHT_MID: int
     OUT_RIGHT_BOTTOM: int
+
+
+class PALETTE:
+    RED: int
+    PINK: int
+    PURPLE: int
+    DEEP_PURPLE: int
+    INDIGO: int
+    BLUE: int
+    LIGHT_BLUE: int
+    CYAN: int
+    TEAL: int
+    GREEN: int
+    LIGHT_GREEN: int
+    LIME: int
+    YELLOW: int
+    AMBER: int
+    ORANGE: int
+    DEEP_ORANGE: int
+    BROWN: int
+    BLUE_GREY: int
+    GREY: int
+    NONE: int
+
+
+class ANIM:
+    OFF: int
+    ON: int
 
 
 class lv_obj(TinyObj):
