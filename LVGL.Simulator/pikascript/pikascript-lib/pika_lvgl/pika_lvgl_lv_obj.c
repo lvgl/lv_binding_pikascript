@@ -4,7 +4,7 @@
 #include "pika_lvgl.h"
 #include "pika_lvgl_arc.h"
 
-extern PikaObj* pika_lv_event_listener;
+extern PikaObj* pika_lv_event_listener_g;
 
 void pika_lvgl_lv_obj_center(PikaObj* self) {
     lv_obj_t* lv_obj = obj_getPtr(self, "lv_obj");
