@@ -23,9 +23,10 @@ PikaObj *pikaScriptInit(void){
             "mem = PikaStdLib.MemChecker()\n"
             "print('mem used max:')\n"
             "mem.max()\n"
-            "dd = lv.dropdown(lv.scr_act())\n"
-            "dd.set_options(\"Apple\\nBanana\\nOrange\\nCherry\")\n"
-            "dd.center()\n"
+            "roller1 = lv.roller(lv.scr_act())\n"
+            "roller1.set_options(\"January\\nFebruary\\nMarch\\nApril\\nMay\\nJune\\nJuly\", 0)\n"
+            "roller1.set_visible_row_count(4)\n"
+            "roller1.center()\n"
             "mem.now()\n"
             "\n");
 #else 

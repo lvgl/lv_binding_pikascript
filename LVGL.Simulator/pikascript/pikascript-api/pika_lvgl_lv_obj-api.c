@@ -29,6 +29,11 @@ void pika_lvgl_lv_obj_set_sizeMethod(PikaObj *self, Args *args){
     pika_lvgl_lv_obj_set_size(self, size_x, size_y);
 }
 
+void pika_lvgl_lv_obj_set_widthMethod(PikaObj *self, Args *args){
+    int w = args_getInt(args, "w");
+    pika_lvgl_lv_obj_set_width(self, w);
+}
+
 void pika_lvgl_lv_obj_update_layoutMethod(PikaObj *self, Args *args){
     pika_lvgl_lv_obj_update_layout(self);
 }
@@ -39,6 +44,7 @@ PikaObj *New_pika_lvgl_lv_obj(Args *args){
     class_defineMethod(self, "center()", pika_lvgl_lv_obj_centerMethod);
     class_defineMethod(self, "set_hight(h:int)", pika_lvgl_lv_obj_set_hightMethod);
     class_defineMethod(self, "set_size(size_x:int,size_y:int)", pika_lvgl_lv_obj_set_sizeMethod);
+    class_defineMethod(self, "set_width(w:int)", pika_lvgl_lv_obj_set_widthMethod);
     class_defineMethod(self, "update_layout()", pika_lvgl_lv_obj_update_layoutMethod);
     return self;
 }

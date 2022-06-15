@@ -28,3 +28,8 @@ void pika_lvgl_lv_obj_update_layout(PikaObj* self) {
     lv_obj_t* lv_obj = obj_getPtr(self, "lv_obj");
     lv_obj_update_layout(lv_obj);
 }
+
+void pika_lvgl_lv_obj_set_width(PikaObj* self, int w) {
+    lv_obj_t* lv_obj = obj_getPtr(self, "lv_obj");
+    lv_obj_set_width(lv_obj, w);
+}
