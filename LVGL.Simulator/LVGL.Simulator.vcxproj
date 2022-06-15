@@ -66,6 +66,7 @@
     <ClInclude Include="pikascript\pikascript-api\PikaStdTask_Task.h" />
     <ClInclude Include="pikascript\pikascript-api\pika_lvgl.h" />
     <ClInclude Include="pikascript\pikascript-api\pika_lvgl_arc.h" />
+    <ClInclude Include="pikascript\pikascript-api\pika_lvgl_bar.h" />
     <ClInclude Include="pikascript\pikascript-api\pika_lvgl_lv_obj.h" />
     <ClInclude Include="pikascript\pikascript-core\BaseObj.h" />
     <ClInclude Include="pikascript\pikascript-core\dataArg.h" />
@@ -113,6 +114,7 @@
     <ClCompile Include="pikascript\pikascript-api\PikaStdTask_Task-api.c" />
     <ClCompile Include="pikascript\pikascript-api\pika_lvgl-api.c" />
     <ClCompile Include="pikascript\pikascript-api\pika_lvgl_arc-api.c" />
+    <ClCompile Include="pikascript\pikascript-api\pika_lvgl_bar-api.c" />
     <ClCompile Include="pikascript\pikascript-api\pika_lvgl_lv_obj-api.c" />
     <ClCompile Include="pikascript\pikascript-api\__asset_pikaModules_py_a.c" />
     <ClCompile Include="pikascript\pikascript-core\BaseObj.c" />
@@ -143,6 +145,9 @@
     <ClCompile Include="pikascript\pikascript-lib\PikaStdLib\PikaStdLib_SysObj.c" />
     <ClCompile Include="pikascript\pikascript-lib\PikaStdLib\PikaStdTask_Task.c" />
     <ClCompile Include="pikascript\pikascript-lib\pika_lvgl\pika_lvgl.c" />
+    <ClCompile Include="pikascript\pikascript-lib\pika_lvgl\pika_lvgl_arc.c" />
+    <ClCompile Include="pikascript\pikascript-lib\pika_lvgl\pika_lvgl_bar.c" />
+    <ClCompile Include="pikascript\pikascript-lib\pika_lvgl\pika_lvgl_lv_obj.c" />
     <ClCompile Include="pikascript_entry.c" />
   </ItemGroup>
   <ItemGroup>

@@ -9,5 +9,7 @@
 
 PikaObj *New_pika_lvgl_lv_obj(Args *args);
 
+void pika_lvgl_lv_obj_center(PikaObj *self);
+void pika_lvgl_lv_obj_set_size(PikaObj *self, int size_x, int size_y);
 
 #endif

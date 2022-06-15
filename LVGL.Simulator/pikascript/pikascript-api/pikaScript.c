@@ -24,13 +24,10 @@ PikaObj *pikaScriptInit(void){
             "mem.max()\n"
             "import pika_lvgl as lv\n"
             "# Create an Arc\n"
-            "arc = lv.arc(lv.scr_act())\n"
-            "arc.set_end_angle(200)\n"
-            "arc.set_size(150, 150)\n"
-            "arc.center()\n"
-            "print('lvgl code finished')\n"
-            "print('mem used now')\n"
-            "mem.now()\n"
+            "bar1 = lv.bar(lv.scr_act())\n"
+            "bar1.set_size(200, 20)\n"
+            "bar1.center()\n"
+            "bar1.set_value(70, False)\n"
             "\n");
 #else 
     obj_runModule(__pikaMain, "main");
