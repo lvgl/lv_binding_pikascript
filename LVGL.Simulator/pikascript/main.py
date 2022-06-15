@@ -9,6 +9,6 @@ mem.max()
 
 ta = lv.textarea(lv.scr_act())
 ta.set_one_line(True)
-ta.align(lv.ALIGN.BOTTOM_RIGHT,10,0)
+ta.align(lv.ALIGN.BOTTOM_RIGHT, 10, 0)
 
 mem.now()
