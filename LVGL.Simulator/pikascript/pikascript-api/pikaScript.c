@@ -16,18 +16,18 @@ PikaObj *pikaScriptInit(void){
     obj_linkLibrary(__pikaMain, pikaModules_py_a);
 #if PIKA_INIT_STRING_ENABLE
     obj_run(__pikaMain,
+            "import pika_lvgl as lv\n"
             "import PikaStdLib\n"
             "import pika_lvgl\n"
             "print('hello PikaScript!')\n"
             "mem = PikaStdLib.MemChecker()\n"
             "print('mem used max:')\n"
             "mem.max()\n"
-            "import pika_lvgl as lv\n"
             "# Create an Arc\n"
-            "bar1 = lv.bar(lv.scr_act())\n"
-            "bar1.set_size(200, 20)\n"
-            "bar1.center()\n"
-            "bar1.set_value(70, False)\n"
+            "cb = lv.checkbox(lv.scr_act())\n"
+            "cb.set_text(\"Apple\")\n"
+            "cb.update_layout()\n"
+            "mem.now()\n"
             "\n");
 #else 
     obj_runModule(__pikaMain, "main");

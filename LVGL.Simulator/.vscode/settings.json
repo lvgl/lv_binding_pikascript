@@ -5,6 +5,9 @@
         "pika_lvgl_arc.h": "c",
         "pika_lvgl_lv_obj.h": "c",
         "pika_lvgl.h": "c",
-        "pika_lvgl_bar.h": "c"
+        "pika_lvgl_bar.h": "c",
+        "pika_lvgl_btn.h": "c",
+        "pikaplatform.h": "c",
+        "pika_lvgl_checkbox.h": "c"
     }
 }

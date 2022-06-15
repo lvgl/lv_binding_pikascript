@@ -1,3 +1,4 @@
+import pika_lvgl as lv
 import PikaStdLib
 import pika_lvgl
 
@@ -7,9 +8,19 @@ mem = PikaStdLib.MemChecker()
 print('mem used max:')
 mem.max()
 
-import pika_lvgl as lv
 # Create an Arc
-bar1 = lv.bar(lv.scr_act())
-bar1.set_size(200, 20)
-bar1.center()
-bar1.set_value(70, False)
+cb = lv.checkbox(lv.scr_act())
+cb.set_text("Apple")
+
+cb = lv.checkbox(lv.scr_act())
+cb.set_text("Banana")
+
+cb = lv.checkbox(lv.scr_act())
+cb.set_text("Lemon")
+
+cb = lv.checkbox(lv.scr_act())
+cb.set_text("Melon")
+
+cb.update_layout()
+
+mem.now()

@@ -50,6 +50,8 @@
     <ClInclude Include="pikascript\pikascript-api\pika_lvgl_arc.h" />
     <ClInclude Include="pikascript\pikascript-api\pika_lvgl_lv_obj.h" />
     <ClInclude Include="pikascript\pikascript-api\pika_lvgl_bar.h" />
+    <ClInclude Include="pikascript\pikascript-api\pika_lvgl_btn.h" />
+    <ClInclude Include="pikascript\pikascript-api\pika_lvgl_checkbox.h" />
   </ItemGroup>
   <ItemGroup>
     <Manifest Include="LVGL.Simulator.manifest" />
@@ -115,6 +117,10 @@
     <ClCompile Include="pikascript\pikascript-lib\pika_lvgl\pika_lvgl_lv_obj.c" />
     <ClCompile Include="pikascript\pikascript-api\pika_lvgl_bar-api.c" />
     <ClCompile Include="pikascript\pikascript-lib\pika_lvgl\pika_lvgl_bar.c" />
+    <ClCompile Include="pikascript\pikascript-lib\pika_lvgl\pika_lvgl_btn.c" />
+    <ClCompile Include="pikascript\pikascript-api\pika_lvgl_btn-api.c" />
+    <ClCompile Include="pikascript\pikascript-api\pika_lvgl_checkbox-api.c" />
+    <ClCompile Include="pikascript\pikascript-lib\pika_lvgl\pika_lvgl_checkbox.c" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="LVGL.Simulator.rc" />
