@@ -46,6 +46,12 @@ void pika_lvgl_lv_objMethod(PikaObj *self, Args *args){
     method_returnArg(args, res);
 }
 
+void pika_lvgl_objMethod(PikaObj *self, Args *args){
+    PikaObj* parent = args_getPtr(args, "parent");
+    PikaObj* res = pika_lvgl_obj(self, parent);
+    method_returnObj(args, res);
+}
+
 void pika_lvgl_rollerMethod(PikaObj *self, Args *args){
     Arg* res = pika_lvgl_roller(self);
     method_returnArg(args, res);
@@ -86,6 +92,7 @@ PikaObj *New_pika_lvgl(Args *args){
     class_defineConstructor(self, "dropdown()->any", pika_lvgl_dropdownMethod);
     class_defineConstructor(self, "label()->any", pika_lvgl_labelMethod);
     class_defineConstructor(self, "lv_obj()->any", pika_lvgl_lv_objMethod);
+    class_defineMethod(self, "obj(parent:lv_obj)->lv_obj", pika_lvgl_objMethod);
     class_defineConstructor(self, "roller()->any", pika_lvgl_rollerMethod);
     class_defineMethod(self, "scr_act()->lv_obj", pika_lvgl_scr_actMethod);
     class_defineConstructor(self, "slider()->any", pika_lvgl_sliderMethod);

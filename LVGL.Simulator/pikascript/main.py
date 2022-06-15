@@ -1,14 +1,24 @@
 import pika_lvgl as lv
 import PikaStdLib
-
-print('hello PikaScript!')
-
 mem = PikaStdLib.MemChecker()
-print('mem used max:')
-mem.max()
 
-ta = lv.textarea(lv.scr_act())
-ta.set_one_line(True)
-ta.align(lv.ALIGN.BOTTOM_RIGHT, 10, 0)
+cb = lv.checkbox(lv.scr_act())
+cb.set_text("Apple")
 
-mem.now()
+cb = lv.checkbox(lv.scr_act())
+cb.set_text("Banana")
+cb.add_state(lv.STATE.CHECKED)
+
+cb = lv.checkbox(lv.scr_act())
+cb.set_text("Lemon")
+cb.add_state(lv.STATE.DISABLED)
+
+cb = lv.checkbox(lv.scr_act())
+cb.add_state(lv.STATE.CHECKED | lv.STATE.DISABLED)
+cb.set_text("Melon")
+
+cb.update_layout()
+
+
+print('mem used max: %0.2f kB' % (mem.getMax()))
+print('mem used now: %0.2f kB' % (mem.getNow()))
