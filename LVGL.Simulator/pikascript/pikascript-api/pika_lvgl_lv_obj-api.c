@@ -7,6 +7,11 @@
 #include <stdlib.h>
 #include "BaseObj.h"
 
+void pika_lvgl_lv_obj_add_stateMethod(PikaObj *self, Args *args){
+    int state = args_getInt(args, "state");
+    pika_lvgl_lv_obj_add_state(self, state);
+}
+
 void pika_lvgl_lv_obj_alignMethod(PikaObj *self, Args *args){
     int align = args_getInt(args, "align");
     int x_ofs = args_getInt(args, "x_ofs");
@@ -40,6 +45,7 @@ void pika_lvgl_lv_obj_update_layoutMethod(PikaObj *self, Args *args){
 
 PikaObj *New_pika_lvgl_lv_obj(Args *args){
     PikaObj *self = New_TinyObj(args);
+    class_defineMethod(self, "add_state(state:int)", pika_lvgl_lv_obj_add_stateMethod);
     class_defineMethod(self, "align(align:int,x_ofs:int,y_ofs:int)", pika_lvgl_lv_obj_alignMethod);
     class_defineMethod(self, "center()", pika_lvgl_lv_obj_centerMethod);
     class_defineMethod(self, "set_hight(h:int)", pika_lvgl_lv_obj_set_hightMethod);

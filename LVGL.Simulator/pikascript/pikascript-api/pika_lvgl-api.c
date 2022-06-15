@@ -52,6 +52,21 @@ void pika_lvgl_scr_actMethod(PikaObj *self, Args *args){
     method_returnObj(args, res);
 }
 
+void pika_lvgl_sliderMethod(PikaObj *self, Args *args){
+    Arg* res = pika_lvgl_slider(self);
+    method_returnArg(args, res);
+}
+
+void pika_lvgl_switchMethod(PikaObj *self, Args *args){
+    Arg* res = pika_lvgl_switch(self);
+    method_returnArg(args, res);
+}
+
+void pika_lvgl_tableMethod(PikaObj *self, Args *args){
+    Arg* res = pika_lvgl_table(self);
+    method_returnArg(args, res);
+}
+
 PikaObj *New_pika_lvgl(Args *args){
     PikaObj *self = New_TinyObj(args);
     class_defineConstructor(self, "arc()->any", pika_lvgl_arcMethod);
@@ -63,6 +78,9 @@ PikaObj *New_pika_lvgl(Args *args){
     class_defineConstructor(self, "lv_obj()->any", pika_lvgl_lv_objMethod);
     class_defineConstructor(self, "roller()->any", pika_lvgl_rollerMethod);
     class_defineMethod(self, "scr_act()->lv_obj", pika_lvgl_scr_actMethod);
+    class_defineConstructor(self, "slider()->any", pika_lvgl_sliderMethod);
+    class_defineConstructor(self, "switch()->any", pika_lvgl_switchMethod);
+    class_defineConstructor(self, "table()->any", pika_lvgl_tableMethod);
     return self;
 }
 

@@ -11,6 +11,9 @@
         "pika_lvgl_checkbox.h": "c",
         "pika_lvgl_dropdown.h": "c",
         "pika_lvgl_label.h": "c",
-        "pika_lvgl_roller.h": "c"
+        "pika_lvgl_roller.h": "c",
+        "pika_lvgl_slider.h": "c",
+        "pika_lvgl_switch.h": "c",
+        "pika_lvgl_table.h": "c"
     }
 }

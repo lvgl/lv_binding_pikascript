@@ -18,5 +18,8 @@ Arg* pika_lvgl_label(PikaObj *self);
 Arg* pika_lvgl_lv_obj(PikaObj *self);
 Arg* pika_lvgl_roller(PikaObj *self);
 PikaObj* pika_lvgl_scr_act(PikaObj *self);
+Arg* pika_lvgl_slider(PikaObj *self);
+Arg* pika_lvgl_switch(PikaObj *self);
+Arg* pika_lvgl_table(PikaObj *self);
 
 #endif

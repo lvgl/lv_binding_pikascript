@@ -33,3 +33,8 @@ void pika_lvgl_lv_obj_set_width(PikaObj* self, int w) {
     lv_obj_t* lv_obj = obj_getPtr(self, "lv_obj");
     lv_obj_set_width(lv_obj, w);
 }
+
+void pika_lvgl_lv_obj_add_state(PikaObj* self, int state) {
+    lv_obj_t* lv_obj = obj_getPtr(self, "lv_obj");
+    lv_obj_add_state(lv_obj, state);
+}

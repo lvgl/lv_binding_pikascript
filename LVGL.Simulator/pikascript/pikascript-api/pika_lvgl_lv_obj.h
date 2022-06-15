@@ -9,6 +9,7 @@
 
 PikaObj *New_pika_lvgl_lv_obj(Args *args);
 
+void pika_lvgl_lv_obj_add_state(PikaObj *self, int state);
 void pika_lvgl_lv_obj_align(PikaObj *self, int align, int x_ofs, int y_ofs);
 void pika_lvgl_lv_obj_center(PikaObj *self);
 void pika_lvgl_lv_obj_set_hight(PikaObj *self, int h);

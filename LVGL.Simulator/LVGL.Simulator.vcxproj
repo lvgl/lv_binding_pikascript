@@ -73,6 +73,9 @@
     <ClInclude Include="pikascript\pikascript-api\pika_lvgl_label.h" />
     <ClInclude Include="pikascript\pikascript-api\pika_lvgl_lv_obj.h" />
     <ClInclude Include="pikascript\pikascript-api\pika_lvgl_roller.h" />
+    <ClInclude Include="pikascript\pikascript-api\pika_lvgl_slider.h" />
+    <ClInclude Include="pikascript\pikascript-api\pika_lvgl_switch.h" />
+    <ClInclude Include="pikascript\pikascript-api\pika_lvgl_table.h" />
     <ClInclude Include="pikascript\pikascript-core\BaseObj.h" />
     <ClInclude Include="pikascript\pikascript-core\dataArg.h" />
     <ClInclude Include="pikascript\pikascript-core\dataArgs.h" />
@@ -126,6 +129,9 @@
     <ClCompile Include="pikascript\pikascript-api\pika_lvgl_label-api.c" />
     <ClCompile Include="pikascript\pikascript-api\pika_lvgl_lv_obj-api.c" />
     <ClCompile Include="pikascript\pikascript-api\pika_lvgl_roller-api.c" />
+    <ClCompile Include="pikascript\pikascript-api\pika_lvgl_slider-api.c" />
+    <ClCompile Include="pikascript\pikascript-api\pika_lvgl_switch-api.c" />
+    <ClCompile Include="pikascript\pikascript-api\pika_lvgl_table-api.c" />
     <ClCompile Include="pikascript\pikascript-api\__asset_pikaModules_py_a.c" />
     <ClCompile Include="pikascript\pikascript-core\BaseObj.c" />
     <ClCompile Include="pikascript\pikascript-core\dataArg.c" />
@@ -163,6 +169,9 @@
     <ClCompile Include="pikascript\pikascript-lib\pika_lvgl\pika_lvgl_label.c" />
     <ClCompile Include="pikascript\pikascript-lib\pika_lvgl\pika_lvgl_lv_obj.c" />
     <ClCompile Include="pikascript\pikascript-lib\pika_lvgl\pika_lvgl_roller.c" />
+    <ClCompile Include="pikascript\pikascript-lib\pika_lvgl\pika_lvgl_slider.c" />
+    <ClCompile Include="pikascript\pikascript-lib\pika_lvgl\pika_lvgl_switch.c" />
+    <ClCompile Include="pikascript\pikascript-lib\pika_lvgl\pika_lvgl_table.c" />
     <ClCompile Include="pikascript_entry.c" />
   </ItemGroup>
   <ItemGroup>
