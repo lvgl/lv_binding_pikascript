@@ -144,6 +144,7 @@
     <ClCompile Include="pikascript\pikascript-api\PikaStdTask_Task-api.c" />
     <ClCompile Include="pikascript\pikascript-api\PikaStdTask-api.c" />
     <ClCompile Include="pikascript\pikascript-api\pika_lvgl_lv_event-api.c" />
+    <ClCompile Include="pikascript\pikascript-lib\pika_lvgl\pika_lvgl_lv_event.c" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="LVGL.Simulator.rc" />

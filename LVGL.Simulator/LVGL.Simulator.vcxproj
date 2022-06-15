@@ -171,6 +171,7 @@
     <ClCompile Include="pikascript\pikascript-lib\pika_lvgl\pika_lvgl_checkbox.c" />
     <ClCompile Include="pikascript\pikascript-lib\pika_lvgl\pika_lvgl_dropdown.c" />
     <ClCompile Include="pikascript\pikascript-lib\pika_lvgl\pika_lvgl_label.c" />
+    <ClCompile Include="pikascript\pikascript-lib\pika_lvgl\pika_lvgl_lv_event.c" />
     <ClCompile Include="pikascript\pikascript-lib\pika_lvgl\pika_lvgl_lv_obj.c" />
     <ClCompile Include="pikascript\pikascript-lib\pika_lvgl\pika_lvgl_roller.c" />
     <ClCompile Include="pikascript\pikascript-lib\pika_lvgl\pika_lvgl_slider.c" />
