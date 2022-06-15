@@ -24,7 +24,7 @@ PikaObj *pikaScriptInit(void){
             "mem.max()\n"
             "ta = lv.textarea(lv.scr_act())\n"
             "ta.set_one_line(True)\n"
-            "ta.align(9, 0, 10)\n"
+            "ta.align(lv.ALIGN.CENTER, 0, 10)\n"
             "mem.now()\n"
             "\n");
 #else 

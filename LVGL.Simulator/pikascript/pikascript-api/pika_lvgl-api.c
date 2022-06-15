@@ -7,6 +7,10 @@
 #include <stdlib.h>
 #include "BaseObj.h"
 
+void pika_lvgl___init__Method(PikaObj *self, Args *args){
+    pika_lvgl___init__(self);
+}
+
 void pika_lvgl_arcMethod(PikaObj *self, Args *args){
     Arg* res = pika_lvgl_arc(self);
     method_returnArg(args, res);
@@ -74,6 +78,7 @@ void pika_lvgl_textareaMethod(PikaObj *self, Args *args){
 
 PikaObj *New_pika_lvgl(Args *args){
     PikaObj *self = New_TinyObj(args);
+    class_defineMethod(self, "__init__()", pika_lvgl___init__Method);
     class_defineConstructor(self, "arc()->any", pika_lvgl_arcMethod);
     class_defineConstructor(self, "bar()->any", pika_lvgl_barMethod);
     class_defineConstructor(self, "btn()->any", pika_lvgl_btnMethod);

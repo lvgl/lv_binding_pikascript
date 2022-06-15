@@ -9,6 +9,7 @@
 
 PikaObj *New_pika_lvgl(Args *args);
 
+void pika_lvgl___init__(PikaObj *self);
 Arg* pika_lvgl_arc(PikaObj *self);
 Arg* pika_lvgl_bar(PikaObj *self);
 Arg* pika_lvgl_btn(PikaObj *self);
