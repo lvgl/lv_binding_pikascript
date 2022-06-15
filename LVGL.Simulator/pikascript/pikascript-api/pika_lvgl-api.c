@@ -41,6 +41,11 @@ void pika_lvgl_labelMethod(PikaObj *self, Args *args){
     method_returnArg(args, res);
 }
 
+void pika_lvgl_lv_eventMethod(PikaObj *self, Args *args){
+    Arg* res = pika_lvgl_lv_event(self);
+    method_returnArg(args, res);
+}
+
 void pika_lvgl_lv_objMethod(PikaObj *self, Args *args){
     Arg* res = pika_lvgl_lv_obj(self);
     method_returnArg(args, res);
@@ -91,6 +96,7 @@ PikaObj *New_pika_lvgl(Args *args){
     class_defineConstructor(self, "checkbox()->any", pika_lvgl_checkboxMethod);
     class_defineConstructor(self, "dropdown()->any", pika_lvgl_dropdownMethod);
     class_defineConstructor(self, "label()->any", pika_lvgl_labelMethod);
+    class_defineConstructor(self, "lv_event()->any", pika_lvgl_lv_eventMethod);
     class_defineConstructor(self, "lv_obj()->any", pika_lvgl_lv_objMethod);
     class_defineMethod(self, "obj(parent:lv_obj)->lv_obj", pika_lvgl_objMethod);
     class_defineConstructor(self, "roller()->any", pika_lvgl_rollerMethod);

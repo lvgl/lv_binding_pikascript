@@ -38,3 +38,13 @@ void pika_lvgl_lv_obj_add_state(PikaObj* self, int state) {
     lv_obj_t* lv_obj = obj_getPtr(self, "lv_obj");
     lv_obj_add_state(lv_obj, state);
 }
+
+void pika_lvgl_lv_obj_add_event_cb(PikaObj* self,
+                                   Arg* event_cb,
+                                   int filter,
+                                   void* user_data) {
+    lv_obj_t* lv_obj = obj_getPtr(self, "lv_obj");
+    obj_setArg(self, "_event_cb", event_cb);
+    obj_setInt(self, "_evnet_filter", filter);
+    obj_setPtr(self, "_event_user_data", user_data);
+}

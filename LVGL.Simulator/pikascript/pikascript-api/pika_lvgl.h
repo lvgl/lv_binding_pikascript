@@ -16,6 +16,7 @@ Arg* pika_lvgl_btn(PikaObj *self);
 Arg* pika_lvgl_checkbox(PikaObj *self);
 Arg* pika_lvgl_dropdown(PikaObj *self);
 Arg* pika_lvgl_label(PikaObj *self);
+Arg* pika_lvgl_lv_event(PikaObj *self);
 Arg* pika_lvgl_lv_obj(PikaObj *self);
 PikaObj* pika_lvgl_obj(PikaObj *self, PikaObj* parent);
 Arg* pika_lvgl_roller(PikaObj *self);

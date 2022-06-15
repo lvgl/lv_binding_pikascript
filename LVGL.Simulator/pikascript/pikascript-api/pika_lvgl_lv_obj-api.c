@@ -7,6 +7,13 @@
 #include <stdlib.h>
 #include "BaseObj.h"
 
+void pika_lvgl_lv_obj_add_event_cbMethod(PikaObj *self, Args *args){
+    Arg* event_cb = args_getArg(args, "event_cb");
+    int filter = args_getInt(args, "filter");
+    void* user_data = args_getPtr(args, "user_data");
+    pika_lvgl_lv_obj_add_event_cb(self, event_cb, filter, user_data);
+}
+
 void pika_lvgl_lv_obj_add_stateMethod(PikaObj *self, Args *args){
     int state = args_getInt(args, "state");
     pika_lvgl_lv_obj_add_state(self, state);
@@ -45,6 +52,7 @@ void pika_lvgl_lv_obj_update_layoutMethod(PikaObj *self, Args *args){
 
 PikaObj *New_pika_lvgl_lv_obj(Args *args){
     PikaObj *self = New_TinyObj(args);
+    class_defineMethod(self, "add_event_cb(event_cb:any,filter:int,user_data:pointer)", pika_lvgl_lv_obj_add_event_cbMethod);
     class_defineMethod(self, "add_state(state:int)", pika_lvgl_lv_obj_add_stateMethod);
     class_defineMethod(self, "align(align:int,x_ofs:int,y_ofs:int)", pika_lvgl_lv_obj_alignMethod);
     class_defineMethod(self, "center()", pika_lvgl_lv_obj_centerMethod);

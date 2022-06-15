@@ -71,6 +71,7 @@
     <ClInclude Include="pikascript\pikascript-api\pika_lvgl_checkbox.h" />
     <ClInclude Include="pikascript\pikascript-api\pika_lvgl_dropdown.h" />
     <ClInclude Include="pikascript\pikascript-api\pika_lvgl_label.h" />
+    <ClInclude Include="pikascript\pikascript-api\pika_lvgl_lv_event.h" />
     <ClInclude Include="pikascript\pikascript-api\pika_lvgl_lv_obj.h" />
     <ClInclude Include="pikascript\pikascript-api\pika_lvgl_roller.h" />
     <ClInclude Include="pikascript\pikascript-api\pika_lvgl_slider.h" />
@@ -128,6 +129,7 @@
     <ClCompile Include="pikascript\pikascript-api\pika_lvgl_checkbox-api.c" />
     <ClCompile Include="pikascript\pikascript-api\pika_lvgl_dropdown-api.c" />
     <ClCompile Include="pikascript\pikascript-api\pika_lvgl_label-api.c" />
+    <ClCompile Include="pikascript\pikascript-api\pika_lvgl_lv_event-api.c" />
     <ClCompile Include="pikascript\pikascript-api\pika_lvgl_lv_obj-api.c" />
     <ClCompile Include="pikascript\pikascript-api\pika_lvgl_roller-api.c" />
     <ClCompile Include="pikascript\pikascript-api\pika_lvgl_slider-api.c" />
