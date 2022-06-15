@@ -67,6 +67,11 @@ void pika_lvgl_tableMethod(PikaObj *self, Args *args){
     method_returnArg(args, res);
 }
 
+void pika_lvgl_textareaMethod(PikaObj *self, Args *args){
+    Arg* res = pika_lvgl_textarea(self);
+    method_returnArg(args, res);
+}
+
 PikaObj *New_pika_lvgl(Args *args){
     PikaObj *self = New_TinyObj(args);
     class_defineConstructor(self, "arc()->any", pika_lvgl_arcMethod);
@@ -81,6 +86,7 @@ PikaObj *New_pika_lvgl(Args *args){
     class_defineConstructor(self, "slider()->any", pika_lvgl_sliderMethod);
     class_defineConstructor(self, "switch()->any", pika_lvgl_switchMethod);
     class_defineConstructor(self, "table()->any", pika_lvgl_tableMethod);
+    class_defineConstructor(self, "textarea()->any", pika_lvgl_textareaMethod);
     return self;
 }
 

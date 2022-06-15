@@ -21,5 +21,6 @@ PikaObj* pika_lvgl_scr_act(PikaObj *self);
 Arg* pika_lvgl_slider(PikaObj *self);
 Arg* pika_lvgl_switch(PikaObj *self);
 Arg* pika_lvgl_table(PikaObj *self);
+Arg* pika_lvgl_textarea(PikaObj *self);
 
 #endif

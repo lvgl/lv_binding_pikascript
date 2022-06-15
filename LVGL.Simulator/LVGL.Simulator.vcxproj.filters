@@ -58,6 +58,7 @@
     <ClInclude Include="pikascript\pikascript-api\pika_lvgl_slider.h" />
     <ClInclude Include="pikascript\pikascript-api\pika_lvgl_switch.h" />
     <ClInclude Include="pikascript\pikascript-api\pika_lvgl_table.h" />
+    <ClInclude Include="pikascript\pikascript-api\pika_lvgl_textarea.h" />
   </ItemGroup>
   <ItemGroup>
     <Manifest Include="LVGL.Simulator.manifest" />
@@ -139,6 +140,8 @@
     <ClCompile Include="pikascript\pikascript-lib\pika_lvgl\pika_lvgl_switch.c" />
     <ClCompile Include="pikascript\pikascript-api\pika_lvgl_table-api.c" />
     <ClCompile Include="pikascript\pikascript-lib\pika_lvgl\pika_lvgl_table.c" />
+    <ClCompile Include="pikascript\pikascript-lib\pika_lvgl\pika_lvgl_textarea.c" />
+    <ClCompile Include="pikascript\pikascript-api\pika_lvgl_textarea-api.c" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="LVGL.Simulator.rc" />

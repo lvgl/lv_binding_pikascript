@@ -76,6 +76,7 @@
     <ClInclude Include="pikascript\pikascript-api\pika_lvgl_slider.h" />
     <ClInclude Include="pikascript\pikascript-api\pika_lvgl_switch.h" />
     <ClInclude Include="pikascript\pikascript-api\pika_lvgl_table.h" />
+    <ClInclude Include="pikascript\pikascript-api\pika_lvgl_textarea.h" />
     <ClInclude Include="pikascript\pikascript-core\BaseObj.h" />
     <ClInclude Include="pikascript\pikascript-core\dataArg.h" />
     <ClInclude Include="pikascript\pikascript-core\dataArgs.h" />
@@ -132,6 +133,7 @@
     <ClCompile Include="pikascript\pikascript-api\pika_lvgl_slider-api.c" />
     <ClCompile Include="pikascript\pikascript-api\pika_lvgl_switch-api.c" />
     <ClCompile Include="pikascript\pikascript-api\pika_lvgl_table-api.c" />
+    <ClCompile Include="pikascript\pikascript-api\pika_lvgl_textarea-api.c" />
     <ClCompile Include="pikascript\pikascript-api\__asset_pikaModules_py_a.c" />
     <ClCompile Include="pikascript\pikascript-core\BaseObj.c" />
     <ClCompile Include="pikascript\pikascript-core\dataArg.c" />
@@ -172,6 +174,7 @@
     <ClCompile Include="pikascript\pikascript-lib\pika_lvgl\pika_lvgl_slider.c" />
     <ClCompile Include="pikascript\pikascript-lib\pika_lvgl\pika_lvgl_switch.c" />
     <ClCompile Include="pikascript\pikascript-lib\pika_lvgl\pika_lvgl_table.c" />
+    <ClCompile Include="pikascript\pikascript-lib\pika_lvgl\pika_lvgl_textarea.c" />
     <ClCompile Include="pikascript_entry.c" />
   </ItemGroup>
   <ItemGroup>

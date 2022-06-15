@@ -14,6 +14,7 @@
         "pika_lvgl_roller.h": "c",
         "pika_lvgl_slider.h": "c",
         "pika_lvgl_switch.h": "c",
-        "pika_lvgl_table.h": "c"
+        "pika_lvgl_table.h": "c",
+        "pika_lvgl_textarea.h": "c"
     }
 }
