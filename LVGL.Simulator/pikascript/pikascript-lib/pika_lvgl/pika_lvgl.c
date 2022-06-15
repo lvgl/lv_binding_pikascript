@@ -4,6 +4,8 @@
 #include "pika_lvgl_arc.h"
 #include "pika_lvgl_lv_obj.h"
 
+PikaObj* pika_lv_event_listener;
+
 PikaObj* pika_lvgl_scr_act(PikaObj* self) {
     PikaObj* new_obj = newNormalObj(New_TinyObj);
     lv_obj_t* lv_obj = lv_scr_act();
@@ -12,6 +14,8 @@ PikaObj* pika_lvgl_scr_act(PikaObj* self) {
 }
 
 void pika_lvgl___init__(PikaObj* self) {
+    obj_newDirectObj(self, "lv_event_listener", New_TinyObj);
+    pika_lv_event_listener = obj_getObj(self, "lv_event_listener");
     obj_newDirectObj(self, "ALIGN", New_TinyObj);
     obj_setInt(self, "ALIGN.CENTER", LV_ALIGN_CENTER);
     obj_setInt(self, "ALIGN.DEFAULT", LV_ALIGN_DEFAULT);
