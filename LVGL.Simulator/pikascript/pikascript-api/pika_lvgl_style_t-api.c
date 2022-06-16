@@ -7,12 +7,16 @@
 #include <stdlib.h>
 #include "BaseObj.h"
 
+void pika_lvgl_style_t___init__Method(PikaObj *self, Args *args){
+    pika_lvgl_style_t___init__(self);
+}
+
 void pika_lvgl_style_t_initMethod(PikaObj *self, Args *args){
     pika_lvgl_style_t_init(self);
 }
 
 void pika_lvgl_style_t_set_bg_colorMethod(PikaObj *self, Args *args){
-    int color = args_getInt(args, "color");
+    PikaObj* color = args_getPtr(args, "color");
     pika_lvgl_style_t_set_bg_color(self, color);
 }
 
@@ -22,7 +26,7 @@ void pika_lvgl_style_t_set_bg_opaMethod(PikaObj *self, Args *args){
 }
 
 void pika_lvgl_style_t_set_outline_colorMethod(PikaObj *self, Args *args){
-    int color = args_getInt(args, "color");
+    PikaObj* color = args_getPtr(args, "color");
     pika_lvgl_style_t_set_outline_color(self, color);
 }
 
@@ -43,10 +47,11 @@ void pika_lvgl_style_t_set_radiusMethod(PikaObj *self, Args *args){
 
 PikaObj *New_pika_lvgl_style_t(Args *args){
     PikaObj *self = New_TinyObj(args);
+    class_defineMethod(self, "__init__()", pika_lvgl_style_t___init__Method);
     class_defineMethod(self, "init()", pika_lvgl_style_t_initMethod);
-    class_defineMethod(self, "set_bg_color(color:int)", pika_lvgl_style_t_set_bg_colorMethod);
+    class_defineMethod(self, "set_bg_color(color:lv_color_t)", pika_lvgl_style_t_set_bg_colorMethod);
     class_defineMethod(self, "set_bg_opa(opa:int)", pika_lvgl_style_t_set_bg_opaMethod);
-    class_defineMethod(self, "set_outline_color(color:int)", pika_lvgl_style_t_set_outline_colorMethod);
+    class_defineMethod(self, "set_outline_color(color:lv_color_t)", pika_lvgl_style_t_set_outline_colorMethod);
     class_defineMethod(self, "set_outline_pad(pad:int)", pika_lvgl_style_t_set_outline_padMethod);
     class_defineMethod(self, "set_outline_width(w:int)", pika_lvgl_style_t_set_outline_widthMethod);
     class_defineMethod(self, "set_radius(radius:int)", pika_lvgl_style_t_set_radiusMethod);

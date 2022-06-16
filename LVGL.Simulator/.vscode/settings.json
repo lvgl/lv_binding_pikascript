@@ -18,6 +18,7 @@
         "pika_lvgl_textarea.h": "c",
         "pika_lvgl_align_cls.h": "c",
         "pika_lvgl_palette_cls.h": "c",
-        "pika_lvgl_lv_event.h": "c"
+        "pika_lvgl_lv_event.h": "c",
+        "pika_lvgl_style_t.h": "c"
     }
 }

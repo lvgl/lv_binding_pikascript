@@ -41,6 +41,11 @@ void pika_lvgl_labelMethod(PikaObj *self, Args *args){
     method_returnArg(args, res);
 }
 
+void pika_lvgl_lv_color_tMethod(PikaObj *self, Args *args){
+    Arg* res = pika_lvgl_lv_color_t(self);
+    method_returnArg(args, res);
+}
+
 void pika_lvgl_lv_eventMethod(PikaObj *self, Args *args){
     Arg* res = pika_lvgl_lv_event(self);
     method_returnArg(args, res);
@@ -57,10 +62,17 @@ void pika_lvgl_objMethod(PikaObj *self, Args *args){
     method_returnObj(args, res);
 }
 
-void pika_lvgl_palettle_lightenMethod(PikaObj *self, Args *args){
-    int color = args_getInt(args, "color");
-    int res = pika_lvgl_palettle_lighten(self, color);
-    method_returnInt(args, res);
+void pika_lvgl_palette_lightenMethod(PikaObj *self, Args *args){
+    int lvl = args_getInt(args, "lvl");
+    int p = args_getInt(args, "p");
+    PikaObj* res = pika_lvgl_palette_lighten(self, lvl, p);
+    method_returnObj(args, res);
+}
+
+void pika_lvgl_palette_mainMethod(PikaObj *self, Args *args){
+    int p = args_getInt(args, "p");
+    PikaObj* res = pika_lvgl_palette_main(self, p);
+    method_returnObj(args, res);
 }
 
 void pika_lvgl_rollerMethod(PikaObj *self, Args *args){
@@ -107,10 +119,12 @@ PikaObj *New_pika_lvgl(Args *args){
     class_defineConstructor(self, "checkbox()->any", pika_lvgl_checkboxMethod);
     class_defineConstructor(self, "dropdown()->any", pika_lvgl_dropdownMethod);
     class_defineConstructor(self, "label()->any", pika_lvgl_labelMethod);
+    class_defineConstructor(self, "lv_color_t()->any", pika_lvgl_lv_color_tMethod);
     class_defineConstructor(self, "lv_event()->any", pika_lvgl_lv_eventMethod);
     class_defineConstructor(self, "lv_obj()->any", pika_lvgl_lv_objMethod);
     class_defineMethod(self, "obj(parent:lv_obj)->lv_obj", pika_lvgl_objMethod);
-    class_defineMethod(self, "palettle_lighten(color:int)->int", pika_lvgl_palettle_lightenMethod);
+    class_defineMethod(self, "palette_lighten(p:int,lvl:int)->lv_color_t", pika_lvgl_palette_lightenMethod);
+    class_defineMethod(self, "palette_main(p:int)->lv_color_t", pika_lvgl_palette_mainMethod);
     class_defineConstructor(self, "roller()->any", pika_lvgl_rollerMethod);
     class_defineMethod(self, "scr_act()->lv_obj", pika_lvgl_scr_actMethod);
     class_defineConstructor(self, "slider()->any", pika_lvgl_sliderMethod);
