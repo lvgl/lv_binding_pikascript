@@ -2,23 +2,23 @@ import pika_lvgl as lv
 import PikaStdLib
 mem = PikaStdLib.MemChecker()
 
-style = lv.style_t()
-style.init()
 
-# Set a background color and a radius
-style.set_radius(5)
-style.set_bg_opa(lv.OPA.COVER)
-style.set_bg_color(lv.palette_lighten(lv.PALETTE.GREY, 1))
+def event_cb_1(evt):
+    print('in evt1')
+    print('mem used now: %0.2f kB' % (mem.getNow()))
 
-# Add outline
-style.set_outline_width(2)
-style.set_outline_color(lv.palette_main(lv.PALETTE.BLUE))
-style.set_outline_pad(8)
 
-# Create an object with the new style
-obj = lv.obj(lv.scr_act())
-obj.add_style(style, 0)
-obj.center()
+def event_cb_2(evt):
+    print('in evt2')
+    print('mem used now: %0.2f kB' % (mem.getNow()))
+
+
+btn1 = lv.btn(lv.scr_act())
+btn1.align(lv.ALIGN.TOP_MID, 0, 10)
+btn2 = lv.btn(lv.scr_act())
+btn2.align(lv.ALIGN.TOP_MID, 0, 50)
+btn1.add_event_cb(event_cb_1, lv.EVENT.CLICKED, 0)
+btn2.add_event_cb(event_cb_2, lv.EVENT.CLICKED, 0)
 
 print('mem used max: %0.2f kB' % (mem.getMax()))
 print('mem used now: %0.2f kB' % (mem.getNow()))

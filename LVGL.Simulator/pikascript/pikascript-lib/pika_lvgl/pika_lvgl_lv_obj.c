@@ -63,7 +63,23 @@ static void __pika_event_cb(lv_event_t* e) {
     obj_setArg(__pikaMain, "_event_cb", obj_getArg(event_handler, "_event_cb"));
     obj_setArg(__pikaMain, "_event_evt",
                obj_getArg(event_handler, "_event_evt"));
-    obj_run(__pikaMain, "_event_cb(_event_evt)");
+
+    /* clang-format off */
+    PIKA_PYTHON(
+    _event_cb(_event_evt)
+    )
+    /* clang-format on */
+    const uint8_t bytes[] =
+        {
+            0x08, 0x00, /* instruct array size */
+            0x10, 0x81, 0x01, 0x00, 0x00, 0x02, 0x0c, 0x00, /* instruct array */
+            0x16, 0x00, /* const pool size */
+            0x00, 0x5f, 0x65, 0x76, 0x65, 0x6e, 0x74, 0x5f,
+            0x65, 0x76, 0x74, 0x00, 0x5f, 0x65, 0x76, 0x65,
+            0x6e, 0x74, 0x5f, 0x63, 0x62, 0x00, /* const pool */
+        };
+    pikaVM_runByteCode(__pikaMain, (uint8_t*)bytes);
+
     obj_removeArg(__pikaMain, "_event_cb");
     obj_removeArg(__pikaMain, "_event_evt");
 }
