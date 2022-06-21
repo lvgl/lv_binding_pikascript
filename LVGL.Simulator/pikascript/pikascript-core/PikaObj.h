@@ -81,6 +81,7 @@ struct MethodInfo {
     char* dec;
     char* ptr;
     char* pars;
+    PikaObj* def_context;
     ArgType type;
     ByteCodeFrame* bytecode_frame;
 };
@@ -123,6 +124,9 @@ int32_t obj_load(PikaObj* self, Args* args, char* name);
 int32_t obj_addOther(PikaObj* self, char* subObjectName, void* new_projcetFun);
 PikaObj* obj_getObj(PikaObj* self, char* objPath);
 PikaObj* obj_getHostObj(PikaObj* self, char* objPath);
+PikaObj* obj_getHostObjWithIsClass(PikaObj* self,
+                                   char* objPath,
+                                   PIKA_BOOL* pIsClass);
 
 // subProcess
 int32_t obj_freeObj(PikaObj* self, char* subObjectName);
@@ -133,11 +137,13 @@ int32_t class_defineMethod(PikaObj* self, char* declearation, Method methodPtr);
 int32_t class_defineObjectMethod(PikaObj* self,
                                  char* declearation,
                                  Method methodPtr,
+                                 PikaObj* def_context,
                                  ByteCodeFrame* bytecode_frame);
 
 int32_t class_defineStaticMethod(PikaObj* self,
                                  char* declearation,
                                  Method methodPtr,
+                                 PikaObj* def_context,
                                  ByteCodeFrame* bytecode_frame);
 
 int32_t class_defineConstructor(PikaObj* self,
@@ -147,6 +153,7 @@ int32_t class_defineConstructor(PikaObj* self,
 int32_t class_defineRunTimeConstructor(PikaObj* self,
                                        char* declearation,
                                        Method methodPtr,
+                                       PikaObj* def_context,
                                        ByteCodeFrame* bytecode_frame);
 
 int32_t obj_removeArg(PikaObj* self, char* argPath);
@@ -214,7 +221,7 @@ void obj_shellLineProcess(PikaObj* self,
 */
 int pikaCompile(char* output_file_name, char* py_lines);
 Method obj_getNativeMethod(PikaObj* self, char* method_name);
-void obj_runNativeMethod(PikaObj* self, char* method_name, Args* args);
+PIKA_RES obj_runNativeMethod(PikaObj* self, char* method_name, Args* args);
 Arg* obj_newObjInPackage(NewFun newObjFun);
 
 void obj_refcntInc(PikaObj* self);
@@ -252,4 +259,17 @@ enum shell_state obj_runChar(PikaObj* self, char inputChar);
 #define PIKA_PYTHON(x)
 #define PIKA_PYTHON_END
 
+typedef PikaObj PikaEventListener;
+
+void pks_eventLisener_sendSignal(PikaEventListener* self,
+                                 uint32_t eventId,
+                                 int eventSignal);
+
+void pks_eventLicener_registEvent(PikaEventListener* self,
+                                  uint32_t eventId,
+                                  PikaObj* eventHandleObj);
+
+void pks_eventLisener_init(PikaEventListener** p_self);
+void pks_eventLisener_deinit(PikaEventListener** p_self);
+PikaObj* methodArg_getDefContext(Arg* method_arg);
 #endif

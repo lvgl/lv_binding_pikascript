@@ -9,6 +9,12 @@
 
 PikaObj *New_pika_lvgl(Args *args);
 
+Arg* pika_lvgl_ALIGN(PikaObj *self);
+Arg* pika_lvgl_ANIM(PikaObj *self);
+Arg* pika_lvgl_EVENT(PikaObj *self);
+Arg* pika_lvgl_OPA(PikaObj *self);
+Arg* pika_lvgl_PALETTE(PikaObj *self);
+Arg* pika_lvgl_STATE(PikaObj *self);
 void pika_lvgl___init__(PikaObj *self);
 Arg* pika_lvgl_arc(PikaObj *self);
 Arg* pika_lvgl_bar(PikaObj *self);

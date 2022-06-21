@@ -2,23 +2,24 @@ import pika_lvgl as lv
 import PikaStdLib
 mem = PikaStdLib.MemChecker()
 
+cb = lv.checkbox(lv.scr_act())
+cb.set_text("Apple")
+cb.align(lv.ALIGN.TOP_LEFT, 0 ,0)
 
-def event_cb_1(evt):
-    print('in evt1')
-    print('mem used now: %0.2f kB' % (mem.getNow()))
+cb = lv.checkbox(lv.scr_act())
+cb.set_text("Banana")
+cb.add_state(lv.STATE.CHECKED)
+cb.align(lv.ALIGN.TOP_LEFT, 0 ,30)
 
+cb = lv.checkbox(lv.scr_act())
+cb.set_text("Lemon")
+cb.add_state(lv.STATE.DISABLED)
+cb.align(lv.ALIGN.TOP_LEFT, 0 ,60)
 
-def event_cb_2(evt):
-    print('in evt2')
-    print('mem used now: %0.2f kB' % (mem.getNow()))
-
-
-btn1 = lv.btn(lv.scr_act())
-btn1.align(lv.ALIGN.TOP_MID, 0, 10)
-btn2 = lv.btn(lv.scr_act())
-btn2.align(lv.ALIGN.TOP_MID, 0, 50)
-btn1.add_event_cb(event_cb_1, lv.EVENT.CLICKED, 0)
-btn2.add_event_cb(event_cb_2, lv.EVENT.CLICKED, 0)
+cb = lv.checkbox(lv.scr_act())
+cb.add_state(lv.STATE.CHECKED | lv.STATE.DISABLED)
+cb.set_text("Melon")
+cb.align(lv.ALIGN.TOP_LEFT, 0 ,90)
 
 print('mem used max: %0.2f kB' % (mem.getMax()))
 print('mem used now: %0.2f kB' % (mem.getNow()))

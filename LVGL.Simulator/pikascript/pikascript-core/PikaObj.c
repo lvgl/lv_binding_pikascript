@@ -122,16 +122,6 @@ int32_t obj_deinit(PikaObj* self) {
     return obj_deinit_no_del(self);
 }
 
-int32_t obj_enable(PikaObj* self) {
-    obj_setInt(self, "isEnable", 1);
-    return 0;
-}
-
-int32_t obj_disable(PikaObj* self) {
-    obj_setInt(self, "isEnable", 0);
-    return 0;
-}
-
 int32_t obj_setInt(PikaObj* self, char* argPath, int64_t val) {
     PikaObj* obj = obj_getHostObj(self, argPath);
     if (NULL == obj) {
@@ -204,12 +194,18 @@ int64_t obj_getInt(PikaObj* self, char* argPath) {
 }
 
 Arg* obj_getArg(PikaObj* self, char* argPath) {
-    PikaObj* obj = obj_getHostObj(self, argPath);
+    PIKA_BOOL isClass = 0;
+    PikaObj* obj = obj_getHostObjWithIsClass(self, argPath, &isClass);
     if (NULL == obj) {
         return NULL;
     }
     char* argName = strPointToLastToken(argPath, '.');
     Arg* res = args_getArg(obj->list, argName);
+    if (isClass) {
+        obj_setArg(self, "_buf", res);
+        res = obj_getArg(self, "_buf");
+        obj_deinit(obj);
+    }
     return res;
 }
 
@@ -304,24 +300,6 @@ char* obj_getStr(PikaObj* self, char* argPath) {
     return res;
 }
 
-int32_t obj_load(PikaObj* self, Args* args, char* name) {
-    args_copyArgByName(args, name, self->list);
-    return 0;
-}
-
-int32_t obj_freeObj(PikaObj* self, char* objPath) {
-    PikaObj* obj = obj_getPtr(self, objPath);
-    obj_deinit(obj);
-    return 0;
-}
-
-char* obj_print(PikaObj* self, char* name) {
-    if (NULL == self) {
-        return NULL;
-    }
-    return args_print(self->list, name);
-}
-
 PikaObj* obj_getClassObjByNewFun(PikaObj* context,
                                  char* name,
                                  NewFun newClassFun) {
@@ -398,10 +376,6 @@ PikaObj* newRootObj(char* name, NewFun newObjFun) {
     return newObj;
 }
 
-Arg* obj_getRefArg(PikaObj* self) {
-    return arg_setPtr(NULL, "", ARG_TYPE_OBJECT_NEW, self);
-}
-
 Arg* arg_newMetaObj(NewFun new_obj_fun) {
     Arg* arg_new = New_arg(NULL);
     /* m means meta-object */
@@ -442,7 +416,10 @@ exit:
     return res;
 }
 
-static PikaObj* __obj_getObjDirect(PikaObj* self, char* name) {
+static PikaObj* __obj_getObjDirect(PikaObj* self,
+                                   char* name,
+                                   PIKA_BOOL* pIsClass) {
+    *pIsClass = PIKA_FALSE;
     if (NULL == self) {
         return NULL;
     }
@@ -456,11 +433,24 @@ static PikaObj* __obj_getObjDirect(PikaObj* self, char* name) {
     if (argType_isObject(type)) {
         return args_getPtr(self->list, name);
     }
+    /* found class */
+    if (type == ARG_TYPE_METHOD_NATIVE_CONSTRUCTOR) {
+        *pIsClass = PIKA_TRUE;
+        PikaObj* method_args_obj = New_TinyObj(NULL);
+        Arg* cls_obj_arg = obj_runMethodArg(self, method_args_obj,
+                                            args_getArg(self->list, name));
+        obj_deinit(method_args_obj);
+        obj_runNativeMethod(arg_getPtr(cls_obj_arg), "__init__", NULL);
+        PikaObj* res = arg_getPtr(cls_obj_arg);
+        arg_deinit(cls_obj_arg);
+        return res;
+    }
     return NULL;
 }
 
 static PikaObj* __obj_getObjWithKeepDeepth(PikaObj* self,
                                            char* objPath,
+                                           PIKA_BOOL* pIsClass,
                                            int32_t keepDeepth) {
     char objPath_buff[PIKA_PATH_BUFF_SIZE];
     __platform_memcpy(objPath_buff, objPath, strGetSize(objPath) + 1);
@@ -469,7 +459,7 @@ static PikaObj* __obj_getObjWithKeepDeepth(PikaObj* self,
     PikaObj* obj = self;
     for (int32_t i = 0; i < token_num - keepDeepth; i++) {
         char* token = strPopToken(token_buff, objPath_buff, '.');
-        obj = __obj_getObjDirect(obj, token);
+        obj = __obj_getObjDirect(obj, token, pIsClass);
         if (obj == NULL) {
             goto exit;
         }
@@ -480,11 +470,19 @@ exit:
 }
 
 PikaObj* obj_getObj(PikaObj* self, char* objPath) {
-    return __obj_getObjWithKeepDeepth(self, objPath, 0);
+    PIKA_BOOL isClass = 0;
+    return __obj_getObjWithKeepDeepth(self, objPath, &isClass, 0);
 }
 
 PikaObj* obj_getHostObj(PikaObj* self, char* objPath) {
-    return __obj_getObjWithKeepDeepth(self, objPath, 1);
+    PIKA_BOOL isClass = 0;
+    return __obj_getObjWithKeepDeepth(self, objPath, &isClass, 1);
+}
+
+PikaObj* obj_getHostObjWithIsClass(PikaObj* self,
+                                   char* objPath,
+                                   PIKA_BOOL* pIsClass) {
+    return __obj_getObjWithKeepDeepth(self, objPath, pIsClass, 1);
 }
 
 Method methodArg_getPtr(Arg* method_arg) {
@@ -521,7 +519,15 @@ ByteCodeFrame* methodArg_getBytecodeFrame(Arg* method_arg) {
 char* methodArg_getDec(Arg* method_arg) {
     uint32_t size_ptr = sizeof(void*);
     void* info = arg_getContent(method_arg);
-    return (char*)((uintptr_t)info + 2 * size_ptr);
+    return (char*)((uintptr_t)info + 3 * size_ptr);
+}
+
+PikaObj* methodArg_getDefContext(Arg* method_arg) {
+    uint32_t size_ptr = sizeof(void*);
+    void* info = arg_getContent(method_arg) + 2 * size_ptr;
+    PikaObj* context = NULL;
+    __platform_memcpy(&context, info, size_ptr);
+    return context;
 }
 
 static void obj_saveMethodInfo(PikaObj* self, MethodInfo* method_info) {
@@ -532,11 +538,17 @@ static void obj_saveMethodInfo(PikaObj* self, MethodInfo* method_info) {
     uint32_t size_pars = strGetSize(pars);
     uintptr_t method_info_bytecode_frame =
         (uintptr_t)method_info->bytecode_frame;
+    uintptr_t method_info_def_context = (uintptr_t)method_info->def_context;
+    /* the first arg_value */
     arg =
         arg_setPtr(arg, method_info->name, method_info->type, method_info->ptr);
+    /* the seconed */
     arg = arg_append(arg, &(method_info_bytecode_frame),
                      sizeof(method_info_bytecode_frame));
+    arg = arg_append(arg, &(method_info_def_context),
+                     sizeof(method_info_def_context));
     arg = arg_append(arg, method_info->pars, size_pars + 1);
+
     args_setArg(self->list, arg);
     strsDeinit(&buffs);
 }
@@ -545,6 +557,7 @@ static int32_t __class_defineMethodWithType(PikaObj* self,
                                             char* declearation,
                                             Method method_ptr,
                                             ArgType method_type,
+                                            PikaObj* def_context,
                                             ByteCodeFrame* bytecode_frame) {
     int32_t size = strGetSize(declearation);
     int32_t res = 0;
@@ -567,6 +580,7 @@ static int32_t __class_defineMethodWithType(PikaObj* self,
     method_info.name = method_name;
     method_info.ptr = (void*)method_ptr;
     method_info.type = method_type;
+    method_info.def_context = def_context;
     method_info.bytecode_frame = bytecode_frame;
     obj_saveMethodInfo(method_host, &method_info);
     res = 0;
@@ -582,7 +596,7 @@ int32_t class_defineConstructor(PikaObj* self,
                                 Method methodPtr) {
     return __class_defineMethodWithType(self, declearation, methodPtr,
                                         ARG_TYPE_METHOD_NATIVE_CONSTRUCTOR,
-                                        NULL);
+                                        NULL, NULL);
 }
 
 /* define a native method as default */
@@ -590,35 +604,40 @@ int32_t class_defineMethod(PikaObj* self,
                            char* declearation,
                            Method methodPtr) {
     return __class_defineMethodWithType(self, declearation, methodPtr,
-                                        ARG_TYPE_METHOD_NATIVE, NULL);
+                                        ARG_TYPE_METHOD_NATIVE, NULL, NULL);
 }
 
 /* define object method, object method is which startwith (self) */
 int32_t class_defineRunTimeConstructor(PikaObj* self,
                                        char* declearation,
                                        Method methodPtr,
+                                       PikaObj* def_context,
                                        ByteCodeFrame* bytecode_frame) {
     return __class_defineMethodWithType(self, declearation, methodPtr,
                                         ARG_TYPE_METHOD_CONSTRUCTOR,
-                                        bytecode_frame);
+                                        def_context, bytecode_frame);
 }
 
 /* define object method, object method is which startwith (self) */
 int32_t class_defineObjectMethod(PikaObj* self,
                                  char* declearation,
                                  Method methodPtr,
+                                 PikaObj* def_context,
                                  ByteCodeFrame* bytecode_frame) {
     return __class_defineMethodWithType(self, declearation, methodPtr,
-                                        ARG_TYPE_METHOD_OBJECT, bytecode_frame);
+                                        ARG_TYPE_METHOD_OBJECT, def_context,
+                                        bytecode_frame);
 }
 
 /* define a static method as default */
 int32_t class_defineStaticMethod(PikaObj* self,
                                  char* declearation,
                                  Method methodPtr,
+                                 PikaObj* def_context,
                                  ByteCodeFrame* bytecode_frame) {
     return __class_defineMethodWithType(self, declearation, methodPtr,
-                                        ARG_TYPE_METHOD_STATIC, bytecode_frame);
+                                        ARG_TYPE_METHOD_STATIC, def_context,
+                                        bytecode_frame);
 }
 
 VMParameters* obj_runDirect(PikaObj* self, char* cmd) {
@@ -681,12 +700,13 @@ void obj_run(PikaObj* self, char* cmd) {
     obj_runDirect(self, cmd);
 }
 
-void obj_runNativeMethod(PikaObj* self, char* method_name, Args* args) {
+PIKA_RES obj_runNativeMethod(PikaObj* self, char* method_name, Args* args) {
     Method native_method = obj_getNativeMethod(self, method_name);
     if (NULL == native_method) {
-        return;
+        return PIKA_RES_ERR_ARG_NO_FOUND;
     }
     native_method(self, args);
+    return PIKA_RES_OK;
 }
 
 static void __clearBuff(char* buff, int size) {
@@ -841,10 +861,6 @@ int32_t obj_getErrorCode(PikaObj* self) {
     return obj_getInt(self, "__errCode");
 }
 
-void args_setErrorCode(Args* args, int32_t errCode) {
-    args_setInt(args, "__errCode", errCode);
-}
-
 int32_t args_getErrorCode(Args* args) {
     if (!args_isArgExist(args, "__errCode")) {
         return 0;
@@ -860,10 +876,6 @@ char* obj_getSysOut(PikaObj* self) {
     return obj_getStr(self, "__sysOut");
 }
 
-char* args_getSysOut(Args* args) {
-    return args_getStr(args, "__sysOut");
-}
-
 void args_setSysOut(Args* args, char* str) {
     // args_setStr(args, "__sysOut", str);
     if (NULL == str) {
@@ -873,15 +885,6 @@ void args_setSysOut(Args* args, char* str) {
         return;
     }
     __platform_printf("%s\r\n", str);
-}
-
-void obj_sysPrintf(PikaObj* self, char* fmt, ...) {
-    va_list args;
-    va_start(args, fmt);
-    char sysOut[128] = {0};
-    __platform_vsprintf(sysOut, fmt, args);
-    obj_setSysOut(self, sysOut);
-    va_end(args);
 }
 
 void method_returnBytes(Args* args, uint8_t* val) {
@@ -952,10 +955,6 @@ Arg* arg_setRef(Arg* self, char* name, PikaObj* obj) {
     return arg_setPtr(self, name, ARG_TYPE_OBJECT, obj);
 }
 
-Arg* arg_setWeakRef(Arg* self, char* name, PikaObj* obj) {
-    return arg_setPtr(self, name, ARG_TYPE_OBJECT, obj);
-}
-
 int32_t obj_newDirectObj(PikaObj* self, char* objName, NewFun newFunPtr) {
     Arg* new_obj = arg_newDirectObj(newFunPtr);
     new_obj = arg_setName(new_obj, objName);
@@ -991,7 +990,8 @@ PikaObj* obj_importModuleWithByteCode(PikaObj* self,
 PikaObj* obj_importModuleWithByteCodeFrame(PikaObj* self,
                                            char* name,
                                            ByteCodeFrame* byteCode_frame) {
-    obj_newDirectObj(self, name, New_TinyObj);
+    PikaObj* New_PikaStdLib_SysObj(Args * args);
+    obj_newDirectObj(self, name, New_PikaStdLib_SysObj);
     pikaVM_runByteCodeFrame(obj_getObj(self, name), byteCode_frame);
     return self;
 }
@@ -1066,4 +1066,64 @@ char* obj_toStr(PikaObj* self) {
         return str_res;
     }
     return NULL;
+}
+
+void pks_eventLicener_registEvent(PikaEventListener* self,
+                                  uint32_t eventId,
+                                  PikaObj* eventHandleObj) {
+    Args buffs = {0};
+    char* event_name =
+        strsFormat(&buffs, PIKA_SPRINTF_BUFF_SIZE, "%ld", eventId);
+    obj_newDirectObj(self, event_name, New_TinyObj);
+    PikaObj* event_item = obj_getObj(self, event_name);
+    obj_setRef(event_item, "eventHandleObj", eventHandleObj);
+    strsDeinit(&buffs);
+}
+
+static PikaObj* pks_eventLisener_getEventHandleObj(PikaEventListener* self,
+                                                   uint32_t eventId) {
+    Args buffs = {0};
+    char* event_name =
+        strsFormat(&buffs, PIKA_SPRINTF_BUFF_SIZE, "%ld", eventId);
+    PikaObj* event_item = obj_getObj(self, event_name);
+    PikaObj* eventHandleObj = obj_getPtr(event_item, "eventHandleObj");
+    strsDeinit(&buffs);
+    return eventHandleObj;
+}
+
+void pks_eventLisener_init(PikaEventListener** p_self) {
+    *p_self = newNormalObj(New_TinyObj);
+}
+
+void pks_eventLisener_deinit(PikaEventListener** p_self) {
+    if (NULL != *p_self) {
+        obj_deinit(*p_self);
+        *p_self = NULL;
+    }
+}
+
+void pks_eventLisener_sendSignal(PikaEventListener* self,
+                                 uint32_t eventId,
+                                 int eventSignal) {
+    PikaObj* eventHandleObj = pks_eventLisener_getEventHandleObj(self, eventId);
+    if (NULL == eventHandleObj) {
+        __platform_printf(
+            "Error: can not find event handler by id: [0x%02x]\r\n", eventId);
+        return;
+    }
+    obj_setInt(eventHandleObj, "eventSignal", eventSignal);
+    /* clang-format off */
+    PIKA_PYTHON(
+    eventCallBack(eventSignal)
+)
+    /* clang-format on */
+    const uint8_t bytes[] = {
+        0x08, 0x00, /* instruct array size */
+        0x10, 0x81, 0x01, 0x00, 0x00, 0x02, 0x0d, 0x00, /* instruct array */
+        0x1b, 0x00,                                     /* const pool size */
+        0x00, 0x65, 0x76, 0x65, 0x6e, 0x74, 0x53, 0x69, 0x67,
+        0x6e, 0x61, 0x6c, 0x00, 0x65, 0x76, 0x65, 0x6e, 0x74,
+        0x43, 0x61, 0x6c, 0x6c, 0x42, 0x61, 0x63, 0x6b, 0x00, /* const pool */
+    };
+    pikaVM_runByteCode(eventHandleObj, (uint8_t*)bytes);
 }

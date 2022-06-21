@@ -7,6 +7,36 @@
 #include <stdlib.h>
 #include "BaseObj.h"
 
+void pika_lvgl_ALIGNMethod(PikaObj *self, Args *args){
+    Arg* res = pika_lvgl_ALIGN(self);
+    method_returnArg(args, res);
+}
+
+void pika_lvgl_ANIMMethod(PikaObj *self, Args *args){
+    Arg* res = pika_lvgl_ANIM(self);
+    method_returnArg(args, res);
+}
+
+void pika_lvgl_EVENTMethod(PikaObj *self, Args *args){
+    Arg* res = pika_lvgl_EVENT(self);
+    method_returnArg(args, res);
+}
+
+void pika_lvgl_OPAMethod(PikaObj *self, Args *args){
+    Arg* res = pika_lvgl_OPA(self);
+    method_returnArg(args, res);
+}
+
+void pika_lvgl_PALETTEMethod(PikaObj *self, Args *args){
+    Arg* res = pika_lvgl_PALETTE(self);
+    method_returnArg(args, res);
+}
+
+void pika_lvgl_STATEMethod(PikaObj *self, Args *args){
+    Arg* res = pika_lvgl_STATE(self);
+    method_returnArg(args, res);
+}
+
 void pika_lvgl___init__Method(PikaObj *self, Args *args){
     pika_lvgl___init__(self);
 }
@@ -112,6 +142,12 @@ void pika_lvgl_textareaMethod(PikaObj *self, Args *args){
 
 PikaObj *New_pika_lvgl(Args *args){
     PikaObj *self = New_TinyObj(args);
+    class_defineConstructor(self, "ALIGN()->any", pika_lvgl_ALIGNMethod);
+    class_defineConstructor(self, "ANIM()->any", pika_lvgl_ANIMMethod);
+    class_defineConstructor(self, "EVENT()->any", pika_lvgl_EVENTMethod);
+    class_defineConstructor(self, "OPA()->any", pika_lvgl_OPAMethod);
+    class_defineConstructor(self, "PALETTE()->any", pika_lvgl_PALETTEMethod);
+    class_defineConstructor(self, "STATE()->any", pika_lvgl_STATEMethod);
     class_defineMethod(self, "__init__()", pika_lvgl___init__Method);
     class_defineConstructor(self, "arc()->any", pika_lvgl_arcMethod);
     class_defineConstructor(self, "bar()->any", pika_lvgl_barMethod);

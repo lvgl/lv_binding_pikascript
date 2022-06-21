@@ -8,9 +8,9 @@
 PikaObj *__pikaMain;
 PikaObj *pikaScriptInit(void){
     __platform_printf("======[pikascript packages installed]======\r\n");
-    __platform_printf("PikaStdLib==v1.8.6\r\n");
+    __platform_printf("PikaStdLib==latest\r\n");
     __platform_printf("pika_lvgl==latest\r\n");
-    __platform_printf("pikascript-core==v1.8.6\r\n");
+    __platform_printf("pikascript-core==latest\r\n");
     __platform_printf("===========================================\r\n");
     __pikaMain = newRootObj("pikaMain", New_PikaMain);
     extern unsigned char pikaModules_py_a[];
@@ -20,18 +20,21 @@ PikaObj *pikaScriptInit(void){
             "import pika_lvgl as lv\n"
             "import PikaStdLib\n"
             "mem = PikaStdLib.MemChecker()\n"
-            "def event_cb_1(evt):\n"
-            "    print('in evt1')\n"
-            "    print('mem used now: %0.2f kB' % (mem.getNow()))\n"
-            "def event_cb_2(evt):\n"
-            "    print('in evt2')\n"
-            "    print('mem used now: %0.2f kB' % (mem.getNow()))\n"
-            "btn1 = lv.btn(lv.scr_act())\n"
-            "btn1.align(lv.ALIGN.TOP_MID, 0, 10)\n"
-            "btn2 = lv.btn(lv.scr_act())\n"
-            "btn2.align(lv.ALIGN.TOP_MID, 0, 50)\n"
-            "btn1.add_event_cb(event_cb_1, lv.EVENT.CLICKED, 0)\n"
-            "btn2.add_event_cb(event_cb_2, lv.EVENT.CLICKED, 0)\n"
+            "cb = lv.checkbox(lv.scr_act())\n"
+            "cb.set_text(\"Apple\")\n"
+            "cb.align(lv.ALIGN.TOP_LEFT, 0 ,0)\n"
+            "cb = lv.checkbox(lv.scr_act())\n"
+            "cb.set_text(\"Banana\")\n"
+            "cb.add_state(lv.STATE.CHECKED)\n"
+            "cb.align(lv.ALIGN.TOP_LEFT, 0 ,30)\n"
+            "cb = lv.checkbox(lv.scr_act())\n"
+            "cb.set_text(\"Lemon\")\n"
+            "cb.add_state(lv.STATE.DISABLED)\n"
+            "cb.align(lv.ALIGN.TOP_LEFT, 0 ,60)\n"
+            "cb = lv.checkbox(lv.scr_act())\n"
+            "cb.add_state(lv.STATE.CHECKED | lv.STATE.DISABLED)\n"
+            "cb.set_text(\"Melon\")\n"
+            "cb.align(lv.ALIGN.TOP_LEFT, 0 ,90)\n"
             "print('mem used max: %0.2f kB' % (mem.getMax()))\n"
             "print('mem used now: %0.2f kB' % (mem.getNow()))\n"
             "\n");
