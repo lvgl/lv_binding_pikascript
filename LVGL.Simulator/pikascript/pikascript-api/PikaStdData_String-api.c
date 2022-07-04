@@ -23,6 +23,11 @@ void PikaStdData_String___iter__Method(PikaObj *self, Args *args){
     method_returnArg(args, res);
 }
 
+void PikaStdData_String___len__Method(PikaObj *self, Args *args){
+    int res = PikaStdData_String___len__(self);
+    method_returnInt(args, res);
+}
+
 void PikaStdData_String___next__Method(PikaObj *self, Args *args){
     Arg* res = PikaStdData_String___next__(self);
     method_returnArg(args, res);
@@ -97,6 +102,7 @@ PikaObj *New_PikaStdData_String(Args *args){
     class_defineMethod(self, "__get__(__key:any)->any", PikaStdData_String___get__Method);
     class_defineMethod(self, "__init__(s:str)", PikaStdData_String___init__Method);
     class_defineMethod(self, "__iter__()->any", PikaStdData_String___iter__Method);
+    class_defineMethod(self, "__len__()->int", PikaStdData_String___len__Method);
     class_defineMethod(self, "__next__()->any", PikaStdData_String___next__Method);
     class_defineMethod(self, "__set__(__key:any,__val:any)", PikaStdData_String___set__Method);
     class_defineMethod(self, "__str__()->str", PikaStdData_String___str__Method);

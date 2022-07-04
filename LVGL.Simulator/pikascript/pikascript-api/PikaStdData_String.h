@@ -12,6 +12,7 @@ PikaObj *New_PikaStdData_String(Args *args);
 Arg* PikaStdData_String___get__(PikaObj *self, Arg* __key);
 void PikaStdData_String___init__(PikaObj *self, char* s);
 Arg* PikaStdData_String___iter__(PikaObj *self);
+int PikaStdData_String___len__(PikaObj *self);
 Arg* PikaStdData_String___next__(PikaObj *self);
 void PikaStdData_String___set__(PikaObj *self, Arg* __key, Arg* __val);
 char* PikaStdData_String___str__(PikaObj *self);

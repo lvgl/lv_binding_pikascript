@@ -79,6 +79,9 @@ PIKA_RES args_setStr(Args* self, char* name, char* strIn) {
     PIKA_RES errCode = PIKA_RES_OK;
     Arg* argNew = New_arg(NULL);
     argNew = arg_setStr(argNew, name, strIn);
+    if(NULL == argNew){
+        return PIKA_RES_ERR_INVALID_PTR;
+    }
     args_setArg(self, argNew);
     return errCode;
 }
@@ -172,7 +175,7 @@ ArgType args_getType(Args* self, char* name) {
     Arg* arg = NULL;
     arg = args_getArg(self, name);
     if (NULL == arg) {
-        return ARG_TYPE_NULL;
+        return ARG_TYPE_NONE;
     }
     return arg_getType(arg);
 }
@@ -402,7 +405,7 @@ char* getPrintStringFromPtr(Args* self, char* name, void* val) {
     Args buffs = {0};
     char* res = NULL;
     uint64_t intVal = (uintptr_t)val;
-    char* valString = strsFormat(&buffs, 32, "0x%llx", intVal);
+    char* valString = strsFormat(&buffs, 32, "%p", intVal);
     res = getPrintSring(self, name, valString);
     strsDeinit(&buffs);
     return res;
@@ -435,7 +438,8 @@ char* args_print(Args* self, char* name) {
         goto exit;
     }
 
-    if (argType_isObject(type)) {
+    if (argType_isObject(type) || ARG_TYPE_POINTER == type ||
+        ARG_TYPE_METHOD_NATIVE_CONSTRUCTOR) {
         void* val = args_getPtr(self, name);
         res = getPrintStringFromPtr(self, name, val);
         goto exit;

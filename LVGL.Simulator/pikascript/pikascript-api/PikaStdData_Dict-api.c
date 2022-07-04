@@ -26,6 +26,11 @@ void PikaStdData_Dict___iter__Method(PikaObj *self, Args *args){
     method_returnArg(args, res);
 }
 
+void PikaStdData_Dict___len__Method(PikaObj *self, Args *args){
+    int res = PikaStdData_Dict___len__(self);
+    method_returnInt(args, res);
+}
+
 void PikaStdData_Dict___next__Method(PikaObj *self, Args *args){
     Arg* res = PikaStdData_Dict___next__(self);
     method_returnArg(args, res);
@@ -37,10 +42,20 @@ void PikaStdData_Dict___set__Method(PikaObj *self, Args *args){
     PikaStdData_Dict___set__(self, __key, __val);
 }
 
+void PikaStdData_Dict___str__Method(PikaObj *self, Args *args){
+    char* res = PikaStdData_Dict___str__(self);
+    method_returnStr(args, res);
+}
+
 void PikaStdData_Dict_getMethod(PikaObj *self, Args *args){
     char* key = args_getStr(args, "key");
     Arg* res = PikaStdData_Dict_get(self, key);
     method_returnArg(args, res);
+}
+
+void PikaStdData_Dict_keysMethod(PikaObj *self, Args *args){
+    PikaObj* res = PikaStdData_Dict_keys(self);
+    method_returnObj(args, res);
 }
 
 void PikaStdData_Dict_removeMethod(PikaObj *self, Args *args){
@@ -60,9 +75,12 @@ PikaObj *New_PikaStdData_Dict(Args *args){
     class_defineMethod(self, "__get__(__key:any)->any", PikaStdData_Dict___get__Method);
     class_defineMethod(self, "__init__()", PikaStdData_Dict___init__Method);
     class_defineMethod(self, "__iter__()->any", PikaStdData_Dict___iter__Method);
+    class_defineMethod(self, "__len__()->int", PikaStdData_Dict___len__Method);
     class_defineMethod(self, "__next__()->any", PikaStdData_Dict___next__Method);
     class_defineMethod(self, "__set__(__key:any,__val:any)", PikaStdData_Dict___set__Method);
+    class_defineMethod(self, "__str__()->str", PikaStdData_Dict___str__Method);
     class_defineMethod(self, "get(key:str)->any", PikaStdData_Dict_getMethod);
+    class_defineMethod(self, "keys()->dict_keys", PikaStdData_Dict_keysMethod);
     class_defineMethod(self, "remove(key:str)", PikaStdData_Dict_removeMethod);
     class_defineMethod(self, "set(key:str,arg:any)", PikaStdData_Dict_setMethod);
     return self;

@@ -40,7 +40,8 @@ static VMParameters* __pikaVM_runByteCodeFrameWithState(
     VMParameters* locals,
     VMParameters* globals,
     ByteCodeFrame* bytecode_frame,
-    uint16_t pc);
+    uint16_t pc,
+    TryInfo* try_info);
 
 /* head declear end */
 
@@ -71,7 +72,7 @@ static char* VMState_getConstWithInstructUnit(VMState* vs,
                                  instructUnit_getConstPoolIndex(ins_unit));
 }
 
-static int32_t VMState_getAddrOffsetOfJUM(VMState* vs) {
+static int32_t VMState_getAddrOffsetOfJmpBack(VMState* vs) {
     int offset = 0;
     InstructUnit* ins_unit_now = VMState_getInstructNow(vs);
     while (1) {
@@ -138,14 +139,27 @@ static int32_t VMState_getAddrOffsetFromJmp(VMState* vs) {
 }
 
 static int32_t VMState_getAddrOffsetOfBreak(VMState* vs) {
-    int32_t offset = VMState_getAddrOffsetOfJUM(vs);
+    int32_t offset = VMState_getAddrOffsetOfJmpBack(vs);
     /* byteCode */
     offset += instructUnit_getSize();
     return offset;
 }
 
+static int32_t VMState_getAddrOffsetOfRaise(VMState* vs) {
+    int offset = 0;
+    InstructUnit* ins_unit_now = VMState_getInstructNow(vs);
+    while (1) {
+        offset += instructUnit_getSize(ins_unit_now);
+        ins_unit_now = VMState_getInstructWithOffset(vs, offset);
+        enum Instruct ins = instructUnit_getInstruct(ins_unit_now);
+        if ((NTR == ins)) {
+            return offset;
+        }
+    }
+}
+
 static int32_t VMState_getAddrOffsetOfContinue(VMState* vs) {
-    int32_t offset = VMState_getAddrOffsetOfJUM(vs);
+    int32_t offset = VMState_getAddrOffsetOfJmpBack(vs);
     /* byteCode */
     return offset;
 }
@@ -153,6 +167,17 @@ static int32_t VMState_getAddrOffsetOfContinue(VMState* vs) {
 typedef Arg* (*VM_instruct_handler)(PikaObj* self, VMState* vs, char* data);
 
 static Arg* VM_instruction_handler_NON(PikaObj* self, VMState* vs, char* data) {
+    return NULL;
+}
+
+static Arg* VM_instruction_handler_TRY(PikaObj* self, VMState* vs, char* data) {
+    assert(NULL != vs->try_info);
+    vs->try_info->try_state = TRY_STATE_TOP;
+    return NULL;
+}
+
+static Arg* VM_instruction_handler_NTR(PikaObj* self, VMState* vs, char* data) {
+    vs->try_info->try_state = TRY_STATE_NONE;
     return NULL;
 }
 
@@ -171,6 +196,12 @@ static Arg* VM_instruction_handler_REF(PikaObj* self, VMState* vs, char* data) {
     if (strEqu(data, (char*)"False")) {
         return arg_setInt(NULL, "", 0);
     }
+    if (strEqu(data, (char*)"None")) {
+        return arg_setNull(NULL);
+    }
+    if (strEqu(data, (char*)"RuntimeError")) {
+        return arg_setInt(NULL, "", PIKA_RES_ERR_RUNTIME_ERROR);
+    }
     /* find in local list first */
     Arg* arg = arg_copy(obj_getArg(vs->locals, data));
     if (NULL == arg) {
@@ -178,10 +209,16 @@ static Arg* VM_instruction_handler_REF(PikaObj* self, VMState* vs, char* data) {
         arg = arg_copy(obj_getArg(vs->globals, data));
     }
     if (NULL == arg) {
-        VMState_setErrorCode(vs, 1);
+        VMState_setErrorCode(vs, PIKA_RES_ERR_ARG_NO_FOUND);
         __platform_printf("NameError: name '%s' is not defined\r\n", data);
     }
     return arg;
+}
+
+static Arg* VM_instruction_handler_GER(PikaObj* self, VMState* vs, char* data) {
+    PIKA_RES err = (PIKA_RES)vs->try_error_code;
+    Arg* err_arg = arg_setInt(NULL, "", err);
+    return err_arg;
 }
 
 static int32_t __foreach_handler_deinitTuple(Arg* argEach, Args* context) {
@@ -192,16 +229,18 @@ static int32_t __foreach_handler_deinitTuple(Arg* argEach, Args* context) {
     return PIKA_RES_OK;
 }
 
-Arg* obj_runMethodArg(PikaObj* self,
-                      PikaObj* method_args_obj,
-                      Arg* method_arg) {
+Arg* __obj_runMethodArgWithState(PikaObj* self,
+                                 PikaObj* method_args_obj,
+                                 Arg* method_arg,
+                                 TryInfo* try_state) {
+    assert(NULL != try_state);
     Arg* return_arg = NULL;
     /* get method Ptr */
     Method method_ptr = methodArg_getPtr(method_arg);
     /* get method type list */
     ArgType method_type = arg_getType(method_arg);
     /* error */
-    if (ARG_TYPE_VOID == method_type) {
+    if (ARG_TYPE_NONE == method_type) {
         return NULL;
     }
     ByteCodeFrame* method_bytecodeFrame =
@@ -210,7 +249,7 @@ Arg* obj_runMethodArg(PikaObj* self,
     if (NULL != method_context) {
         self = method_context;
     }
-    obj_setErrorCode(self, 0);
+    obj_setErrorCode(self, PIKA_RES_OK);
 
     /* run method */
     if (method_type == ARG_TYPE_METHOD_NATIVE) {
@@ -232,7 +271,7 @@ Arg* obj_runMethodArg(PikaObj* self,
             &(method_bytecodeFrame->instruct_array), 0);
         uint16_t pc = (uintptr_t)method_ptr - insturctArray_start;
         method_args_obj = __pikaVM_runByteCodeFrameWithState(
-            self, method_args_obj, self, method_bytecodeFrame, pc);
+            self, method_args_obj, self, method_bytecodeFrame, pc, try_state);
 
         /* get method return */
         return_arg =
@@ -240,6 +279,17 @@ Arg* obj_runMethodArg(PikaObj* self,
     }
     args_foreach(method_args_obj->list, __foreach_handler_deinitTuple, NULL);
     return return_arg;
+}
+
+Arg* obj_runMethodArg(PikaObj* self,
+                      PikaObj* method_args_obj,
+                      Arg* method_arg) {
+    TryInfo try_info = {
+			.try_state = TRY_STATE_NONE,
+			.try_result = TRY_RESULT_NONE
+		};
+    return __obj_runMethodArgWithState(self, method_args_obj, method_arg,
+                                       &try_info);
 }
 
 static int VMState_loadArgsFromMethodArg(VMState* vs,
@@ -253,13 +303,19 @@ static int VMState_loadArgsFromMethodArg(VMState* vs,
     PIKA_BOOL is_variable = PIKA_FALSE;
     PIKA_BOOL is_get_variable_arg = PIKA_FALSE;
     uint8_t arg_num = 0;
-
+		ArgType method_type = ARG_TYPE_UNDEF;
+    uint8_t arg_num_input = 0;
+    PikaTuple* tuple = NULL;
+    char* variable_tuple_name = NULL;
+		char* type_list_buff = NULL;
+    int variable_arg_start = 0;
+		
     /* get method type list */
     char* type_list = methodArg_getTypeList(method_arg, &buffs);
     if (NULL == type_list) {
         goto exit;
     }
-    ArgType method_type = arg_getType(method_arg);
+    method_type = arg_getType(method_arg);
 
     /* check variable */
     if (strIsContain(type_list, '*')) {
@@ -276,7 +332,7 @@ static int VMState_loadArgsFromMethodArg(VMState* vs,
         /* delete the 'self' */
         arg_num_dec--;
     }
-    uint8_t arg_num_input = VMState_getInputArgNum(vs);
+    arg_num_input = VMState_getInputArgNum(vs);
 
     /* check arg num */
     if (method_type == ARG_TYPE_METHOD_NATIVE_CONSTRUCTOR ||
@@ -287,7 +343,7 @@ static int VMState_loadArgsFromMethodArg(VMState* vs,
     } else {
         /* check arg num decleard and input */
         if (arg_num_dec != arg_num_input - arg_num_used) {
-            VMState_setErrorCode(vs, 3);
+            VMState_setErrorCode(vs, PIKA_RES_ERR_INVALID_PARAM);
             __platform_printf(
                 "TypeError: %s() takes %d positional argument but %d were "
                 "given\r\n",
@@ -302,12 +358,10 @@ static int VMState_loadArgsFromMethodArg(VMState* vs,
         arg_num = arg_num_dec;
     }
 
-    PikaTuple* tuple = NULL;
-    char* variable_tuple_name = NULL;
 
     /* get variable tuple name */
-    char* type_list_buff = strsCopy(&buffs, type_list);
-    int variable_arg_start = 0;
+    type_list_buff = strsCopy(&buffs, type_list);
+    variable_arg_start = 0;
     for (int i = 0; i < arg_num_dec; i++) {
         char* arg_def = strPopLastToken(type_list_buff, ',');
         if (strIsStartWith(arg_def, "*")) {
@@ -383,6 +437,7 @@ void PikaStdData_List_append(PikaObj* self, Arg* arg);
 void PikaStdData_List___init__(PikaObj* self);
 PikaObj* New_PikaStdData_List(Args* args);
 #endif
+
 static Arg* VM_instruction_handler_LST(PikaObj* self, VMState* vs, char* data) {
 #if PIKA_BUILTIN_LIST_ENABLE
     uint8_t arg_num = VMState_getInputArgNum(vs);
@@ -407,6 +462,38 @@ static Arg* VM_instruction_handler_LST(PikaObj* self, VMState* vs, char* data) {
 #endif
 }
 
+#if PIKA_BUILTIN_DICT_ENABLE
+void PikaStdData_Dict_set(PikaObj* self, Arg* arg, char* key);
+void PikaStdData_Dict___init__(PikaObj* self);
+PikaObj* New_PikaStdData_Dict(Args* args);
+#endif
+
+static Arg* VM_instruction_handler_DCT(PikaObj* self, VMState* vs, char* data) {
+#if PIKA_BUILTIN_DICT_ENABLE
+    uint8_t arg_num = VMState_getInputArgNum(vs);
+    PikaObj* dict = newNormalObj(New_PikaStdData_Dict);
+    PikaStdData_Dict___init__(dict);
+    Stack stack = {0};
+    stack_init(&stack);
+    /* load to local stack to change sort */
+    for (int i = 0; i < arg_num; i++) {
+        Arg* arg = stack_popArg(&(vs->stack));
+        stack_pushArg(&stack, arg);
+    }
+    for (int i = 0; i < arg_num / 2; i++) {
+        Arg* key_arg = stack_popArg(&stack);
+        Arg* val_arg = stack_popArg(&stack);
+        PikaStdData_Dict_set(dict, val_arg, arg_getStr(key_arg));
+        arg_deinit(key_arg);
+        arg_deinit(val_arg);
+    }
+    stack_deinit(&stack);
+    return arg_setPtr(NULL, "", ARG_TYPE_OBJECT, dict);
+#else
+    return VM_instruction_handler_NON(self, vs, data);
+#endif
+}
+
 static Arg* VM_instruction_handler_RUN(PikaObj* self, VMState* vs, char* data) {
     Args buffs = {0};
     Arg* return_arg = NULL;
@@ -416,6 +503,15 @@ static Arg* VM_instruction_handler_RUN(PikaObj* self, VMState* vs, char* data) {
     Arg* method_arg = NULL;
     char* sys_out;
     int arg_num_used = 0;
+    TryInfo sub_try_info = {
+			.try_state = TRY_STATE_NONE,
+			.try_result = TRY_RESULT_NONE
+		};
+    assert(NULL != vs->try_info);
+    if (vs->try_info->try_state == TRY_STATE_TOP ||
+        vs->try_error_code == TRY_STATE_INNER) {
+        sub_try_info.try_state = TRY_STATE_INNER;
+    }
     /* return arg directly */
     if (strEqu(data, "")) {
         return_arg = stack_popArg(&(vs->stack));
@@ -435,7 +531,7 @@ static Arg* VM_instruction_handler_RUN(PikaObj* self, VMState* vs, char* data) {
     }
     if (NULL == method_host_obj) {
         /* error, not found object */
-        VMState_setErrorCode(vs, 1);
+        VMState_setErrorCode(vs, PIKA_RES_ERR_ARG_NO_FOUND);
         __platform_printf("Error: method '%s' no found.\r\n", data);
         goto exit;
     }
@@ -446,9 +542,9 @@ static Arg* VM_instruction_handler_RUN(PikaObj* self, VMState* vs, char* data) {
         method_arg = obj_getMethodArg(vs->globals, methodPath);
     }
     /* assert method*/
-    if (NULL == method_arg || ARG_TYPE_VOID == arg_getType(method_arg)) {
+    if (NULL == method_arg || ARG_TYPE_NONE == arg_getType(method_arg)) {
         /* error, method no found */
-        VMState_setErrorCode(vs, 2);
+        VMState_setErrorCode(vs, PIKA_RES_ERR_ARG_NO_FOUND);
         __platform_printf("NameError: name '%s' is not defined\r\n", data);
         goto exit;
     }
@@ -464,7 +560,8 @@ static Arg* VM_instruction_handler_RUN(PikaObj* self, VMState* vs, char* data) {
     }
 
     /* run method arg */
-    return_arg = obj_runMethodArg(method_host_obj, sub_locals, method_arg);
+    return_arg = __obj_runMethodArgWithState(method_host_obj, sub_locals,
+                                             method_arg, &sub_try_info);
 
     /* __init__() */
     if (ARG_TYPE_OBJECT_NEW == arg_getType(return_arg)) {
@@ -483,7 +580,8 @@ static Arg* VM_instruction_handler_RUN(PikaObj* self, VMState* vs, char* data) {
         if (vs->error_code != 0) {
             goto init_exit;
         }
-        return_arg_init = obj_runMethodArg(new_obj, sub_locals, method_arg);
+        return_arg_init = __obj_runMethodArgWithState(
+            new_obj, sub_locals, method_arg, &sub_try_info);
     init_exit:
         if (NULL != return_arg_init) {
             arg_deinit(return_arg_init);
@@ -500,7 +598,14 @@ static Arg* VM_instruction_handler_RUN(PikaObj* self, VMState* vs, char* data) {
     /* transfer errCode */
     if (0 != obj_getErrorCode(method_host_obj)) {
         /* method error */
-        VMState_setErrorCode(vs, 6);
+        VMState_setErrorCode(vs, PIKA_RES_ERR_RUNTIME_ERROR);
+    }
+
+    /* check try result */
+    if (sub_try_info.try_result == TRY_RESULT_RAISE) {
+        /* try error */
+        VMState_setErrorCode(vs, PIKA_RES_ERR_RUNTIME_ERROR);
+        vs->jmp = VM_JMP_RAISE;
     }
 
     goto exit;
@@ -640,6 +745,11 @@ static Arg* VM_instruction_handler_JMP(PikaObj* self, VMState* vs, char* data) {
     return NULL;
 }
 
+static Arg* VM_instruction_handler_SER(PikaObj* self, VMState* vs, char* data) {
+    vs->try_error_code = fast_atoi(data);
+    return NULL;
+}
+
 static Arg* VM_instruction_handler_JEZ(PikaObj* self, VMState* vs, char* data) {
     int thisBlockDeepth;
     thisBlockDeepth = VMState_getBlockDeepthNow(vs);
@@ -765,7 +875,7 @@ static Arg* VM_instruction_handler_OPT(PikaObj* self, VMState* vs, char* data) {
     }
     if (strEqu("/", data)) {
         if (0 == num2_f) {
-            VMState_setErrorCode(vs, 1);
+            VMState_setErrorCode(vs, PIKA_RES_ERR_OPERATION_FAILED);
             args_setSysOut(vs->locals->list,
                            "ZeroDivisionError: division by zero");
             outArg = NULL;
@@ -800,6 +910,10 @@ static Arg* VM_instruction_handler_OPT(PikaObj* self, VMState* vs, char* data) {
     }
     if (strEqu("==", data) || strEqu("!=", data)) {
         int8_t is_equ = -1;
+        if (type_arg1 == ARG_TYPE_NONE && type_arg2 == ARG_TYPE_NONE) {
+            is_equ = 1;
+            goto EQU_exit;
+        }
         /* type not equl, and type is not int or float */
         if (type_arg1 != type_arg2) {
             if ((type_arg1 != ARG_TYPE_FLOAT) && (type_arg1 != ARG_TYPE_INT)) {
@@ -955,9 +1069,24 @@ static Arg* VM_instruction_handler_CLS(PikaObj* self, VMState* vs, char* data) {
 
 static Arg* VM_instruction_handler_RET(PikaObj* self, VMState* vs, char* data) {
     /* exit jmp signal */
-    vs->jmp = -999;
+    vs->jmp = VM_JMP_EXIT;
     Arg* return_arg = stack_popArg(&(vs->stack));
     method_returnArg(vs->locals->list, return_arg);
+    return NULL;
+}
+
+static Arg* VM_instruction_handler_RIS(PikaObj* self, VMState* vs, char* data) {
+    Arg* err_arg = stack_popArg(&(vs->stack));
+    PIKA_RES err = (PIKA_RES) arg_getInt(err_arg);
+    VMState_setErrorCode(vs, err);
+    arg_deinit(err_arg);
+    /* raise jmp */
+    if (vs->try_info->try_state == TRY_STATE_TOP) {
+        vs->jmp = VM_JMP_RAISE;
+    } else if (vs->try_info->try_state == TRY_STATE_INNER) {
+        vs->try_info->try_result = TRY_RESULT_RAISE;
+        return VM_instruction_handler_RET(self, vs, data);
+    }
     return NULL;
 }
 
@@ -982,7 +1111,7 @@ static Arg* VM_instruction_handler_EST(PikaObj* self, VMState* vs, char* data) {
     if (arg == NULL) {
         return arg_setInt(NULL, "", 0);
     }
-    if (ARG_TYPE_NULL == arg_getType(arg)) {
+    if (ARG_TYPE_NONE == arg_getType(arg)) {
         return arg_setInt(NULL, "", 0);
     }
     return arg_setInt(NULL, "", 1);
@@ -990,13 +1119,13 @@ static Arg* VM_instruction_handler_EST(PikaObj* self, VMState* vs, char* data) {
 
 static Arg* VM_instruction_handler_BRK(PikaObj* self, VMState* vs, char* data) {
     /* break jmp signal */
-    vs->jmp = -998;
+    vs->jmp = VM_JMP_BREAK;
     return NULL;
 }
 
 static Arg* VM_instruction_handler_CTN(PikaObj* self, VMState* vs, char* data) {
     /* continue jmp signal */
-    vs->jmp = -997;
+    vs->jmp = VM_JMP_CONTINUE;
     return NULL;
 }
 
@@ -1036,7 +1165,7 @@ static Arg* VM_instruction_handler_IMP(PikaObj* self, VMState* vs, char* data) {
     if (0 == obj_importModule(self, data)) {
         return NULL;
     }
-    VMState_setErrorCode(vs, 3);
+    VMState_setErrorCode(vs, PIKA_RES_ERR_ARG_NO_FOUND);
     __platform_printf("ModuleNotFoundError: No module named '%s'\r\n", data);
     return NULL;
 }
@@ -1061,6 +1190,7 @@ static int pikaVM_runInstructUnit(PikaObj* self,
     int32_t pc_next = vs->pc + instructUnit_getSize();
     char* data = VMState_getConstWithInstructUnit(vs, ins_unit);
     /* run instruct */
+    assert(NULL != vs->try_info);
     return_arg = VM_instruct_handler_table[instruct](self, vs, data);
     if (NULL != return_arg) {
         stack_pushArg(&(vs->stack), return_arg);
@@ -1068,18 +1198,23 @@ static int pikaVM_runInstructUnit(PikaObj* self,
     goto nextLine;
 nextLine:
     /* exit */
-    if (-999 == vs->jmp) {
-        pc_next = -99999;
+    if (VM_JMP_EXIT == vs->jmp) {
+        pc_next = VM_PC_EXIT;
         goto exit;
     }
     /* break */
-    if (-998 == vs->jmp) {
+    if (VM_JMP_BREAK == vs->jmp) {
         pc_next = vs->pc + VMState_getAddrOffsetOfBreak(vs);
         goto exit;
     }
     /* continue */
-    if (-997 == vs->jmp) {
+    if (VM_JMP_CONTINUE == vs->jmp) {
         pc_next = vs->pc + VMState_getAddrOffsetOfContinue(vs);
+        goto exit;
+    }
+    /* raise */
+    if (VM_JMP_RAISE == vs->jmp) {
+        pc_next = vs->pc + VMState_getAddrOffsetOfRaise(vs);
         goto exit;
     }
     /* static jmp */
@@ -1094,7 +1229,7 @@ exit:
     vs->jmp = 0;
     /* reach the end */
     if (pc_next >= (int)VMState_getInstructArraySize(vs)) {
-        return -99999;
+        return VM_PC_EXIT;
     }
     return pc_next;
 }
@@ -1177,10 +1312,14 @@ exit:
     return globals;
 }
 
-VMParameters* pikaVM_runFile(PikaObj* self, char* filename) {
-    Arg* file_arg = arg_loadFile(NULL, filename);
-    char* lines = (char*)arg_getBytes(file_arg);
+VMParameters* pikaVM_runSingleFile(PikaObj* self, char* filename) {
     Args buffs = {0};
+    Arg* file_arg = arg_loadFile(NULL, filename);
+    assert(NULL != file_arg);
+    if (NULL == file_arg) {
+        return NULL;
+    }
+    char* lines = (char*)arg_getBytes(file_arg);
     /* replace the "\r\n" to "\n" */
     lines = strsReplace(&buffs, lines, "\r\n", "\n");
     /* clear the void line */
@@ -1484,7 +1623,7 @@ void VMState_solveUnusedStack(VMState* vs) {
     for (int i = 0; i < top; i++) {
         Arg* arg = stack_popArg(&(vs->stack));
         ArgType type = arg_getType(arg);
-        if (type == ARG_TYPE_VOID) {
+        if (type == ARG_TYPE_NONE) {
             arg_deinit(arg);
             continue;
         }
@@ -1493,10 +1632,9 @@ void VMState_solveUnusedStack(VMState* vs) {
             continue;
         }
         if (argType_isObject(type)) {
-            __platform_printf("<object at 0x%02x>\r\n",
-                              (uintptr_t)arg_getPtr(arg));
-        }
-        if (type == ARG_TYPE_INT) {
+            char* res = obj_toStr(arg_getPtr(arg));
+            __platform_printf("%s\r\n", res);
+        } else if (type == ARG_TYPE_INT) {
             __platform_printf("%d\r\n", (int)arg_getInt(arg));
         } else if (type == ARG_TYPE_FLOAT) {
             __platform_printf("%f\r\n", arg_getFloat(arg));
@@ -1504,6 +1642,9 @@ void VMState_solveUnusedStack(VMState* vs) {
             __platform_printf("%s\r\n", arg_getStr(arg));
         } else if (type == ARG_TYPE_BYTES) {
             arg_printBytes(arg);
+        } else if (ARG_TYPE_POINTER == type ||
+                   ARG_TYPE_METHOD_NATIVE_CONSTRUCTOR) {
+            __platform_printf("%p\r\n", arg_getPtr(arg));
         }
         arg_deinit(arg);
     }
@@ -1514,7 +1655,9 @@ static VMParameters* __pikaVM_runByteCodeFrameWithState(
     VMParameters* locals,
     VMParameters* globals,
     ByteCodeFrame* bytecode_frame,
-    uint16_t pc) {
+    uint16_t pc,
+    TryInfo* try_info) {
+    assert(NULL != try_info);
     int size = bytecode_frame->instruct_array.size;
     /* locals is the local scope */
     VMState vs = {
@@ -1523,12 +1666,14 @@ static VMParameters* __pikaVM_runByteCodeFrameWithState(
         .globals = globals,
         .jmp = 0,
         .pc = pc,
-        .error_code = 0,
-        .line_error_code = 0,
+        .error_code = PIKA_RES_OK,
+        .line_error_code = PIKA_RES_OK,
+        .try_error_code = PIKA_RES_OK,
+        .try_info = try_info,
     };
     stack_init(&(vs.stack));
     while (vs.pc < size) {
-        if (vs.pc == -99999) {
+        if (vs.pc == VM_PC_EXIT) {
             break;
         }
         InstructUnit* this_ins_unit = VMState_getInstructNow(&vs);
@@ -1549,18 +1694,23 @@ static VMParameters* __pikaVM_runByteCodeFrameWithState(
                 }
                 head_ins_unit--;
             }
+            if (vs.try_info->try_state) {
+                vs.try_error_code = vs.error_code;
+            }
             /* print inses of a line */
-            while (1) {
-                if (head_ins_unit != this_ins_unit) {
-                    __platform_printf("   ");
-                } else {
-                    __platform_printf(" -> ");
-                }
-                instructUnit_printWithConst(head_ins_unit,
-                                            &(bytecode_frame->const_pool));
-                head_ins_unit++;
-                if (head_ins_unit > this_ins_unit) {
-                    break;
+            if (!vs.try_info->try_state) {
+                while (1) {
+                    if (head_ins_unit != this_ins_unit) {
+                        __platform_printf("   ");
+                    } else {
+                        __platform_printf(" -> ");
+                    }
+                    instructUnit_printWithConst(head_ins_unit,
+                                                &(bytecode_frame->const_pool));
+                    head_ins_unit++;
+                    if (head_ins_unit > this_ins_unit) {
+                        break;
+                    }
                 }
             }
             __platform_error_handle();
@@ -1574,8 +1724,13 @@ static VMParameters* __pikaVM_runByteCodeFrameWithState(
 
 VMParameters* pikaVM_runByteCodeFrame(PikaObj* self,
                                       ByteCodeFrame* byteCode_frame) {
+    TryInfo try_info = {
+			.try_state = TRY_STATE_NONE,
+			.try_result = TRY_RESULT_NONE
+		};
+    try_info.try_state = TRY_STATE_NONE;
     return __pikaVM_runByteCodeFrameWithState(self, self, self, byteCode_frame,
-                                              0);
+                                              0, &try_info);
 }
 
 char* constPool_getByOffset(ConstPool* self, uint16_t offset) {
@@ -1626,4 +1781,23 @@ void byteCodeFrame_printAsArray(ByteCodeFrame* self) {
     constPool_printAsArray(&(self->const_pool));
     __platform_printf("};\n");
     __platform_printf("pikaVM_runByteCode(self, (uint8_t*)bytes);\n");
+}
+
+PikaObj* pikaVM_runFile(PikaObj* self, char* file_name) {
+    Args buffs = {0};
+    char* module_name = strsCopy(&buffs, file_name);
+    strPopLastToken(module_name, '.');
+
+    __platform_printf("(pikascript) pika compiler:\r\n");
+    PikaMaker* maker = New_PikaMaker();
+    pikaMaker_compileModuleWithDepends(maker, module_name);
+    pikaMaker_linkCompiledModules(maker, "pikaModules_cache.py.a");
+    obj_deinit(maker);
+    __platform_printf("(pikascript) all succeed.\r\n\r\n");
+
+    pikaMemMaxReset();
+    Obj_linkLibraryFile(self, "pikascript-api/pikaModules_cache.py.a");
+    self = pikaVM_runSingleFile(self, file_name);
+    strsDeinit(&buffs);
+    return self;
 }

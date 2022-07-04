@@ -68,6 +68,7 @@
     <ClInclude Include="pikascript\pikascript-api\pika_lvgl_OPA.h" />
     <ClInclude Include="pikascript\pikascript-api\pika_lvgl_PALETTE.h" />
     <ClInclude Include="pikascript\pikascript-api\pika_lvgl_STATE.h" />
+    <ClInclude Include="pikascript\pikascript-api\PikaStdData_dict_keys.h" />
   </ItemGroup>
   <ItemGroup>
     <Manifest Include="LVGL.Simulator.manifest" />
@@ -162,6 +163,7 @@
     <ClCompile Include="pikascript\pikascript-api\pika_lvgl_OPA-api.c" />
     <ClCompile Include="pikascript\pikascript-api\pika_lvgl_PALETTE-api.c" />
     <ClCompile Include="pikascript\pikascript-api\pika_lvgl_STATE-api.c" />
+    <ClCompile Include="pikascript\pikascript-api\PikaStdData_dict_keys-api.c" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="LVGL.Simulator.rc" />

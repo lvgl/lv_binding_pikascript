@@ -38,6 +38,32 @@ enum Instruct {
     __INSTRCUTION_CNT,
 };
 
+typedef enum {
+    VM_JMP_EXIT = -999,
+    VM_JMP_CONTINUE = -997,
+    VM_JMP_BREAK = -998,
+    VM_JMP_RAISE = -996,
+} VM_JMP;
+
+typedef enum { VM_PC_EXIT = -99999 } VM_PC;
+
+typedef enum {
+    TRY_STATE_NONE = 0,
+    TRY_STATE_TOP,
+    TRY_STATE_INNER,
+} TRY_STATE;
+
+typedef enum {
+    TRY_RESULT_NONE = 0,
+    TRY_RESULT_RAISE,
+} TRY_RESULT;
+
+typedef struct TryInfo TryInfo;
+struct TryInfo {
+    TRY_STATE try_state;
+    TRY_RESULT try_result;
+};
+
 typedef struct VMState VMState;
 struct VMState {
     VMParameters* locals;
@@ -48,6 +74,8 @@ struct VMState {
     ByteCodeFrame* bytecode_frame;
     uint8_t error_code;
     uint8_t line_error_code;
+    uint8_t try_error_code;
+    TryInfo* try_info;
 };
 
 VMParameters* pikaVM_run(PikaObj* self, char* pyLine);
@@ -131,7 +159,8 @@ void byteCodeFrame_init(ByteCodeFrame* self);
 VMParameters* pikaVM_runByteCode(PikaObj* self, uint8_t* bytecode);
 InstructUnit* instructArray_getNow(InstructArray* self);
 InstructUnit* instructArray_getNext(InstructArray* self);
-VMParameters* pikaVM_runFile(PikaObj* self, char* filename);
+VMParameters* pikaVM_runSingleFile(PikaObj* self, char* filename);
 Arg* obj_runMethodArg(PikaObj* self, PikaObj* method_args_obj, Arg* method_arg);
+PikaObj* pikaVM_runFile(PikaObj* self, char* file_name);
 
 #endif

@@ -183,6 +183,8 @@ static enum StmtType Lexer_matchStmtType(char* right) {
     char* rightWithoutSubStmt = __removeTokensBetween(&buffs, right, "(", ")");
     rightWithoutSubStmt =
         __removeTokensBetween(&buffs, rightWithoutSubStmt, "[", "]");
+    rightWithoutSubStmt =
+        __removeTokensBetween(&buffs, rightWithoutSubStmt, "{", "}");
 
     uint8_t is_get_operator = 0;
     uint8_t is_get_method = 0;
@@ -190,7 +192,8 @@ static enum StmtType Lexer_matchStmtType(char* right) {
     uint8_t is_get_bytes = 0;
     uint8_t is_get_number = 0;
     uint8_t is_get_symbol = 0;
-    uint8_t is_get_index = 0;
+    uint8_t is_get_list = 0;
+    uint8_t is_get_dict = 0;
     uint8_t is_get_import = 0;
     ParserState_forEachToken(ps, rightWithoutSubStmt) {
         ParserState_iterStart(&ps);
@@ -200,7 +203,11 @@ static enum StmtType Lexer_matchStmtType(char* right) {
             goto iter_continue;
         }
         if (strEqu(ps.token1.pyload, "[")) {
-            is_get_index = 1;
+            is_get_list = 1;
+            goto iter_continue;
+        }
+        if (strEqu(ps.token1.pyload, "{")) {
+            is_get_dict = 1;
             goto iter_continue;
         }
         if (ps.token1.type == TOKEN_operator) {
@@ -240,8 +247,12 @@ static enum StmtType Lexer_matchStmtType(char* right) {
         stmtType = STMT_operator;
         goto exit;
     }
-    if (is_get_index) {
+    if (is_get_list) {
         stmtType = STMT_list;
+        goto exit;
+    }
+    if (is_get_dict) {
+        stmtType = STMT_dict;
         goto exit;
     }
     if (is_get_method) {
@@ -467,7 +478,7 @@ char* Lexer_getTokens(Args* outBuffs, char* stmt) {
 
         /* match devider*/
         if (('(' == c0) || (')' == c0) || (',' == c0) || ('[' == c0) ||
-            (']' == c0) || (':' == c0)) {
+            (']' == c0) || (':' == c0) || ('{' == c0) || ('}' == c0)) {
             tokens_arg =
                 Lexer_setSymbel(tokens_arg, stmt, i, &symbol_start_index);
             char content[2] = {0};
@@ -549,6 +560,12 @@ char* Lexer_getTokens(Args* outBuffs, char* stmt) {
             tokens_arg = Lexer_setToken(tokens_arg, TOKEN_operator, content);
             continue;
         }
+
+        // not the string operator
+        if ((cn1 >= 'a' && cn1 <= 'z') || (cn1 >= 'A' && cn1 <= 'Z') ||
+            (cn1 >= '0' && cn1 <= '9') || cn1 == '_' || cn1 == '.') {
+            goto after_match_string_operator;
+        }
         /* not */
         if ('n' == c0) {
             if (('o' == c1) && ('t' == c2) && (' ' == c3)) {
@@ -603,6 +620,8 @@ char* Lexer_getTokens(Args* outBuffs, char* stmt) {
                 continue;
             }
         }
+    after_match_string_operator:
+
         /* skip spaces */
         if (' ' == c0) {
             /* not get symbal */
@@ -676,14 +695,41 @@ static const char operators[][9] = {
 
 char* Lexer_getOperator(Args* outBuffs, char* stmt) {
     Args buffs = {0};
-    char* tokens = Lexer_getTokens(&buffs, stmt);
     char* operator= NULL;
+    char* tokens = Lexer_getTokens(&buffs, stmt);
+
+    // use parse state foreach to get operator
     for (uint32_t i = 0; i < sizeof(operators) / 9; i++) {
-        if (Parser_isContainToken(tokens, TOKEN_operator,
-                                  (char*)operators[i])) {
-            operator= strsCopy(&buffs, (char*)operators[i]);
-        }
+        ParserState_forEachToken(ps, tokens) {
+            ParserState_iterStart(&ps);
+            // get operator
+            if (strEqu(ps.token2.pyload, (char*)operators[i])) {
+                // solve the iuuse of "~-1"
+                operator= strsCopy(&buffs, (char*)operators[i]);
+                ParserState_iterEnd(&ps);
+                break;
+            }
+            ParserState_iterEnd(&ps);
+        };
+        ParserState_deinit(&ps);
     }
+
+    /* solve the iuuse of "~-1" */
+    if (strEqu(operator, "-")) {
+        ParserState_forEachToken(ps, stmt) {
+            ParserState_iterStart(&ps);
+            if (strEqu(ps.token2.pyload, "-")) {
+                if (ps.token1.type == TOKEN_operator) {
+                    operator= strsCopy(&buffs, ps.token1.pyload);
+                    ParserState_iterEnd(&ps);
+                    break;
+                }
+            }
+            ParserState_iterEnd(&ps);
+        };
+        ParserState_deinit(&ps);
+    }
+
     /* match the last operator in equal level */
     if ((strEqu(operator, "+")) || (strEqu(operator, "-"))) {
         ParserState_forEachToken(ps, stmt) {
@@ -851,6 +897,7 @@ char* Parser_solveBranckets(Args* outBuffs,
     uint8_t is_in_brancket = 0;
     args_setStr(&buffs, "inner", "");
     uint8_t matched = 0;
+    char* right_res = NULL;
     /* exit when NULL */
     if (NULL == content) {
         arg_deinit(right_arg);
@@ -912,6 +959,7 @@ char* Parser_solveBranckets(Args* outBuffs,
             if (strEqu(mode, "right")) {
                 right_arg = arg_strAppend(right_arg, "__slice__(");
             } else if (strEqu(mode, "left")) {
+                /* obj = __set__(obj, key, val) */
                 right_arg = arg_strAppend(right_arg, "__set__(");
             }
             right_arg = arg_strAppend(right_arg, args_getStr(&buffs, "obj"));
@@ -929,12 +977,6 @@ char* Parser_solveBranckets(Args* outBuffs,
             if (strEqu(mode, "left")) {
                 right_arg = arg_strAppend(right_arg, ",");
                 right_arg = arg_strAppend(right_arg, stmt);
-                right_arg = arg_strAppend(right_arg,
-                                          ","
-                                          "'");
-                right_arg =
-                    arg_strAppend(right_arg, args_getStr(&buffs, "obj"));
-                right_arg = arg_strAppend(right_arg, "'");
             }
             right_arg = arg_strAppend(right_arg, ")");
             /* clean the inner */
@@ -955,12 +997,20 @@ char* Parser_solveBranckets(Args* outBuffs,
         ParserState_iterEnd(&ps);
     }
     ParserState_deinit(&ps);
+    if (strEqu(mode, "left")) {
+        for (size_t i = 0; i < strGetSize(content); i++) {
+            if (content[i] == '[') {
+                content[i] = '\0';
+                break;
+            }
+        }
+    }
 exit:
     /* clean and return */
-    content = strsCopy(outBuffs, arg_getStr(right_arg));
+    right_res = strsCopy(outBuffs, arg_getStr(right_arg));
     arg_deinit(right_arg);
     strsDeinit(&buffs);
-    return content;
+    return right_res;
 }
 #endif
 
@@ -1202,8 +1252,6 @@ AST* AST_parseStmt(AST* ast, char* stmt) {
     if (!strEqu(right_new, right)) {
         /* update new right */
         right = right_new;
-        /* cancel left */
-        isLeftExist = 0;
     }
 #endif
 
@@ -1252,6 +1300,46 @@ AST* AST_parseStmt(AST* ast, char* stmt) {
                 /* not in brankets */
                 if (strEqu(ps.token1.pyload, ",")) {
                     /* found "," push subStmt */
+                    queueObj_pushObj(ast, (char*)"stmt");
+                    subStmt_str = arg_getStr(subStmt);
+                    AST_parseStmt(queueObj_getCurrentObj(ast), subStmt_str);
+                    /* clear subStmt */
+                    arg_deinit(subStmt);
+                    subStmt = arg_setStr(NULL, "", "");
+                } else {
+                    /* not "," append subStmt */
+                    subStmt = arg_strAppend(subStmt, ps.token1.pyload);
+                    subStmt_str = arg_getStr(subStmt);
+                }
+            }
+            ParserState_iterEnd(&ps);
+        }
+        ParserState_deinit(&ps);
+        arg_deinit(subStmt);
+        goto exit;
+    }
+#endif
+
+#if PIKA_BUILTIN_DICT_ENABLE
+    /* solve list stmt */
+    if (STMT_dict == stmtType) {
+        obj_setStr(ast, (char*)"dict", "dict");
+        char* subStmts = strsCut(&buffs, right, '{', '}');
+        subStmts = strsAppend(&buffs, subStmts, ",");
+        Arg* subStmt = arg_setStr(NULL, "", "");
+        char* subStmt_str = NULL;
+        ParserState_forEachToken(ps, subStmts) {
+            ParserState_iterStart(&ps);
+            if (ps.branket_deepth > 0) {
+                /* in brankets */
+                /* append token to subStmt */
+                subStmt = arg_strAppend(subStmt, ps.token1.pyload);
+                subStmt_str = arg_getStr(subStmt);
+            } else {
+                /* not in brankets */
+                if (strEqu(ps.token1.pyload, ",") ||
+                    strEqu(ps.token1.pyload, ":")) {
+                    /* found "," or ":" push subStmt */
                     queueObj_pushObj(ast, (char*)"stmt");
                     subStmt_str = arg_getStr(subStmt);
                     AST_parseStmt(queueObj_getCurrentObj(ast), subStmt_str);
@@ -1501,9 +1589,6 @@ AST* AST_parseLine(char* line, Stack* block_stack) {
         char* arg_in = strsPopToken(list_buffs, line_buff, ' ');
         obj_setStr(ast, "arg_in", arg_in);
         strsPopToken(list_buffs, line_buff, ' ');
-        if (strIsStartWith(line_buff, "range(")) {
-            obj_setInt(ast, "isRange", 1);
-        }
         char* list_in = strsPopToken(list_buffs, line_buff, ':');
         list_in = strsAppend(list_buffs, "iter(", list_in);
         list_in = strsAppend(list_buffs, list_in, ")");
@@ -1529,6 +1614,33 @@ AST* AST_parseLine(char* line, Stack* block_stack) {
         }
         goto block_matched;
     }
+
+#if PIKA_SYNTEX_EXCEPTION_ENABLE
+    /* try */
+    if (strIsStartWith(line_start, "try")) {
+        if ((line_start[3] == ' ') || (line_start[3] == ':')) {
+            stmt = "";
+            obj_setStr(ast, "block", "try");
+            if (NULL != block_stack) {
+                stack_pushStr(block_stack, "try");
+            }
+        }
+        goto block_matched;
+    }
+
+    /* except */
+    if (strIsStartWith(line_start, "except")) {
+        if ((line_start[6] == ' ') || (line_start[6] == ':')) {
+            stmt = "";
+            obj_setStr(ast, "block", "except");
+            if (NULL != block_stack) {
+                stack_pushStr(block_stack, "except");
+            }
+        }
+        goto block_matched;
+    }
+#endif
+
     if (strEqu(line_start, "return")) {
         obj_setStr(ast, "return", "");
         stmt = "";
@@ -1541,6 +1653,25 @@ AST* AST_parseLine(char* line, Stack* block_stack) {
         obj_setStr(ast, "return", "");
         goto block_matched;
     }
+
+#if PIKA_SYNTEX_EXCEPTION_ENABLE
+    if (strEqu(line_start, "raise")) {
+        obj_setStr(ast, "raise", "");
+        stmt = "RuntimeError";
+        goto block_matched;
+    }
+    if (strIsStartWith(line_start, "raise ")) {
+        char* lineBuff = strsCopy(&buffs, line_start);
+        strsPopToken(&buffs, lineBuff, ' ');
+        stmt = lineBuff;
+        if (strEqu("", stmt)) {
+            stmt = "RuntimeError";
+        }
+        obj_setStr(ast, "raise", "");
+        goto block_matched;
+    }
+#endif
+
     if (strIsStartWith(line_start, "global ")) {
         stmt = "";
         char* global_list = line_start + 7;
@@ -1580,6 +1711,7 @@ exit:
     return ast;
 }
 
+#if PIKA_SYNTEX_IMPORT_EX_ENABLE
 static char* Parser_PreProcess_import(Args* buffs_p, char* line) {
     Args buffs = {0};
     char* line_out = line;
@@ -1622,7 +1754,9 @@ exit:
     strsDeinit(&buffs);
     return line_out;
 }
+#endif
 
+#if PIKA_SYNTEX_IMPORT_EX_ENABLE
 static char* Parser_PreProcess_from(Args* buffs_p, char* line) {
     Args buffs = {0};
     char* line_out = line;
@@ -1677,8 +1811,10 @@ exit:
     strsDeinit(&buffs);
     return line_out;
 }
+#endif
 
 static char* Parser_linePreProcess(Args* buffs_p, char* line) {
+    line = Parser_removeAnnotation(line);
     /* check syntex error */
     if (Lexer_isError(line)) {
         line = NULL;
@@ -1686,9 +1822,10 @@ static char* Parser_linePreProcess(Args* buffs_p, char* line) {
     }
     /* process EOL */
     line = strsDeleteChar(buffs_p, line, '\r');
-    line = Parser_removeAnnotation(line);
+#if PIKA_SYNTEX_IMPORT_EX_ENABLE
     line = Parser_PreProcess_import(buffs_p, line);
     line = Parser_PreProcess_from(buffs_p, line);
+#endif
 exit:
     return line;
 }
@@ -1901,6 +2038,7 @@ char* AST_appandPikaASM(AST* ast, AST* subAst, Args* outBuffs, char* pikaAsm) {
     }
     char* method = obj_getStr(subAst, "method");
     char* list = obj_getStr(subAst, "list");
+    char* dict = obj_getStr(subAst, "dict");
     char* operator= obj_getStr(subAst, "operator");
     char* ref = obj_getStr(subAst, "ref");
     char* left = obj_getStr(subAst, "left");
@@ -1909,6 +2047,10 @@ char* AST_appandPikaASM(AST* ast, AST* subAst, Args* outBuffs, char* pikaAsm) {
     char* num = obj_getStr(subAst, "num");
     char* import = obj_getStr(subAst, "import");
     char* buff = args_getBuff(&buffs, PIKA_SPRINTF_BUFF_SIZE);
+    if (NULL != dict) {
+        __platform_sprintf(buff, "%d DCT \n", deepth);
+        pikaAsm = strsAppend(&buffs, pikaAsm, buff);
+    }
     if (NULL != list) {
         __platform_sprintf(buff, "%d LST \n", deepth);
         pikaAsm = strsAppend(&buffs, pikaAsm, buff);
@@ -1995,6 +2137,20 @@ char* AST_toPikaASM(AST* ast, Args* outBuffs) {
                     ASM_addBlockDeepth(ast, outBuffs, pikaAsm, block_type_num);
                 pikaAsm = strsAppend(outBuffs, pikaAsm, (char*)"0 JMP -1\n");
             }
+#if PIKA_SYNTEX_EXCEPTION_ENABLE
+            /* goto the while start when exit while block */
+            if (strEqu(block_type, "try")) {
+                pikaAsm =
+                    ASM_addBlockDeepth(ast, outBuffs, pikaAsm, block_type_num);
+                pikaAsm = strsAppend(outBuffs, pikaAsm, (char*)"0 NTR \n");
+                pikaAsm = strsAppend(outBuffs, pikaAsm, (char*)"0 GER \n");
+                pikaAsm = strsAppend(outBuffs, pikaAsm, (char*)"0 JEZ 2\n");
+            }
+
+            if (strEqu(block_type, "except")) {
+                pikaAsm = strsAppend(outBuffs, pikaAsm, (char*)"0 SER 0\n");
+            }
+#endif
             /* goto the while start when exit while block */
             if (strEqu(block_type, "for")) {
                 pikaAsm =
@@ -2093,6 +2249,12 @@ char* AST_toPikaASM(AST* ast, Args* outBuffs) {
         pikaAsm = strsAppend(&buffs, pikaAsm, "0 NEL 1\n");
         goto exit;
     }
+#if PIKA_SYNTEX_EXCEPTION_ENABLE
+    if (strEqu(obj_getStr(ast, "block"), "try")) {
+        pikaAsm = strsAppend(&buffs, pikaAsm, "0 TRY \n");
+        goto exit;
+    }
+#endif
     if (strEqu(obj_getStr(ast, "block"), "elif")) {
         /* skip if __else is 0 */
         pikaAsm = strsAppend(&buffs, pikaAsm, "0 NEL 1\n");
@@ -2158,6 +2320,15 @@ char* AST_toPikaASM(AST* ast, Args* outBuffs) {
         is_block_matched = 1;
         goto exit;
     }
+#if PIKA_SYNTEX_EXCEPTION_ENABLE
+    if (obj_isArgExist(ast, "raise")) {
+        /* parse stmt ast */
+        pikaAsm = AST_appandPikaASM(ast, ast, &buffs, pikaAsm);
+        pikaAsm = strsAppend(&buffs, pikaAsm, "0 RIS \n");
+        is_block_matched = 1;
+        goto exit;
+    }
+#endif
     if (obj_isArgExist(ast, "global")) {
         /* parse stmt ast */
         pikaAsm = AST_appandPikaASM(ast, ast, &buffs, pikaAsm);
