@@ -12,9 +12,15 @@ void pika_lvgl_lv_event_get_codeMethod(PikaObj *self, Args *args){
     method_returnInt(args, res);
 }
 
+void pika_lvgl_lv_event_get_targetMethod(PikaObj *self, Args *args){
+    PikaObj* res = pika_lvgl_lv_event_get_target(self);
+    method_returnObj(args, res);
+}
+
 PikaObj *New_pika_lvgl_lv_event(Args *args){
     PikaObj *self = New_TinyObj(args);
     class_defineMethod(self, "get_code()->int", pika_lvgl_lv_event_get_codeMethod);
+    class_defineMethod(self, "get_target()->lv_obj", pika_lvgl_lv_event_get_targetMethod);
     return self;
 }
 

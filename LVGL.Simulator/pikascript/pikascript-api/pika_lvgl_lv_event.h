@@ -10,5 +10,6 @@
 PikaObj *New_pika_lvgl_lv_event(Args *args);
 
 int pika_lvgl_lv_event_get_code(PikaObj *self);
+PikaObj* pika_lvgl_lv_event_get_target(PikaObj *self);
 
 #endif

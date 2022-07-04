@@ -97,3 +97,18 @@ void pika_lvgl_lv_obj_add_style(PikaObj* self, int selector, PikaObj* style) {
     lv_state_t* lv_style = obj_getPtr(style, "lv_style");
     lv_obj_add_style(lv_obj, lv_style, selector);
 }
+
+int pika_lvgl_lv_obj_get_x(PikaObj *self){
+    lv_obj_t* lv_obj = obj_getPtr(self, "lv_obj");
+    return lv_obj_get_x(lv_obj);
+}
+
+int pika_lvgl_lv_obj_get_y(PikaObj *self){
+    lv_obj_t* lv_obj = obj_getPtr(self, "lv_obj");
+    return lv_obj_get_y(lv_obj);
+}
+
+void pika_lvgl_lv_obj_set_pos(PikaObj *self, int x, int y){
+    lv_obj_t* lv_obj = obj_getPtr(self, "lv_obj");
+    lv_obj_set_pos(lv_obj, x, y);
+}

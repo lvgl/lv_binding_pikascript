@@ -66,6 +66,16 @@ void pika_lvgl_dropdownMethod(PikaObj *self, Args *args){
     method_returnArg(args, res);
 }
 
+void pika_lvgl_indev_get_actMethod(PikaObj *self, Args *args){
+    PikaObj* res = pika_lvgl_indev_get_act(self);
+    method_returnObj(args, res);
+}
+
+void pika_lvgl_indev_tMethod(PikaObj *self, Args *args){
+    Arg* res = pika_lvgl_indev_t(self);
+    method_returnArg(args, res);
+}
+
 void pika_lvgl_labelMethod(PikaObj *self, Args *args){
     Arg* res = pika_lvgl_label(self);
     method_returnArg(args, res);
@@ -103,6 +113,11 @@ void pika_lvgl_palette_mainMethod(PikaObj *self, Args *args){
     int p = args_getInt(args, "p");
     PikaObj* res = pika_lvgl_palette_main(self, p);
     method_returnObj(args, res);
+}
+
+void pika_lvgl_point_tMethod(PikaObj *self, Args *args){
+    Arg* res = pika_lvgl_point_t(self);
+    method_returnArg(args, res);
 }
 
 void pika_lvgl_rollerMethod(PikaObj *self, Args *args){
@@ -154,6 +169,8 @@ PikaObj *New_pika_lvgl(Args *args){
     class_defineConstructor(self, "btn()->any", pika_lvgl_btnMethod);
     class_defineConstructor(self, "checkbox()->any", pika_lvgl_checkboxMethod);
     class_defineConstructor(self, "dropdown()->any", pika_lvgl_dropdownMethod);
+    class_defineMethod(self, "indev_get_act()->indev_t", pika_lvgl_indev_get_actMethod);
+    class_defineConstructor(self, "indev_t()->any", pika_lvgl_indev_tMethod);
     class_defineConstructor(self, "label()->any", pika_lvgl_labelMethod);
     class_defineConstructor(self, "lv_color_t()->any", pika_lvgl_lv_color_tMethod);
     class_defineConstructor(self, "lv_event()->any", pika_lvgl_lv_eventMethod);
@@ -161,6 +178,7 @@ PikaObj *New_pika_lvgl(Args *args){
     class_defineMethod(self, "obj(parent:lv_obj)->lv_obj", pika_lvgl_objMethod);
     class_defineMethod(self, "palette_lighten(p:int,lvl:int)->lv_color_t", pika_lvgl_palette_lightenMethod);
     class_defineMethod(self, "palette_main(p:int)->lv_color_t", pika_lvgl_palette_mainMethod);
+    class_defineConstructor(self, "point_t()->any", pika_lvgl_point_tMethod);
     class_defineConstructor(self, "roller()->any", pika_lvgl_rollerMethod);
     class_defineMethod(self, "scr_act()->lv_obj", pika_lvgl_scr_actMethod);
     class_defineConstructor(self, "slider()->any", pika_lvgl_sliderMethod);

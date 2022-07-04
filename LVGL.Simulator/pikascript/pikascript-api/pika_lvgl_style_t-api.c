@@ -45,6 +45,21 @@ void pika_lvgl_style_t_set_radiusMethod(PikaObj *self, Args *args){
     pika_lvgl_style_t_set_radius(self, radius);
 }
 
+void pika_lvgl_style_t_set_shadow_colorMethod(PikaObj *self, Args *args){
+    PikaObj* color = args_getPtr(args, "color");
+    pika_lvgl_style_t_set_shadow_color(self, color);
+}
+
+void pika_lvgl_style_t_set_shadow_spreadMethod(PikaObj *self, Args *args){
+    int s = args_getInt(args, "s");
+    pika_lvgl_style_t_set_shadow_spread(self, s);
+}
+
+void pika_lvgl_style_t_set_shadow_widthMethod(PikaObj *self, Args *args){
+    int w = args_getInt(args, "w");
+    pika_lvgl_style_t_set_shadow_width(self, w);
+}
+
 PikaObj *New_pika_lvgl_style_t(Args *args){
     PikaObj *self = New_TinyObj(args);
     class_defineMethod(self, "__init__()", pika_lvgl_style_t___init__Method);
@@ -55,6 +70,9 @@ PikaObj *New_pika_lvgl_style_t(Args *args){
     class_defineMethod(self, "set_outline_pad(pad:int)", pika_lvgl_style_t_set_outline_padMethod);
     class_defineMethod(self, "set_outline_width(w:int)", pika_lvgl_style_t_set_outline_widthMethod);
     class_defineMethod(self, "set_radius(radius:int)", pika_lvgl_style_t_set_radiusMethod);
+    class_defineMethod(self, "set_shadow_color(color:lv_color_t)", pika_lvgl_style_t_set_shadow_colorMethod);
+    class_defineMethod(self, "set_shadow_spread(s:int)", pika_lvgl_style_t_set_shadow_spreadMethod);
+    class_defineMethod(self, "set_shadow_width(w:int)", pika_lvgl_style_t_set_shadow_widthMethod);
     return self;
 }
 

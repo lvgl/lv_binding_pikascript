@@ -17,5 +17,8 @@ void pika_lvgl_style_t_set_outline_color(PikaObj *self, PikaObj* color);
 void pika_lvgl_style_t_set_outline_pad(PikaObj *self, int pad);
 void pika_lvgl_style_t_set_outline_width(PikaObj *self, int w);
 void pika_lvgl_style_t_set_radius(PikaObj *self, int radius);
+void pika_lvgl_style_t_set_shadow_color(PikaObj *self, PikaObj* color);
+void pika_lvgl_style_t_set_shadow_spread(PikaObj *self, int s);
+void pika_lvgl_style_t_set_shadow_width(PikaObj *self, int w);
 
 #endif
