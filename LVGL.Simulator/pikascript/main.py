@@ -1,30 +1,34 @@
 import pika_lvgl as lv
-from PikaStdLib import MemChecker
 
-mem = MemChecker()
+class ArcLoader():
+    def __init__(self):
+        self.a = 270
 
-def drag_event_handler(e):
+    def arc_loader_cb(self,tim,arc):
+        # print(tim,arc)
+        self.a += 5
 
-    obj = e.get_target()
+        arc.set_end_angle(self.a)
 
-    indev = lv.indev_get_act()
-
-    vect = lv.point_t()
-    indev.get_vect(vect)
-    x = obj.get_x() + vect.x
-    y = obj.get_y() + vect.y
-    obj.set_pos(x, y)
-    mem.now()
+        if self.a >= 270 + 360:
+            tim._del()
 
 
 #
-# Make an object dragable.
+# Create an arc which acts as a loader.
 #
 
-obj = lv.obj(lv.scr_act())
-obj.set_size(150, 100)
-obj.add_event_cb(drag_event_handler, lv.EVENT.PRESSING, None)
+# Create an Arc
+arc = lv.arc(lv.scr_act())
+arc.set_bg_angles(0, 360)
+arc.set_angles(270, 270)
+arc.center()
 
-label = lv.label(obj)
-label.set_text("Drag me")
-label.center()
+# create the loader
+arc_loader = ArcLoader()
+
+# Create an `lv_timer` to update the arc.
+
+timer = lv.timer_create_basic()
+timer.set_period(20)
+timer.set_cb(lambda src: arc_loader.arc_loader_cb(timer,arc))
