@@ -103,9 +103,9 @@ void pika_lvgl_objMethod(PikaObj *self, Args *args){
 }
 
 void pika_lvgl_palette_lightenMethod(PikaObj *self, Args *args){
-    int lvl = args_getInt(args, "lvl");
     int p = args_getInt(args, "p");
-    PikaObj* res = pika_lvgl_palette_lighten(self, lvl, p);
+    int lvl = args_getInt(args, "lvl");
+    PikaObj* res = pika_lvgl_palette_lighten(self, p, lvl);
     method_returnObj(args, res);
 }
 

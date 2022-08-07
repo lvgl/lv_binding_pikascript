@@ -13,9 +13,9 @@ void pika_lvgl_bar___init__Method(PikaObj *self, Args *args){
 }
 
 void pika_lvgl_bar_set_valueMethod(PikaObj *self, Args *args){
-    int anim = args_getInt(args, "anim");
     int value = args_getInt(args, "value");
-    pika_lvgl_bar_set_value(self, anim, value);
+    int anim = args_getInt(args, "anim");
+    pika_lvgl_bar_set_value(self, value, anim);
 }
 
 PikaObj *New_pika_lvgl_bar(Args *args){

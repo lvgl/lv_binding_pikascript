@@ -13,10 +13,10 @@ void pika_lvgl_table___init__Method(PikaObj *self, Args *args){
 }
 
 void pika_lvgl_table_set_cell_valueMethod(PikaObj *self, Args *args){
-    int col = args_getInt(args, "col");
     int row = args_getInt(args, "row");
+    int col = args_getInt(args, "col");
     char* txt = args_getStr(args, "txt");
-    pika_lvgl_table_set_cell_value(self, col, row, txt);
+    pika_lvgl_table_set_cell_value(self, row, col, txt);
 }
 
 PikaObj *New_pika_lvgl_table(Args *args){

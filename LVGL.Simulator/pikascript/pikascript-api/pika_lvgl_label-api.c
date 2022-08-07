@@ -23,9 +23,9 @@ void pika_lvgl_label_set_recolorMethod(PikaObj *self, Args *args){
 }
 
 void pika_lvgl_label_set_style_text_alignMethod(PikaObj *self, Args *args){
-    int selector = args_getInt(args, "selector");
     int value = args_getInt(args, "value");
-    pika_lvgl_label_set_style_text_align(self, selector, value);
+    int selector = args_getInt(args, "selector");
+    pika_lvgl_label_set_style_text_align(self, value, selector);
 }
 
 void pika_lvgl_label_set_textMethod(PikaObj *self, Args *args){

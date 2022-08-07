@@ -11,7 +11,7 @@ PikaObj *New_pika_lvgl_lv_obj(Args *args);
 
 void pika_lvgl_lv_obj_add_event_cb(PikaObj *self, Arg* event_cb, int filter, void* user_data);
 void pika_lvgl_lv_obj_add_state(PikaObj *self, int state);
-void pika_lvgl_lv_obj_add_style(PikaObj *self, int selector, PikaObj* style);
+void pika_lvgl_lv_obj_add_style(PikaObj *self, PikaObj* style, int selector);
 void pika_lvgl_lv_obj_align(PikaObj *self, int align, int x_ofs, int y_ofs);
 void pika_lvgl_lv_obj_center(PikaObj *self);
 int pika_lvgl_lv_obj_get_x(PikaObj *self);

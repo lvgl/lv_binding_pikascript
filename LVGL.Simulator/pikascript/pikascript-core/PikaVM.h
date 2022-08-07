@@ -72,11 +72,15 @@ struct VMState {
     int32_t jmp;
     int32_t pc;
     ByteCodeFrame* bytecode_frame;
+    uint8_t loop_deepth;
     uint8_t error_code;
     uint8_t line_error_code;
     uint8_t try_error_code;
+    PikaObj* lreg[PIKA_REGIST_SIZE];
+    PIKA_BOOL ireg[PIKA_REGIST_SIZE];
     TryInfo* try_info;
 };
+
 
 VMParameters* pikaVM_run(PikaObj* self, char* pyLine);
 VMParameters* pikaVM_runAsm(PikaObj* self, char* pikaAsm);
@@ -123,11 +127,15 @@ enum Instruct pikaVM_getInstructFromAsm(char* line);
 void constPool_init(ConstPool* self);
 void constPool_deinit(ConstPool* self);
 void constPool_append(ConstPool* self, char* content);
+
+#define constPool_getStart(self) ((self)->content_start)
+#define constPool_getLastOffset(self) ((self)->size)
+#define constPool_getByOffset(self, offset) \
+    (char*)((uintptr_t)constPool_getStart((self)) + (uintptr_t)(offset))
+
 char* constPool_getNow(ConstPool* self);
 char* constPool_getNext(ConstPool* self);
 char* constPool_getByIndex(ConstPool* self, uint16_t index);
-char* constPool_getByOffset(ConstPool* self, uint16_t offset);
-uint16_t constPool_getLastOffset(ConstPool* self);
 void constPool_print(ConstPool* self);
 
 void byteCodeFrame_init(ByteCodeFrame* bf);
@@ -146,6 +154,7 @@ InstructUnit* instructArray_getByOffset(InstructArray* self, int32_t offset);
 #define instructUnit_getSize(InstructUnit_p_self) ((size_t)sizeof(InstructUnit))
 #define instructArray_getSize(InsturctArry_p_self) \
     ((size_t)(InsturctArry_p_self)->size)
+#define instructArray_getStart(InsturctArry_p_self) ((self)->content_start)
 
 uint16_t constPool_getOffsetByData(ConstPool* self, char* data);
 void instructArray_printWithConst(InstructArray* self, ConstPool* const_pool);
@@ -162,5 +171,11 @@ InstructUnit* instructArray_getNext(InstructArray* self);
 VMParameters* pikaVM_runSingleFile(PikaObj* self, char* filename);
 Arg* obj_runMethodArg(PikaObj* self, PikaObj* method_args_obj, Arg* method_arg);
 PikaObj* pikaVM_runFile(PikaObj* self, char* file_name);
+Arg* __vm_slice(PikaObj* self, Arg* end, Arg* obj, Arg* start, int step);
+Arg* __vm_get(PikaObj* self, Arg* key, Arg* obj);
+void __vm_List_append(PikaObj* self, Arg* arg);
+void __vm_List___init__(PikaObj* self);
+void __vm_Dict_set(PikaObj* self, Arg* arg, char* key);
+void __vm_Dict___init__(PikaObj* self);
 
 #endif

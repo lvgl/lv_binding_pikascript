@@ -20,9 +20,9 @@ void pika_lvgl_lv_obj_add_stateMethod(PikaObj *self, Args *args){
 }
 
 void pika_lvgl_lv_obj_add_styleMethod(PikaObj *self, Args *args){
-    int selector = args_getInt(args, "selector");
     PikaObj* style = args_getPtr(args, "style");
-    pika_lvgl_lv_obj_add_style(self, selector, style);
+    int selector = args_getInt(args, "selector");
+    pika_lvgl_lv_obj_add_style(self, style, selector);
 }
 
 void pika_lvgl_lv_obj_alignMethod(PikaObj *self, Args *args){

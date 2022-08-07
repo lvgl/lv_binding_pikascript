@@ -13,9 +13,9 @@ void pika_lvgl_roller___init__Method(PikaObj *self, Args *args){
 }
 
 void pika_lvgl_roller_set_optionsMethod(PikaObj *self, Args *args){
-    int mode = args_getInt(args, "mode");
     char* options = args_getStr(args, "options");
-    pika_lvgl_roller_set_options(self, mode, options);
+    int mode = args_getInt(args, "mode");
+    pika_lvgl_roller_set_options(self, options, mode);
 }
 
 void pika_lvgl_roller_set_visible_row_countMethod(PikaObj *self, Args *args){

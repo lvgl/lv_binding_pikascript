@@ -11,20 +11,11 @@ Arg* PikaStdData_Dict_get(PikaObj* self, char* key) {
 }
 
 void PikaStdData_Dict___init__(PikaObj* self) {
-    PikaDict* dict = New_dict();
-    PikaDict* keys = New_dict();
-    obj_setPtr(self, "dict", dict);
-    obj_setPtr(self, "_keys", keys);
+    __vm_Dict___init__(self);
 }
 
-void PikaStdData_Dict_set(PikaObj* self, Arg* arg, char* key) {
-    PikaDict* dict = obj_getPtr(self, "dict");
-    PikaDict* keys = obj_getPtr(self, "_keys");
-    Arg* arg_key = arg_setStr(NULL, key, key);
-    Arg* arg_new = arg_copy(arg);
-    arg_setName(arg_new, key);
-    dict_setArg(dict, arg_new);
-    dict_setArg(keys, arg_key);
+void PikaStdData_Dict_set(PikaObj* self, char* key, Arg* arg) {
+    __vm_Dict_set(self, arg, key);
 }
 
 void PikaStdData_Dict_remove(PikaObj* self, char* key) {
@@ -36,26 +27,26 @@ void PikaStdData_Dict_remove(PikaObj* self, char* key) {
 
 Arg* PikaStdData_Dict___iter__(PikaObj* self) {
     obj_setInt(self, "__iter_i", 0);
-    return arg_setRef(NULL, "", self);
+    return arg_newRef(self);
 }
 
 Arg* PikaStdData_Dict___next__(PikaObj* self) {
     int __iter_i = args_getInt(self->list, "__iter_i");
-    PikaDict* dict = obj_getPtr(self, "dict");
-    Arg* res = arg_copy(args_getArgByidex(&dict->super, __iter_i));
+    PikaDict* keys = obj_getPtr(self, "_keys");
+    Arg* res = arg_copy(args_getArgByidex(&keys->super, __iter_i));
     if (NULL == res) {
-        return arg_setNull(NULL);
+        return arg_newNull();
     }
     args_setInt(self->list, "__iter_i", __iter_i + 1);
     return res;
 }
 
-void PikaStdData_Dict___set__(PikaObj* self, Arg* __key, Arg* __val) {
-    PikaStdData_Dict_set(self, obj_getArg(self, "__val"),
-                         obj_getStr(self, "__key"));
+void PikaStdData_Dict___setitem__(PikaObj* self, Arg* __key, Arg* __val) {
+    PikaStdData_Dict_set(self, obj_getStr(self, "__key"),
+                         obj_getArg(self, "__val"));
 }
 
-Arg* PikaStdData_Dict___get__(PikaObj* self, Arg* __key) {
+Arg* PikaStdData_Dict___getitem__(PikaObj* self, Arg* __key) {
     return PikaStdData_Dict_get(self, obj_getStr(self, "__key"));
 }
 
@@ -78,7 +69,7 @@ PikaObj* PikaStdData_Dict_keys(PikaObj* self) {
 
 Arg* PikaStdData_dict_keys___iter__(PikaObj* self) {
     obj_setInt(self, "__iter_i", 0);
-    return arg_setRef(NULL, "", self);
+    return arg_newRef(self);
 }
 
 Arg* PikaStdData_dict_keys___next__(PikaObj* self) {
@@ -87,7 +78,7 @@ Arg* PikaStdData_dict_keys___next__(PikaObj* self) {
     PikaDict* keys = obj_getPtr(dictptr, "_keys");
     Arg* res = arg_copy(args_getArgByidex(&keys->super, __iter_i));
     if (NULL == res) {
-        return arg_setNull(NULL);
+        return arg_newNull();
     }
     args_setInt(self->list, "__iter_i", __iter_i + 1);
     return res;
@@ -95,7 +86,7 @@ Arg* PikaStdData_dict_keys___next__(PikaObj* self) {
 
 char* PikaStdLib_SysObj_str(PikaObj* self, Arg* arg);
 char* PikaStdData_dict_keys___str__(PikaObj* self) {
-    Arg* str_arg = arg_setStr(NULL, "", "dict_keys([");
+    Arg* str_arg = arg_newStr("dict_keys([");
     PikaObj* dictptr = obj_getPtr(self, "dictptr");
     PikaDict* keys = obj_getPtr(dictptr, "_keys");
 
@@ -120,7 +111,7 @@ char* PikaStdData_dict_keys___str__(PikaObj* self) {
 }
 
 char* PikaStdData_Dict___str__(PikaObj* self) {
-    Arg* str_arg = arg_setStr(NULL, "", "{");
+    Arg* str_arg = arg_newStr("{");
 
     PikaDict* keys = obj_getPtr(self, "_keys");
     PikaDict* dict = obj_getPtr(self, "dict");
@@ -157,8 +148,7 @@ int PikaStdData_Dict___len__(PikaObj* self) {
     return args_getSize(&dict->super);
 }
 
-
-int PikaStdData_dict_keys___len__(PikaObj *self){
+int PikaStdData_dict_keys___len__(PikaObj* self) {
     PikaObj* dictptr = obj_getPtr(self, "dictptr");
     PikaDict* keys = obj_getPtr(dictptr, "_keys");
     return args_getSize(&keys->super);

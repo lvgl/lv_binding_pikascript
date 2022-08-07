@@ -38,11 +38,13 @@
 
 /* clang-format off */
 #if PIKA_ASSERT_ENABLE
-#include <assert.h>
+    #define pika_assert(expr) \
+    if(!(expr)) { \
+        __platform_printf("Assertion failed: %s\nfile: %s:%d\n", #expr, __FILE__, __LINE__); \
+        abort(); \
+    }
 #else
-    #ifndef assert
-        #define assert(...)
-    #endif
+    #define pika_assert(...)
 #endif
 /* clang-format on */
 
@@ -90,6 +92,8 @@ typedef enum {
     PIKA_RES_ERR_ILLEGAL_MAGIC_CODE,
     PIKA_RES_ERR_OPERATION_FAILED,
     PIKA_RES_ERR_UNKNOWN,
+    PIKA_RES_ERR_SYNTAX_ERROR,
+    PIKA_RES_ERR_IO,
 } PIKA_RES;
 
 /* clang-format off */
@@ -148,6 +152,8 @@ FILE* __platform_fopen(const char* filename, const char* modes);
 int __platform_fclose(FILE* stream);
 size_t __platform_fwrite(const void* ptr, size_t size, size_t n, FILE* stream);
 size_t __platform_fread(void* ptr, size_t size, size_t n, FILE* stream);
+int __platform_fseek(FILE* stream, long offset, int whence);
+long __platform_ftell(FILE* stream);
 
 /* error */
 void __platform_error_handle(void);

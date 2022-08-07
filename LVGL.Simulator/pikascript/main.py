@@ -1,34 +1,24 @@
 import pika_lvgl as lv
-
-class ArcLoader():
-    def __init__(self):
-        self.a = 270
-
-    def arc_loader_cb(self,tim,arc):
-        # print(tim,arc)
-        self.a += 5
-
-        arc.set_end_angle(self.a)
-
-        if self.a >= 270 + 360:
-            tim._del()
+import PikaStdLib
+mem = PikaStdLib.MemChecker()
 
 
-#
-# Create an arc which acts as a loader.
-#
+def event_cb_1(evt):
+    print('in evt1')
+    print('mem used now: %0.2f kB' % (mem.getNow()))
 
-# Create an Arc
-arc = lv.arc(lv.scr_act())
-arc.set_bg_angles(0, 360)
-arc.set_angles(270, 270)
-arc.center()
 
-# create the loader
-arc_loader = ArcLoader()
+def event_cb_2(evt):
+    print('in evt2')
+    print('mem used now: %0.2f kB' % (mem.getNow()))
 
-# Create an `lv_timer` to update the arc.
 
-timer = lv.timer_create_basic()
-timer.set_period(20)
-timer.set_cb(lambda src: arc_loader.arc_loader_cb(timer,arc))
+btn1 = lv.btn(lv.scr_act())
+btn1.align(lv.ALIGN.TOP_MID, 0, 10)
+btn2 = lv.btn(lv.scr_act())
+btn2.align(lv.ALIGN.TOP_MID, 0, 50)
+btn1.add_event_cb(event_cb_1, lv.EVENT.CLICKED, 0)
+btn2.add_event_cb(event_cb_2, lv.EVENT.CLICKED, 0)
+
+print('mem used max: %0.2f kB' % (mem.getMax()))
+print('mem used now: %0.2f kB' % (mem.getNow()))

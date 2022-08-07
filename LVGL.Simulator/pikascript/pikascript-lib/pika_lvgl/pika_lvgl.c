@@ -158,7 +158,7 @@ PikaObj* pika_lvgl_obj(PikaObj* self, PikaObj* parent) {
     return new_obj;
 }
 
-PikaObj* pika_lvgl_palette_lighten(PikaObj* self, int lvl, int p) {
+PikaObj* pika_lvgl_palette_lighten(PikaObj *self, int p, int lvl){
     PikaObj* new_obj = newNormalObj(New_pika_lvgl_lv_color_t);
     lv_color_t lv_color = lv_palette_lighten(p, lvl);
     args_setStruct(new_obj->list, "lv_color_struct", lv_color);

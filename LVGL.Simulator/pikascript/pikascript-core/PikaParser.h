@@ -46,9 +46,11 @@ enum StmtType {
     STMT_bytes,
     STMT_number,
     STMT_method,
+    STMT_chain,
     STMT_operator,
     STMT_import,
     STMT_list,
+    STMT_slice,
     STMT_dict,
     STMT_none,
 };
@@ -60,6 +62,12 @@ struct Asmer {
     uint8_t is_new_line;
     char* line_pointer;
 };
+
+typedef struct SyntaxItem {
+    char* astNodeName;
+    char* asmCode;
+    PIKA_BOOL isUseNodeValue;
+} SyntaxItem;
 
 typedef struct LexToken LexToken;
 struct LexToken {
@@ -79,6 +87,7 @@ struct ParserState {
     Arg* last_token;
     Args* iter_buffs;
     Args* buffs_p;
+    PIKA_RES result;
 };
 
 char* Parser_multiLineToAsm(Args* outBuffs, char* multiLine);
@@ -102,9 +111,10 @@ char* Parser_parsePyLines(Args* outBuffs,
     ParserState_forEach(parseState)
 
 #define ParserState_forEachToken(parseState, tokens) \
-    struct ParserState parseState;                           \
+    struct ParserState parseState;                   \
     ParserState_forEachTokenExistPs(parseState, tokens)
 
 uint16_t Tokens_getSize(char* tokens);
+char* Parser_fileToAsm(Args* outBuffs, char* filename);
 
 #endif

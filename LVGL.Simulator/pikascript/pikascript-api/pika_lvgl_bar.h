@@ -10,6 +10,6 @@
 PikaObj *New_pika_lvgl_bar(Args *args);
 
 void pika_lvgl_bar___init__(PikaObj *self, PikaObj* parent);
-void pika_lvgl_bar_set_value(PikaObj *self, int anim, int value);
+void pika_lvgl_bar_set_value(PikaObj *self, int value, int anim);
 
 #endif

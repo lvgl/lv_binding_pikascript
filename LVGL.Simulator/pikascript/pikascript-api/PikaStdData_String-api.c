@@ -7,9 +7,9 @@
 #include <stdlib.h>
 #include "BaseObj.h"
 
-void PikaStdData_String___get__Method(PikaObj *self, Args *args){
+void PikaStdData_String___getitem__Method(PikaObj *self, Args *args){
     Arg* __key = args_getArg(args, "__key");
-    Arg* res = PikaStdData_String___get__(self, __key);
+    Arg* res = PikaStdData_String___getitem__(self, __key);
     method_returnArg(args, res);
 }
 
@@ -33,15 +33,20 @@ void PikaStdData_String___next__Method(PikaObj *self, Args *args){
     method_returnArg(args, res);
 }
 
-void PikaStdData_String___set__Method(PikaObj *self, Args *args){
+void PikaStdData_String___setitem__Method(PikaObj *self, Args *args){
     Arg* __key = args_getArg(args, "__key");
     Arg* __val = args_getArg(args, "__val");
-    PikaStdData_String___set__(self, __key, __val);
+    PikaStdData_String___setitem__(self, __key, __val);
 }
 
 void PikaStdData_String___str__Method(PikaObj *self, Args *args){
     char* res = PikaStdData_String___str__(self);
     method_returnStr(args, res);
+}
+
+void PikaStdData_String_encodeMethod(PikaObj *self, Args *args){
+    Arg* res = PikaStdData_String_encode(self);
+    method_returnArg(args, res);
 }
 
 void PikaStdData_String_endwithMethod(PikaObj *self, Args *args){
@@ -80,6 +85,13 @@ void PikaStdData_String_isspaceMethod(PikaObj *self, Args *args){
     method_returnInt(args, res);
 }
 
+void PikaStdData_String_replaceMethod(PikaObj *self, Args *args){
+    char* old = args_getStr(args, "old");
+    char* new = args_getStr(args, "new");
+    char* res = PikaStdData_String_replace(self, old, new);
+    method_returnStr(args, res);
+}
+
 void PikaStdData_String_setMethod(PikaObj *self, Args *args){
     char* s = args_getStr(args, "s");
     PikaStdData_String_set(self, s);
@@ -97,15 +109,21 @@ void PikaStdData_String_startwithMethod(PikaObj *self, Args *args){
     method_returnInt(args, res);
 }
 
+void PikaStdData_String_stripMethod(PikaObj *self, Args *args){
+    char* res = PikaStdData_String_strip(self);
+    method_returnStr(args, res);
+}
+
 PikaObj *New_PikaStdData_String(Args *args){
     PikaObj *self = New_TinyObj(args);
-    class_defineMethod(self, "__get__(__key:any)->any", PikaStdData_String___get__Method);
+    class_defineMethod(self, "__getitem__(__key:any)->any", PikaStdData_String___getitem__Method);
     class_defineMethod(self, "__init__(s:str)", PikaStdData_String___init__Method);
     class_defineMethod(self, "__iter__()->any", PikaStdData_String___iter__Method);
     class_defineMethod(self, "__len__()->int", PikaStdData_String___len__Method);
     class_defineMethod(self, "__next__()->any", PikaStdData_String___next__Method);
-    class_defineMethod(self, "__set__(__key:any,__val:any)", PikaStdData_String___set__Method);
+    class_defineMethod(self, "__setitem__(__key:any,__val:any)", PikaStdData_String___setitem__Method);
     class_defineMethod(self, "__str__()->str", PikaStdData_String___str__Method);
+    class_defineMethod(self, "encode()->bytes", PikaStdData_String_encodeMethod);
     class_defineMethod(self, "endwith(suffix:str)->int", PikaStdData_String_endwithMethod);
     class_defineMethod(self, "get()->str", PikaStdData_String_getMethod);
     class_defineMethod(self, "isalnum()->int", PikaStdData_String_isalnumMethod);
@@ -113,9 +131,11 @@ PikaObj *New_PikaStdData_String(Args *args){
     class_defineMethod(self, "isdigit()->int", PikaStdData_String_isdigitMethod);
     class_defineMethod(self, "islower()->int", PikaStdData_String_islowerMethod);
     class_defineMethod(self, "isspace()->int", PikaStdData_String_isspaceMethod);
+    class_defineMethod(self, "replace(old:str,new:str)->str", PikaStdData_String_replaceMethod);
     class_defineMethod(self, "set(s:str)", PikaStdData_String_setMethod);
     class_defineMethod(self, "split(s:str)->List", PikaStdData_String_splitMethod);
     class_defineMethod(self, "startwith(prefix:str)->int", PikaStdData_String_startwithMethod);
+    class_defineMethod(self, "strip()->str", PikaStdData_String_stripMethod);
     return self;
 }
 

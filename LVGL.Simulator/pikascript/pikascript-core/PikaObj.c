@@ -122,65 +122,68 @@ int32_t obj_deinit(PikaObj* self) {
     return obj_deinit_no_del(self);
 }
 
-int32_t obj_setInt(PikaObj* self, char* argPath, int64_t val) {
+PIKA_RES obj_setInt(PikaObj* self, char* argPath, int64_t val) {
     PikaObj* obj = obj_getHostObj(self, argPath);
     if (NULL == obj) {
         /* [error] object no found */
-        return 1;
+        return PIKA_RES_ERR_ARG_NO_FOUND;
     }
     char* name = strPointToLastToken(argPath, '.');
     args_setInt(obj->list, name, val);
-    return 0;
+    return PIKA_RES_OK;
 }
 
-int32_t obj_setPtr(PikaObj* self, char* argPath, void* pointer) {
+PIKA_RES obj_setPtr(PikaObj* self, char* argPath, void* pointer) {
     PikaObj* obj = obj_getHostObj(self, argPath);
     if (NULL == obj) {
-        return 1;
+        /* [error] object no found */
+        return PIKA_RES_ERR_ARG_NO_FOUND;
     }
     char* name = strPointToLastToken(argPath, '.');
     args_setPtr(obj->list, name, pointer);
-    return 0;
+    return PIKA_RES_OK;
 }
 
-int32_t obj_setRef(PikaObj* self, char* argPath, void* pointer) {
+PIKA_RES obj_setRef(PikaObj* self, char* argPath, void* pointer) {
     PikaObj* obj = obj_getHostObj(self, argPath);
     if (NULL == obj) {
-        return 1;
+        /* [error] object no found */
+        return PIKA_RES_ERR_ARG_NO_FOUND;
     }
     char* name = strPointToLastToken(argPath, '.');
     args_setRef(obj->list, name, pointer);
-    return 0;
+    return PIKA_RES_OK;
 }
 
-int32_t obj_setFloat(PikaObj* self, char* argPath, double value) {
+PIKA_RES obj_setFloat(PikaObj* self, char* argPath, double value) {
     PikaObj* obj = obj_getHostObj(self, argPath);
     if (NULL == obj) {
-        return 1;
+        /* [error] object no found */
+        return PIKA_RES_ERR_ARG_NO_FOUND;
     }
     char* name = strPointToLastToken(argPath, '.');
     args_setFloat(obj->list, name, value);
-    return 0;
+    return PIKA_RES_OK;
 }
 
-int32_t obj_setStr(PikaObj* self, char* argPath, char* str) {
+PIKA_RES obj_setStr(PikaObj* self, char* argPath, char* str) {
     PikaObj* obj = obj_getHostObj(self, argPath);
     if (NULL == obj) {
-        return 1;
+        return PIKA_RES_ERR_ARG_NO_FOUND;
     }
     char* name = strPointToLastToken(argPath, '.');
     args_setStr(obj->list, name, str);
-    return 0;
+    return PIKA_RES_OK;
 }
 
-int32_t obj_setBytes(PikaObj* self, char* argPath, uint8_t* src, size_t size) {
+PIKA_RES obj_setBytes(PikaObj* self, char* argPath, uint8_t* src, size_t size) {
     PikaObj* obj = obj_getHostObj(self, argPath);
     if (NULL == obj) {
-        return 1;
+        return PIKA_RES_ERR_ARG_NO_FOUND;
     }
     char* name = strPointToLastToken(argPath, '.');
     args_setBytes(obj->list, name, src, size);
-    return 0;
+    return PIKA_RES_OK;
 }
 
 int64_t obj_getInt(PikaObj* self, char* argPath) {
@@ -240,7 +243,7 @@ size_t obj_loadBytes(PikaObj* self, char* argPath, uint8_t* out_buff) {
     return size_mem;
 }
 
-static int32_t __obj_setArg(PikaObj* self,
+static PIKA_RES __obj_setArg(PikaObj* self,
                             char* argPath,
                             Arg* arg,
                             uint8_t is_copy) {
@@ -248,7 +251,7 @@ static int32_t __obj_setArg(PikaObj* self,
     PikaObj* obj = obj_getHostObj(self, argPath);
     if (NULL == obj) {
         /* object no found */
-        return 1;
+        return PIKA_RES_ERR_ARG_NO_FOUND;
     }
     char* argName = strPointToLastToken(argPath, '.');
     Arg* newArg;
@@ -259,14 +262,14 @@ static int32_t __obj_setArg(PikaObj* self,
     }
     newArg = arg_setName(newArg, argName);
     args_setArg(obj->list, newArg);
-    return 0;
+    return PIKA_RES_OK;
 }
 
-int32_t obj_setArg(PikaObj* self, char* argPath, Arg* arg) {
+PIKA_RES obj_setArg(PikaObj* self, char* argPath, Arg* arg) {
     return __obj_setArg(self, argPath, arg, 1);
 };
 
-int32_t obj_setArg_noCopy(PikaObj* self, char* argPath, Arg* arg) {
+PIKA_RES obj_setArg_noCopy(PikaObj* self, char* argPath, Arg* arg) {
     return __obj_setArg(self, argPath, arg, 0);
 }
 
@@ -305,19 +308,19 @@ PikaObj* obj_getClassObjByNewFun(PikaObj* context,
                                  NewFun newClassFun) {
     Args* initArgs = New_args(NULL);
     PikaObj* thisClass = newClassFun(initArgs);
-    obj_setPtr(thisClass, "_clsptr", (void*)newClassFun);
-    obj_setInt(thisClass, "_refcnt", 0);
+    thisClass->constructor = newClassFun;
+    thisClass->refcnt = 0;
     args_deinit(initArgs);
     return thisClass;
 }
 
-Arg* obj_getMethodArg(PikaObj* obj, char* methodPath) {
+Arg* _obj_getMethodArg(PikaObj* obj, char* methodPath, Arg* arg_reg) {
     Arg* method = NULL;
     char* methodName = strPointToLastToken(methodPath, '.');
     method = obj_getArg(obj, methodName);
     PikaObj* methodHostClass;
     if (NULL != method) {
-        method = arg_copy(method);
+        method = arg_copy_noalloc(method, arg_reg);
         goto exit;
     }
     methodHostClass = obj_getClassObj(obj);
@@ -325,14 +328,22 @@ Arg* obj_getMethodArg(PikaObj* obj, char* methodPath) {
         method = NULL;
         goto exit;
     }
-    method = arg_copy(obj_getArg(methodHostClass, methodName));
+    method = arg_copy_noalloc(obj_getArg(methodHostClass, methodName), arg_reg);
     obj_deinit_no_del(methodHostClass);
 exit:
     return method;
 }
 
+Arg* obj_getMethodArg(PikaObj* obj, char* methodPath) {
+    return _obj_getMethodArg(obj, methodPath, NULL);
+}
+
+Arg* obj_getMethodArg_noalloc(PikaObj* obj, char* methodPath, Arg* arg_reg) {
+    return _obj_getMethodArg(obj, methodPath, arg_reg);
+}
+
 NewFun obj_getClass(PikaObj* obj) {
-    return (NewFun)obj_getPtr(obj, "_clsptr");
+    return (NewFun)obj->constructor;
 }
 
 PikaObj* obj_getClassObj(PikaObj* obj) {
@@ -375,6 +386,9 @@ PikaObj* newNormalObj(NewFun newObjFun) {
 
 extern PikaObj* __pikaMain;
 PikaObj* newRootObj(char* name, NewFun newObjFun) {
+#if PIKA_POOL_ENABLE
+    mem_pool_init();
+#endif
     PikaObj* newObj = newNormalObj(newObjFun);
     __pikaMain = newObj;
     return newObj;
@@ -389,7 +403,7 @@ Arg* arg_newMetaObj(NewFun new_obj_fun) {
 
 Arg* arg_newDirectObj(NewFun new_obj_fun) {
     PikaObj* newObj = newNormalObj(new_obj_fun);
-    Arg* arg_new = arg_setPtr(NULL, "", ARG_TYPE_OBJECT_NEW, newObj);
+    Arg* arg_new = arg_newPtr(ARG_TYPE_OBJECT_NEW, newObj);
     return arg_new;
 }
 
@@ -500,9 +514,12 @@ Method methodArg_getPtr(Arg* method_arg) {
     return (Method)ptr;
 }
 
-char* methodArg_getTypeList(Arg* method_arg, Args* buffs) {
-    char* method_dec = strsCopy(buffs, methodArg_getDec(method_arg));
-    return strsCut(buffs, method_dec, '(', ')');
+char* methodArg_getTypeList(Arg* method_arg, char* buffs, size_t size) {
+    char* method_dec = strCopy(buffs, methodArg_getDec(method_arg));
+    if (strGetSize(method_dec) > size) {
+        return NULL;
+    }
+    return strCut(buffs, method_dec, '(', ')');
 }
 
 Method obj_getNativeMethod(PikaObj* self, char* method_name) {
@@ -733,7 +750,8 @@ static void __obj_runCharBeforeRun(PikaObj* self) {
 
 enum shell_state obj_runChar(PikaObj* self, char inputChar) {
     struct shell_config* cfg = args_getStruct(self->list, "__shcfg");
-    __obj_shellLineHandler_t __lineHandler_fun = (__obj_shellLineHandler_t)obj_getPtr(self, "__shhdl");
+    __obj_shellLineHandler_t __lineHandler_fun =
+        (__obj_shellLineHandler_t)obj_getPtr(self, "__shhdl");
     char* rxBuff = (char*)obj_getBytes(self, "__shbuf");
     char* input_line = NULL;
     int is_in_block = obj_getInt(self, "__shinb");
@@ -942,19 +960,9 @@ PikaObj* New_PikaObj(void) {
     PikaObj* self = pikaMalloc(sizeof(PikaObj));
     /* List */
     self->list = New_args(NULL);
+    self->refcnt = 0;
+    self->constructor = NULL;
     return self;
-}
-
-void obj_refcntInc(PikaObj* self) {
-    obj_setInt(self, "_refcnt", obj_getInt(self, "_refcnt") + 1);
-}
-
-void obj_refcntDec(PikaObj* self) {
-    obj_setInt(self, "_refcnt", obj_getInt(self, "_refcnt") - 1);
-}
-
-int obj_refcntNow(PikaObj* self) {
-    return obj_getInt(self, "_refcnt");
 }
 
 Arg* arg_setRef(Arg* self, char* name, PikaObj* obj) {
@@ -1101,8 +1109,8 @@ void pks_eventLicener_registEvent(PikaEventListener* self,
     strsDeinit(&buffs);
 }
 
-static PikaObj* pks_eventLisener_getEventHandleObj(PikaEventListener* self,
-                                                   uint32_t eventId) {
+PikaObj* pks_eventLisener_getEventHandleObj(PikaEventListener* self,
+                                            uint32_t eventId) {
     Args buffs = {0};
     char* event_name =
         strsFormat(&buffs, PIKA_SPRINTF_BUFF_SIZE, "%ld", eventId);
@@ -1153,4 +1161,8 @@ void pks_eventLisener_sendSignal(PikaEventListener* self,
 void pks_printVersion(void) {
     __platform_printf("pikascript-core==v%d.%d.%d (%s)\r\n", PIKA_VERSION_MAJOR,
                       PIKA_VERSION_MINOR, PIKA_VERSION_MICRO, PIKA_EDIT_TIME);
+}
+
+void* obj_getStruct(PikaObj* self, char* name) {
+    return args_getStruct(self->list, name);
 }

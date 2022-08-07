@@ -74,71 +74,71 @@
     
     /* auto config for syntax level */
     #if PIKA_SYNTAX_LEVEL == PIKA_SYNTAX_LEVEL_MINIMAL
-        #ifndef PIKA_SYNTEX_ITEM_SLICE_ENABLE
-            #define PIKA_SYNTEX_ITEM_SLICE_ENABLE 0
+        #ifndef PIKA_SYNTAX_SLICE_ENABLE
+            #define PIKA_SYNTAX_SLICE_ENABLE 0
         #endif
 
-        #ifndef PIKA_BUILTIN_LIST_ENABLE
-            #define PIKA_BUILTIN_LIST_ENABLE 0
+        #ifndef PIKA_BUILTIN_STRUCT_ENABLE
+            #define PIKA_BUILTIN_STRUCT_ENABLE 0
         #endif
 
-        #ifndef PIKA_BUILTIN_DICT_ENABLE
-            #define PIKA_BUILTIN_DICT_ENABLE 0
-        #endif
-
-        #ifndef PIKA_SYNTEX_ITEM_FORMAT_ENABLE
-            #define PIKA_SYNTEX_ITEM_FORMAT_ENABLE 0
+        #ifndef PIKA_SYNTAX_FORMAT_ENABLE
+            #define PIKA_SYNTAX_FORMAT_ENABLE 0
         #endif
 
         #ifndef PIKA_STD_DEVICE_UNIX_TIME_ENABLE
             #define PIKA_STD_DEVICE_UNIX_TIME_ENABLE 0
         #endif
         
-        #ifndef PIKA_SYNTEX_EXCEPTION_ENABLE
-            #define PIKA_SYNTEX_EXCEPTION_ENABLE 0
+        #ifndef PIKA_SYNTAX_EXCEPTION_ENABLE
+            #define PIKA_SYNTAX_EXCEPTION_ENABLE 0
         #endif
         
-        #ifndef PIKA_SYNTEX_IMPORT_EX_ENABLE
-            #define PIKA_SYNTEX_IMPORT_EX_ENABLE 0
+        #ifndef PIKA_SYNTAX_IMPORT_EX_ENABLE
+            #define PIKA_SYNTAX_IMPORT_EX_ENABLE 0
         #endif
 
         #ifndef PIKA_EVENT_ENABLE
             #define PIKA_EVENT_ENABLE 0
         #endif
 
+        #ifndef PIKA_FILEIO_ENABLE
+            #define PIKA_FILEIO_ENABLE 0
+        #endif
+
     #elif PIKA_SYNTAX_LEVEL == PIKA_SYNTAX_LEVEL_MAXIMAL
-        #ifndef PIKA_SYNTEX_ITEM_SLICE_ENABLE
-            #define PIKA_SYNTEX_ITEM_SLICE_ENABLE 1
+        #ifndef PIKA_SYNTAX_SLICE_ENABLE
+            #define PIKA_SYNTAX_SLICE_ENABLE 1
         #endif
 
-        #ifndef PIKA_BUILTIN_LIST_ENABLE
-            #define PIKA_BUILTIN_LIST_ENABLE 1 
+        #ifndef PIKA_BUILTIN_STRUCT_ENABLE
+            #define PIKA_BUILTIN_STRUCT_ENABLE 1
         #endif
 
-        #ifndef PIKA_BUILTIN_DICT_ENABLE
-            #define PIKA_BUILTIN_DICT_ENABLE 1
-        #endif
-
-        #ifndef PIKA_SYNTEX_ITEM_FORMAT_ENABLE
-            #define PIKA_SYNTEX_ITEM_FORMAT_ENABLE 1
+        #ifndef PIKA_SYNTAX_FORMAT_ENABLE
+            #define PIKA_SYNTAX_FORMAT_ENABLE 1
         #endif
 
         #ifndef PIKA_STD_DEVICE_UNIX_TIME_ENABLE
             #define PIKA_STD_DEVICE_UNIX_TIME_ENABLE 1
         #endif
         
-        #ifndef PIKA_SYNTEX_EXCEPTION_ENABLE
-            #define PIKA_SYNTEX_EXCEPTION_ENABLE 1
+        #ifndef PIKA_SYNTAX_EXCEPTION_ENABLE
+            #define PIKA_SYNTAX_EXCEPTION_ENABLE 1
         #endif
         
-        #ifndef PIKA_SYNTEX_IMPORT_EX_ENABLE
-            #define PIKA_SYNTEX_IMPORT_EX_ENABLE 1
+        #ifndef PIKA_SYNTAX_IMPORT_EX_ENABLE
+            #define PIKA_SYNTAX_IMPORT_EX_ENABLE 1
         #endif
 
         #ifndef PIKA_EVENT_ENABLE
             #define PIKA_EVENT_ENABLE 1
         #endif
-        
+
+        #ifndef PIKA_FILEIO_ENABLE
+            #define PIKA_FILEIO_ENABLE 1
+        #endif
+
     #endif
 
     /* default configuration  */
@@ -159,7 +159,7 @@
     #endif
 
     #ifndef PIKA_PATH_BUFF_SIZE
-        #define PIKA_PATH_BUFF_SIZE 64
+        #define PIKA_PATH_BUFF_SIZE 96
     #endif
 
     #ifndef PIKA_BYTES_DEFAULT_SIZE
@@ -174,36 +174,32 @@
         #define PIKA_METHOD_CACHE_ENABLE 0
     #endif
 
-    #ifndef PIKA_BUILTIN_LIST_ENABLE
-        #define PIKA_BUILTIN_LIST_ENABLE 0
-    #endif
-
-    #ifndef PIKA_BUILTIN_DICT_ENABLE
-        #define PIKA_BUILTIN_DICT_ENABLE 0
+    #ifndef PIKA_BUILTIN_STRUCT_ENABLE
+        #define PIKA_BUILTIN_STRUCT_ENABLE 0
     #endif
 
     #ifndef PIKA_READ_FILE_BUFF_SIZE
-        #define PIKA_READ_FILE_BUFF_SIZE 0x10000
+        #define PIKA_READ_FILE_BUFF_SIZE 0x1024 * 10
     #endif
 
     #ifndef PIKA_INIT_STRING_ENABLE
         #define PIKA_INIT_STRING_ENABLE 1
     #endif
     
-    #ifndef PIKA_SYNTEX_ITEM_SLICE_ENABLE
-        #define PIKA_SYNTEX_ITEM_SLICE_ENABLE 1
+    #ifndef PIKA_SYNTAX_SLICE_ENABLE
+        #define PIKA_SYNTAX_SLICE_ENABLE 1
     #endif
 
-    #ifndef PIKA_SYNTEX_ITEM_FORMAT_ENABLE
-        #define PIKA_SYNTEX_ITEM_FORMAT_ENABLE 1
+    #ifndef PIKA_SYNTAX_FORMAT_ENABLE
+        #define PIKA_SYNTAX_FORMAT_ENABLE 1
     #endif
 
-    #ifndef PIKA_SYNTEX_EXCEPTION_ENABLE
-        #define PIKA_SYNTEX_EXCEPTION_ENABLE 1
+    #ifndef PIKA_SYNTAX_EXCEPTION_ENABLE
+        #define PIKA_SYNTAX_EXCEPTION_ENABLE 1
     #endif
 
-    #ifndef PIKA_SYNTEX_IMPORT_EX_ENABLE
-        #define PIKA_SYNTEX_IMPORT_EX_ENABLE 1
+    #ifndef PIKA_SYNTAX_IMPORT_EX_ENABLE
+        #define PIKA_SYNTAX_IMPORT_EX_ENABLE 1
     #endif      
 
     #ifndef PIKA_PLOOC_ENABLE
@@ -232,6 +228,30 @@
 
     #ifndef PIKA_EVENT_ENABLE
         #define PIKA_EVENT_ENABLE 1
+    #endif
+
+    #ifndef PIKA_DEBUG_ENABLE
+        #define PIKA_DEBUG_ENABLE 0
+    #endif
+
+    #ifndef PIKA_FILEIO_ENABLE
+        #define PIKA_FILEIO_ENABLE 1
+    #endif
+
+    #ifndef PIKA_ARG_NUM_MAX
+        #define PIKA_ARG_NUM_MAX 16
+    #endif
+
+    #ifndef PIKA_MATH_ENABLE
+        #define PIKA_MATH_ENABLE 0
+    #endif
+
+    #ifndef PIKA_REGIST_SIZE
+        #define PIKA_REGIST_SIZE 10
+    #endif
+
+    #ifndef PIKA_ARG_BUFF_SIZE
+        #define PIKA_ARG_BUFF_SIZE 8
     #endif
 
     /* configuration validation */

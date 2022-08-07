@@ -13,15 +13,15 @@ void pika_lvgl_arc___init__Method(PikaObj *self, Args *args){
 }
 
 void pika_lvgl_arc_set_anglesMethod(PikaObj *self, Args *args){
-    int end = args_getInt(args, "end");
     int start = args_getInt(args, "start");
-    pika_lvgl_arc_set_angles(self, end, start);
+    int end = args_getInt(args, "end");
+    pika_lvgl_arc_set_angles(self, start, end);
 }
 
 void pika_lvgl_arc_set_bg_anglesMethod(PikaObj *self, Args *args){
-    int end = args_getInt(args, "end");
     int start = args_getInt(args, "start");
-    pika_lvgl_arc_set_bg_angles(self, end, start);
+    int end = args_getInt(args, "end");
+    pika_lvgl_arc_set_bg_angles(self, start, end);
 }
 
 void pika_lvgl_arc_set_end_angleMethod(PikaObj *self, Args *args){

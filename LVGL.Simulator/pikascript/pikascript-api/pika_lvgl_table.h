@@ -10,6 +10,6 @@
 PikaObj *New_pika_lvgl_table(Args *args);
 
 void pika_lvgl_table___init__(PikaObj *self, PikaObj* parent);
-void pika_lvgl_table_set_cell_value(PikaObj *self, int col, int row, char* txt);
+void pika_lvgl_table_set_cell_value(PikaObj *self, int row, int col, char* txt);
 
 #endif
