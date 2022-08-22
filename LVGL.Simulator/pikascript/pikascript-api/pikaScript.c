@@ -9,6 +9,7 @@ PikaObj *__pikaMain;
 PikaObj *pikaScriptInit(void){
     __platform_printf("======[pikascript packages installed]======\r\n");
     pks_printVersion();
+    __platform_printf("PikaStdDevice==v1.10.0\r\n");
     __platform_printf("PikaStdLib==v1.10.0\r\n");
     __platform_printf("===========================================\r\n");
     __pikaMain = newRootObj("pikaMain", New_PikaMain);
@@ -17,6 +18,8 @@ PikaObj *pikaScriptInit(void){
 #if PIKA_INIT_STRING_ENABLE
     obj_run(__pikaMain,
             "import pika_lvgl as lv\n"
+            "import PikaStdLib\n"
+            "mem = PikaStdLib.MemChecker()\n"
             "class ArcLoader():\n"
             "    def __init__(self):\n"
             "        self.a = 270\n"
@@ -26,6 +29,7 @@ PikaObj *pikaScriptInit(void){
             "        arc.set_end_angle(self.a)\n"
             "        if self.a >= 270 + 360:\n"
             "            tim._del()\n"
+            "            mem.max()\n"
             "#\n"
             "# Create an arc which acts as a loader.\n"
             "#\n"
@@ -39,7 +43,9 @@ PikaObj *pikaScriptInit(void){
             "# Create an `lv_timer` to update the arc.\n"
             "timer = lv.timer_create_basic()\n"
             "timer.set_period(20)\n"
-            "timer.set_cb(lambda src: arc_loader.arc_loader_cb(timer,arc))\n"
+            "def cb(src):\n"
+            "    arc_loader.arc_loader_cb(src,arc)\n"
+            "timer.set_cb(cb)\n"
             "\n");
 #else 
     obj_runModule(__pikaMain, "main");

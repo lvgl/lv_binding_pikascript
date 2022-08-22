@@ -59,6 +59,16 @@
     <ClInclude Include="pikascript\pikascript-api\PikaStdData_String.h" />
     <ClInclude Include="pikascript\pikascript-api\PikaStdData_Tuple.h" />
     <ClInclude Include="pikascript\pikascript-api\PikaStdData_Utils.h" />
+    <ClInclude Include="pikascript\pikascript-api\PikaStdDevice.h" />
+    <ClInclude Include="pikascript\pikascript-api\PikaStdDevice_ADC.h" />
+    <ClInclude Include="pikascript\pikascript-api\PikaStdDevice_BaseDev.h" />
+    <ClInclude Include="pikascript\pikascript-api\PikaStdDevice_CAN.h" />
+    <ClInclude Include="pikascript\pikascript-api\PikaStdDevice_GPIO.h" />
+    <ClInclude Include="pikascript\pikascript-api\PikaStdDevice_IIC.h" />
+    <ClInclude Include="pikascript\pikascript-api\PikaStdDevice_PWM.h" />
+    <ClInclude Include="pikascript\pikascript-api\PikaStdDevice_SPI.h" />
+    <ClInclude Include="pikascript\pikascript-api\PikaStdDevice_Time.h" />
+    <ClInclude Include="pikascript\pikascript-api\PikaStdDevice_UART.h" />
     <ClInclude Include="pikascript\pikascript-api\PikaStdLib.h" />
     <ClInclude Include="pikascript\pikascript-api\PikaStdLib_MemChecker.h" />
     <ClInclude Include="pikascript\pikascript-api\PikaStdLib_PikaObj.h" />
@@ -81,6 +91,7 @@
     <ClInclude Include="pikascript\pikascript-api\pika_lvgl_lv_color_t.h" />
     <ClInclude Include="pikascript\pikascript-api\pika_lvgl_lv_event.h" />
     <ClInclude Include="pikascript\pikascript-api\pika_lvgl_lv_obj.h" />
+    <ClInclude Include="pikascript\pikascript-api\pika_lvgl_lv_timer_t.h" />
     <ClInclude Include="pikascript\pikascript-api\pika_lvgl_OPA.h" />
     <ClInclude Include="pikascript\pikascript-api\pika_lvgl_PALETTE.h" />
     <ClInclude Include="pikascript\pikascript-api\pika_lvgl_point_t.h" />
@@ -106,6 +117,7 @@
     <ClInclude Include="pikascript\pikascript-core\PikaObj.h" />
     <ClInclude Include="pikascript\pikascript-core\PikaParser.h" />
     <ClInclude Include="pikascript\pikascript-core\PikaPlatform.h" />
+    <ClInclude Include="pikascript\pikascript-core\PikaVersion.h" />
     <ClInclude Include="pikascript\pikascript-core\PikaVM.h" />
     <ClInclude Include="pikascript\pikascript-core\pika_config_valid.h" />
     <ClInclude Include="pikascript\pikascript-core\TinyObj.h" />
@@ -130,6 +142,16 @@
     <ClCompile Include="pikascript\pikascript-api\PikaStdData_String-api.c" />
     <ClCompile Include="pikascript\pikascript-api\PikaStdData_Tuple-api.c" />
     <ClCompile Include="pikascript\pikascript-api\PikaStdData_Utils-api.c" />
+    <ClCompile Include="pikascript\pikascript-api\PikaStdDevice-api.c" />
+    <ClCompile Include="pikascript\pikascript-api\PikaStdDevice_ADC-api.c" />
+    <ClCompile Include="pikascript\pikascript-api\PikaStdDevice_BaseDev-api.c" />
+    <ClCompile Include="pikascript\pikascript-api\PikaStdDevice_CAN-api.c" />
+    <ClCompile Include="pikascript\pikascript-api\PikaStdDevice_GPIO-api.c" />
+    <ClCompile Include="pikascript\pikascript-api\PikaStdDevice_IIC-api.c" />
+    <ClCompile Include="pikascript\pikascript-api\PikaStdDevice_PWM-api.c" />
+    <ClCompile Include="pikascript\pikascript-api\PikaStdDevice_SPI-api.c" />
+    <ClCompile Include="pikascript\pikascript-api\PikaStdDevice_Time-api.c" />
+    <ClCompile Include="pikascript\pikascript-api\PikaStdDevice_UART-api.c" />
     <ClCompile Include="pikascript\pikascript-api\PikaStdLib-api.c" />
     <ClCompile Include="pikascript\pikascript-api\PikaStdLib_MemChecker-api.c" />
     <ClCompile Include="pikascript\pikascript-api\PikaStdLib_PikaObj-api.c" />
@@ -152,6 +174,7 @@
     <ClCompile Include="pikascript\pikascript-api\pika_lvgl_lv_color_t-api.c" />
     <ClCompile Include="pikascript\pikascript-api\pika_lvgl_lv_event-api.c" />
     <ClCompile Include="pikascript\pikascript-api\pika_lvgl_lv_obj-api.c" />
+    <ClCompile Include="pikascript\pikascript-api\pika_lvgl_lv_timer_t-api.c" />
     <ClCompile Include="pikascript\pikascript-api\pika_lvgl_OPA-api.c" />
     <ClCompile Include="pikascript\pikascript-api\pika_lvgl_PALETTE-api.c" />
     <ClCompile Include="pikascript\pikascript-api\pika_lvgl_point_t-api.c" />
@@ -180,6 +203,15 @@
     <ClCompile Include="pikascript\pikascript-core\PikaPlatform.c" />
     <ClCompile Include="pikascript\pikascript-core\PikaVM.c" />
     <ClCompile Include="pikascript\pikascript-core\TinyObj.c" />
+    <ClCompile Include="pikascript\pikascript-lib\PikaStdDevice\PikaStdDevice_ADC.c" />
+    <ClCompile Include="pikascript\pikascript-lib\PikaStdDevice\PikaStdDevice_BaseDev.c" />
+    <ClCompile Include="pikascript\pikascript-lib\PikaStdDevice\PikaStdDevice_CAN.c" />
+    <ClCompile Include="pikascript\pikascript-lib\PikaStdDevice\PikaStdDevice_GPIO.c" />
+    <ClCompile Include="pikascript\pikascript-lib\PikaStdDevice\PikaStdDevice_IIC.c" />
+    <ClCompile Include="pikascript\pikascript-lib\PikaStdDevice\PikaStdDevice_PWM.c" />
+    <ClCompile Include="pikascript\pikascript-lib\PikaStdDevice\PikaStdDevice_SPI.c" />
+    <ClCompile Include="pikascript\pikascript-lib\PikaStdDevice\PikaStdDevice_Time.c" />
+    <ClCompile Include="pikascript\pikascript-lib\PikaStdDevice\PikaStdDevice_UART.c" />
     <ClCompile Include="pikascript\pikascript-lib\PikaStdLib\PikaDebuger_Debuger.c" />
     <ClCompile Include="pikascript\pikascript-lib\PikaStdLib\PikaStdData_ByteArray.c" />
     <ClCompile Include="pikascript\pikascript-lib\PikaStdLib\PikaStdData_Dict.c" />
@@ -210,6 +242,7 @@
     <ClCompile Include="pikascript\pikascript-lib\pika_lvgl\pika_lvgl_table.c" />
     <ClCompile Include="pikascript\pikascript-lib\pika_lvgl\pika_lvgl_textarea.c" />
     <ClCompile Include="pikascript\pikascript-lib\pika_lvgl\pika_lv_point_t.c" />
+    <ClCompile Include="pikascript\pikascript-lib\pika_lvgl\pika_lv_timer_t.c" />
     <ClCompile Include="pikascript_entry.c" />
   </ItemGroup>
   <ItemGroup>

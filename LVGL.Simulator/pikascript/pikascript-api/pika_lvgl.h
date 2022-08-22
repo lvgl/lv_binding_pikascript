@@ -27,6 +27,7 @@ Arg* pika_lvgl_label(PikaObj *self);
 Arg* pika_lvgl_lv_color_t(PikaObj *self);
 Arg* pika_lvgl_lv_event(PikaObj *self);
 Arg* pika_lvgl_lv_obj(PikaObj *self);
+Arg* pika_lvgl_lv_timer_t(PikaObj *self);
 PikaObj* pika_lvgl_obj(PikaObj *self, PikaObj* parent);
 PikaObj* pika_lvgl_palette_lighten(PikaObj *self, int p, int lvl);
 PikaObj* pika_lvgl_palette_main(PikaObj *self, int p);
@@ -38,5 +39,6 @@ Arg* pika_lvgl_style_t(PikaObj *self);
 Arg* pika_lvgl_switch(PikaObj *self);
 Arg* pika_lvgl_table(PikaObj *self);
 Arg* pika_lvgl_textarea(PikaObj *self);
+PikaObj* pika_lvgl_timer_create_basic(PikaObj *self);
 
 #endif

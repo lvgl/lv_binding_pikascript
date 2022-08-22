@@ -73,6 +73,18 @@
     <ClInclude Include="pikascript\pikascript-api\pika_lvgl_point_t.h" />
     <ClInclude Include="pikascript\pikascript-api\PikaStdData_FILEIO.h" />
     <ClInclude Include="pikascript\pikascript-api\PikaStdData_Tuple.h" />
+    <ClInclude Include="pikascript\pikascript-api\pika_lvgl_lv_timer_t.h" />
+    <ClInclude Include="pikascript\pikascript-api\PikaStdDevice.h" />
+    <ClInclude Include="pikascript\pikascript-api\PikaStdDevice_ADC.h" />
+    <ClInclude Include="pikascript\pikascript-api\PikaStdDevice_BaseDev.h" />
+    <ClInclude Include="pikascript\pikascript-api\PikaStdDevice_CAN.h" />
+    <ClInclude Include="pikascript\pikascript-api\PikaStdDevice_GPIO.h" />
+    <ClInclude Include="pikascript\pikascript-api\PikaStdDevice_IIC.h" />
+    <ClInclude Include="pikascript\pikascript-api\PikaStdDevice_PWM.h" />
+    <ClInclude Include="pikascript\pikascript-api\PikaStdDevice_SPI.h" />
+    <ClInclude Include="pikascript\pikascript-api\PikaStdDevice_Time.h" />
+    <ClInclude Include="pikascript\pikascript-api\PikaStdDevice_UART.h" />
+    <ClInclude Include="pikascript\pikascript-core\PikaVersion.h" />
   </ItemGroup>
   <ItemGroup>
     <Manifest Include="LVGL.Simulator.manifest" />
@@ -177,6 +189,27 @@
     <ClCompile Include="pikascript\pikascript-lib\PikaStdLib\PikaStdData_ByteArray.c" />
     <ClCompile Include="pikascript\pikascript-lib\PikaStdLib\PikaStdData_FILEIO.c" />
     <ClCompile Include="pikascript\pikascript-lib\PikaStdLib\PikaStdData_Tuple.c" />
+    <ClCompile Include="pikascript\pikascript-api\pika_lvgl_lv_timer_t-api.c" />
+    <ClCompile Include="pikascript\pikascript-api\PikaStdDevice_ADC-api.c" />
+    <ClCompile Include="pikascript\pikascript-api\PikaStdDevice_BaseDev-api.c" />
+    <ClCompile Include="pikascript\pikascript-api\PikaStdDevice_CAN-api.c" />
+    <ClCompile Include="pikascript\pikascript-api\PikaStdDevice_GPIO-api.c" />
+    <ClCompile Include="pikascript\pikascript-api\PikaStdDevice_IIC-api.c" />
+    <ClCompile Include="pikascript\pikascript-api\PikaStdDevice_PWM-api.c" />
+    <ClCompile Include="pikascript\pikascript-api\PikaStdDevice_SPI-api.c" />
+    <ClCompile Include="pikascript\pikascript-api\PikaStdDevice_Time-api.c" />
+    <ClCompile Include="pikascript\pikascript-api\PikaStdDevice_UART-api.c" />
+    <ClCompile Include="pikascript\pikascript-api\PikaStdDevice-api.c" />
+    <ClCompile Include="pikascript\pikascript-lib\pika_lvgl\pika_lv_timer_t.c" />
+    <ClCompile Include="pikascript\pikascript-lib\PikaStdDevice\PikaStdDevice_ADC.c" />
+    <ClCompile Include="pikascript\pikascript-lib\PikaStdDevice\PikaStdDevice_BaseDev.c" />
+    <ClCompile Include="pikascript\pikascript-lib\PikaStdDevice\PikaStdDevice_CAN.c" />
+    <ClCompile Include="pikascript\pikascript-lib\PikaStdDevice\PikaStdDevice_GPIO.c" />
+    <ClCompile Include="pikascript\pikascript-lib\PikaStdDevice\PikaStdDevice_IIC.c" />
+    <ClCompile Include="pikascript\pikascript-lib\PikaStdDevice\PikaStdDevice_PWM.c" />
+    <ClCompile Include="pikascript\pikascript-lib\PikaStdDevice\PikaStdDevice_SPI.c" />
+    <ClCompile Include="pikascript\pikascript-lib\PikaStdDevice\PikaStdDevice_Time.c" />
+    <ClCompile Include="pikascript\pikascript-lib\PikaStdDevice\PikaStdDevice_UART.c" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="LVGL.Simulator.rc" />

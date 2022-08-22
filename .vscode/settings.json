@@ -1,0 +1,15 @@
+{
+    "files.associations": {
+        "pika_lvgl_bar.h": "c",
+        "pika_lvgl_arc.h": "c",
+        "pika_lvgl_label.h": "c",
+        "pika_lvgl_lv_event.h": "c",
+        "pika_lvgl_lv_obj.h": "c",
+        "pika_lvgl_style_t.h": "c",
+        "pika_lvgl_roller.h": "c",
+        "pika_lvgl_switch.h": "c",
+        "pika_lvgl_table.h": "c",
+        "pika_lvgl_textarea.h": "c",
+        "pika_lvgl.h": "c"
+    }
+}

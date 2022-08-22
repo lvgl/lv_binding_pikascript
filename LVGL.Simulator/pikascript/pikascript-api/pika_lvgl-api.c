@@ -96,6 +96,11 @@ void pika_lvgl_lv_objMethod(PikaObj *self, Args *args){
     method_returnArg(args, res);
 }
 
+void pika_lvgl_lv_timer_tMethod(PikaObj *self, Args *args){
+    Arg* res = pika_lvgl_lv_timer_t(self);
+    method_returnArg(args, res);
+}
+
 void pika_lvgl_objMethod(PikaObj *self, Args *args){
     PikaObj* parent = args_getPtr(args, "parent");
     PikaObj* res = pika_lvgl_obj(self, parent);
@@ -155,6 +160,11 @@ void pika_lvgl_textareaMethod(PikaObj *self, Args *args){
     method_returnArg(args, res);
 }
 
+void pika_lvgl_timer_create_basicMethod(PikaObj *self, Args *args){
+    PikaObj* res = pika_lvgl_timer_create_basic(self);
+    method_returnObj(args, res);
+}
+
 PikaObj *New_pika_lvgl(Args *args){
     PikaObj *self = New_TinyObj(args);
     class_defineConstructor(self, "ALIGN()->any", pika_lvgl_ALIGNMethod);
@@ -175,6 +185,7 @@ PikaObj *New_pika_lvgl(Args *args){
     class_defineConstructor(self, "lv_color_t()->any", pika_lvgl_lv_color_tMethod);
     class_defineConstructor(self, "lv_event()->any", pika_lvgl_lv_eventMethod);
     class_defineConstructor(self, "lv_obj()->any", pika_lvgl_lv_objMethod);
+    class_defineConstructor(self, "lv_timer_t()->any", pika_lvgl_lv_timer_tMethod);
     class_defineMethod(self, "obj(parent:lv_obj)->lv_obj", pika_lvgl_objMethod);
     class_defineMethod(self, "palette_lighten(p:int,lvl:int)->lv_color_t", pika_lvgl_palette_lightenMethod);
     class_defineMethod(self, "palette_main(p:int)->lv_color_t", pika_lvgl_palette_mainMethod);
@@ -186,6 +197,7 @@ PikaObj *New_pika_lvgl(Args *args){
     class_defineConstructor(self, "switch()->any", pika_lvgl_switchMethod);
     class_defineConstructor(self, "table()->any", pika_lvgl_tableMethod);
     class_defineConstructor(self, "textarea()->any", pika_lvgl_textareaMethod);
+    class_defineMethod(self, "timer_create_basic()->lv_timer_t", pika_lvgl_timer_create_basicMethod);
     return self;
 }
 
