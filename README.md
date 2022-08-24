@@ -2,7 +2,7 @@
 
 # What is PikaScript ?
 
-PikaScript is a Python interpreter designed specifically for microcontrollers, and it supports a subset of the common Python3 syntax.
+[PikaScript](https://github.com/pikastech/pikascript) is a Python interpreter designed specifically for microcontrollers, and it supports a subset of the common Python3 syntax.
 
 It's lighter, requiring only 32k of code space and 4k of RAM, which means it can run on stm32f103c8 (blue-pile) or even stm32f030c8, on the other hand, you can leave valuable space for more material or build larger buffer areas.
 
