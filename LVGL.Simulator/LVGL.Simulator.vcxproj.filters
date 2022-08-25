@@ -3,6 +3,8 @@
   <Import Project="LVGL.Portable.vcxitems.filters" />
   <Import Project="LVGL.Drivers.vcxitems.filters" />
   <ItemGroup>
+    <ClCompile Include="LVGL.Simulator.cpp" />
+    <ClCompile Include="pikascript_entry.c" />
     <ClCompile Include="pikascript\pikascript-api\__asset_pikaModules_py_a.c" />
     <ClCompile Include="pikascript\pikascript-api\__pikaBinding.c" />
     <ClCompile Include="pikascript\pikascript-api\pikaScript.c" />
@@ -25,22 +27,12 @@
     <ClCompile Include="pikascript\pikascript-core\TinyObj.c" />
     <ClCompile Include="pikascript\pikascript-lib\pika_lvgl\pika_lv_point_t.c" />
     <ClCompile Include="pikascript\pikascript-lib\pika_lvgl\pika_lv_timer_t.c" />
+    <ClCompile Include="pikascript\pikascript-lib\pika_lvgl\pika_lv_wegit.c" />
     <ClCompile Include="pikascript\pikascript-lib\pika_lvgl\pika_lvgl.c" />
-    <ClCompile Include="pikascript\pikascript-lib\pika_lvgl\pika_lvgl_arc.c" />
-    <ClCompile Include="pikascript\pikascript-lib\pika_lvgl\pika_lvgl_bar.c" />
-    <ClCompile Include="pikascript\pikascript-lib\pika_lvgl\pika_lvgl_btn.c" />
-    <ClCompile Include="pikascript\pikascript-lib\pika_lvgl\pika_lvgl_checkbox.c" />
-    <ClCompile Include="pikascript\pikascript-lib\pika_lvgl\pika_lvgl_dropdown.c" />
     <ClCompile Include="pikascript\pikascript-lib\pika_lvgl\pika_lvgl_indev_t.c" />
-    <ClCompile Include="pikascript\pikascript-lib\pika_lvgl\pika_lvgl_label.c" />
     <ClCompile Include="pikascript\pikascript-lib\pika_lvgl\pika_lvgl_lv_event.c" />
     <ClCompile Include="pikascript\pikascript-lib\pika_lvgl\pika_lvgl_lv_obj.c" />
     <ClCompile Include="pikascript\pikascript-lib\pika_lvgl\pika_lvgl_lv_style_t.c" />
-    <ClCompile Include="pikascript\pikascript-lib\pika_lvgl\pika_lvgl_roller.c" />
-    <ClCompile Include="pikascript\pikascript-lib\pika_lvgl\pika_lvgl_slider.c" />
-    <ClCompile Include="pikascript\pikascript-lib\pika_lvgl\pika_lvgl_switch.c" />
-    <ClCompile Include="pikascript\pikascript-lib\pika_lvgl\pika_lvgl_table.c" />
-    <ClCompile Include="pikascript\pikascript-lib\pika_lvgl\pika_lvgl_textarea.c" />
     <ClCompile Include="pikascript\pikascript-lib\PikaStdDevice\PikaStdDevice_ADC.c" />
     <ClCompile Include="pikascript\pikascript-lib\PikaStdDevice\PikaStdDevice_BaseDev.c" />
     <ClCompile Include="pikascript\pikascript-lib\PikaStdDevice\PikaStdDevice_CAN.c" />
@@ -63,10 +55,11 @@
     <ClCompile Include="pikascript\pikascript-lib\PikaStdLib\PikaStdLib_StringObj.c" />
     <ClCompile Include="pikascript\pikascript-lib\PikaStdLib\PikaStdLib_SysObj.c" />
     <ClCompile Include="pikascript\pikascript-lib\PikaStdLib\PikaStdTask_Task.c" />
-    <ClCompile Include="LVGL.Simulator.cpp" />
-    <ClCompile Include="pikascript_entry.c" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="pikascript_entry.h" />
+    <ClInclude Include="resource.h" />
+    <ClInclude Include="Mile.Project.Properties.h" />
     <ClInclude Include="pikascript\pikascript-api\pika_lvgl.h" />
     <ClInclude Include="pikascript\pikascript-api\pika_lvgl_ALIGN.h" />
     <ClInclude Include="pikascript\pikascript-api\pika_lvgl_ANIM.h" />
@@ -144,8 +137,5 @@
     <ClInclude Include="pikascript\pikascript-core\PikaVM.h" />
     <ClInclude Include="pikascript\pikascript-core\TinyObj.h" />
     <ClInclude Include="pikascript\pikascript-lib\PikaStdLib\PikaStdData_String_Util.h" />
-    <ClInclude Include="pikascript_entry.h" />
-    <ClInclude Include="resource.h" />
-    <ClInclude Include="Mile.Project.Properties.h" />
   </ItemGroup>
 </Project>

@@ -63,23 +63,13 @@
     <ClCompile Include="pikascript\pikascript-lib\PikaStdLib\PikaStdLib_SysObj.c" />
     <ClCompile Include="pikascript\pikascript-lib\PikaStdLib\PikaStdTask_Task.c" />
     <ClCompile Include="pikascript\pikascript-lib\pika_lvgl\pika_lvgl.c" />
-    <ClCompile Include="pikascript\pikascript-lib\pika_lvgl\pika_lvgl_arc.c" />
-    <ClCompile Include="pikascript\pikascript-lib\pika_lvgl\pika_lvgl_bar.c" />
-    <ClCompile Include="pikascript\pikascript-lib\pika_lvgl\pika_lvgl_btn.c" />
-    <ClCompile Include="pikascript\pikascript-lib\pika_lvgl\pika_lvgl_checkbox.c" />
-    <ClCompile Include="pikascript\pikascript-lib\pika_lvgl\pika_lvgl_dropdown.c" />
     <ClCompile Include="pikascript\pikascript-lib\pika_lvgl\pika_lvgl_indev_t.c" />
-    <ClCompile Include="pikascript\pikascript-lib\pika_lvgl\pika_lvgl_label.c" />
     <ClCompile Include="pikascript\pikascript-lib\pika_lvgl\pika_lvgl_lv_event.c" />
     <ClCompile Include="pikascript\pikascript-lib\pika_lvgl\pika_lvgl_lv_obj.c" />
     <ClCompile Include="pikascript\pikascript-lib\pika_lvgl\pika_lvgl_lv_style_t.c" />
-    <ClCompile Include="pikascript\pikascript-lib\pika_lvgl\pika_lvgl_roller.c" />
-    <ClCompile Include="pikascript\pikascript-lib\pika_lvgl\pika_lvgl_slider.c" />
-    <ClCompile Include="pikascript\pikascript-lib\pika_lvgl\pika_lvgl_switch.c" />
-    <ClCompile Include="pikascript\pikascript-lib\pika_lvgl\pika_lvgl_table.c" />
-    <ClCompile Include="pikascript\pikascript-lib\pika_lvgl\pika_lvgl_textarea.c" />
     <ClCompile Include="pikascript\pikascript-lib\pika_lvgl\pika_lv_point_t.c" />
     <ClCompile Include="pikascript\pikascript-lib\pika_lvgl\pika_lv_timer_t.c" />
+    <ClCompile Include="pikascript\pikascript-lib\pika_lvgl\pika_lv_wegit.c" />
     <ClCompile Include="pikascript_entry.c" />
   </ItemGroup>
   <ItemGroup>

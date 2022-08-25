@@ -10,6 +10,8 @@
 PikaObj *New_pika_lvgl_checkbox(Args *args);
 
 void pika_lvgl_checkbox___init__(PikaObj *self, PikaObj* parent);
+char* pika_lvgl_checkbox_get_text(PikaObj *self);
 void pika_lvgl_checkbox_set_text(PikaObj *self, char* txt);
+void pika_lvgl_checkbox_set_text_static(PikaObj *self, char* txt);
 
 #endif

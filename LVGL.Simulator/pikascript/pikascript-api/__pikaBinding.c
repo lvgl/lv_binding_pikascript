@@ -2244,6 +2244,46 @@ void pika_lvgl_arc___init__Method(PikaObj *self, Args *args){
     pika_lvgl_arc___init__(self, parent);
 }
 
+void pika_lvgl_arc_get_angle_endMethod(PikaObj *self, Args *args){
+    int res = pika_lvgl_arc_get_angle_end(self);
+    method_returnInt(args, res);
+}
+
+void pika_lvgl_arc_get_angle_startMethod(PikaObj *self, Args *args){
+    int res = pika_lvgl_arc_get_angle_start(self);
+    method_returnInt(args, res);
+}
+
+void pika_lvgl_arc_get_bg_angle_endMethod(PikaObj *self, Args *args){
+    int res = pika_lvgl_arc_get_bg_angle_end(self);
+    method_returnInt(args, res);
+}
+
+void pika_lvgl_arc_get_bg_angle_startMethod(PikaObj *self, Args *args){
+    int res = pika_lvgl_arc_get_bg_angle_start(self);
+    method_returnInt(args, res);
+}
+
+void pika_lvgl_arc_get_max_valueMethod(PikaObj *self, Args *args){
+    int res = pika_lvgl_arc_get_max_value(self);
+    method_returnInt(args, res);
+}
+
+void pika_lvgl_arc_get_min_valueMethod(PikaObj *self, Args *args){
+    int res = pika_lvgl_arc_get_min_value(self);
+    method_returnInt(args, res);
+}
+
+void pika_lvgl_arc_get_modeMethod(PikaObj *self, Args *args){
+    int res = pika_lvgl_arc_get_mode(self);
+    method_returnInt(args, res);
+}
+
+void pika_lvgl_arc_get_valueMethod(PikaObj *self, Args *args){
+    int res = pika_lvgl_arc_get_value(self);
+    method_returnInt(args, res);
+}
+
 void pika_lvgl_arc_set_anglesMethod(PikaObj *self, Args *args){
     int start = args_getInt(args, "start");
     int end = args_getInt(args, "end");
@@ -2256,17 +2296,74 @@ void pika_lvgl_arc_set_bg_anglesMethod(PikaObj *self, Args *args){
     pika_lvgl_arc_set_bg_angles(self, start, end);
 }
 
+void pika_lvgl_arc_set_bg_end_angleMethod(PikaObj *self, Args *args){
+    int angle = args_getInt(args, "angle");
+    pika_lvgl_arc_set_bg_end_angle(self, angle);
+}
+
+void pika_lvgl_arc_set_bg_start_angleMethod(PikaObj *self, Args *args){
+    int start = args_getInt(args, "start");
+    pika_lvgl_arc_set_bg_start_angle(self, start);
+}
+
+void pika_lvgl_arc_set_change_rateMethod(PikaObj *self, Args *args){
+    int rate = args_getInt(args, "rate");
+    pika_lvgl_arc_set_change_rate(self, rate);
+}
+
 void pika_lvgl_arc_set_end_angleMethod(PikaObj *self, Args *args){
     int angle = args_getInt(args, "angle");
     pika_lvgl_arc_set_end_angle(self, angle);
 }
 
+void pika_lvgl_arc_set_modeMethod(PikaObj *self, Args *args){
+    int mode = args_getInt(args, "mode");
+    pika_lvgl_arc_set_mode(self, mode);
+}
+
+void pika_lvgl_arc_set_rangeMethod(PikaObj *self, Args *args){
+    int min = args_getInt(args, "min");
+    int max = args_getInt(args, "max");
+    pika_lvgl_arc_set_range(self, min, max);
+}
+
+void pika_lvgl_arc_set_rotationMethod(PikaObj *self, Args *args){
+    int rotation = args_getInt(args, "rotation");
+    pika_lvgl_arc_set_rotation(self, rotation);
+}
+
+void pika_lvgl_arc_set_start_angleMethod(PikaObj *self, Args *args){
+    int start = args_getInt(args, "start");
+    pika_lvgl_arc_set_start_angle(self, start);
+}
+
+void pika_lvgl_arc_set_valueMethod(PikaObj *self, Args *args){
+    int value = args_getInt(args, "value");
+    pika_lvgl_arc_set_value(self, value);
+}
+
 PikaObj *New_pika_lvgl_arc(Args *args){
     PikaObj *self = New_pika_lvgl_lv_obj(args);
     class_defineMethod(self, "__init__(parent:lv_obj)", pika_lvgl_arc___init__Method);
+    class_defineMethod(self, "get_angle_end()->int", pika_lvgl_arc_get_angle_endMethod);
+    class_defineMethod(self, "get_angle_start()->int", pika_lvgl_arc_get_angle_startMethod);
+    class_defineMethod(self, "get_bg_angle_end()->int", pika_lvgl_arc_get_bg_angle_endMethod);
+    class_defineMethod(self, "get_bg_angle_start()->int", pika_lvgl_arc_get_bg_angle_startMethod);
+    class_defineMethod(self, "get_max_value()->int", pika_lvgl_arc_get_max_valueMethod);
+    class_defineMethod(self, "get_min_value()->int", pika_lvgl_arc_get_min_valueMethod);
+    class_defineMethod(self, "get_mode()->int", pika_lvgl_arc_get_modeMethod);
+    class_defineMethod(self, "get_value()->int", pika_lvgl_arc_get_valueMethod);
     class_defineMethod(self, "set_angles(start:int,end:int)", pika_lvgl_arc_set_anglesMethod);
     class_defineMethod(self, "set_bg_angles(start:int,end:int)", pika_lvgl_arc_set_bg_anglesMethod);
+    class_defineMethod(self, "set_bg_end_angle(angle:int)", pika_lvgl_arc_set_bg_end_angleMethod);
+    class_defineMethod(self, "set_bg_start_angle(start:int)", pika_lvgl_arc_set_bg_start_angleMethod);
+    class_defineMethod(self, "set_change_rate(rate:int)", pika_lvgl_arc_set_change_rateMethod);
     class_defineMethod(self, "set_end_angle(angle:int)", pika_lvgl_arc_set_end_angleMethod);
+    class_defineMethod(self, "set_mode(mode:int)", pika_lvgl_arc_set_modeMethod);
+    class_defineMethod(self, "set_range(min:int,max:int)", pika_lvgl_arc_set_rangeMethod);
+    class_defineMethod(self, "set_rotation(rotation:int)", pika_lvgl_arc_set_rotationMethod);
+    class_defineMethod(self, "set_start_angle(start:int)", pika_lvgl_arc_set_start_angleMethod);
+    class_defineMethod(self, "set_value(value:int)", pika_lvgl_arc_set_valueMethod);
     return self;
 }
 
@@ -2278,6 +2375,48 @@ void pika_lvgl_bar___init__Method(PikaObj *self, Args *args){
     pika_lvgl_bar___init__(self, parent);
 }
 
+void pika_lvgl_bar_get_max_valueMethod(PikaObj *self, Args *args){
+    int res = pika_lvgl_bar_get_max_value(self);
+    method_returnInt(args, res);
+}
+
+void pika_lvgl_bar_get_min_valueMethod(PikaObj *self, Args *args){
+    int res = pika_lvgl_bar_get_min_value(self);
+    method_returnInt(args, res);
+}
+
+void pika_lvgl_bar_get_modeMethod(PikaObj *self, Args *args){
+    int res = pika_lvgl_bar_get_mode(self);
+    method_returnInt(args, res);
+}
+
+void pika_lvgl_bar_get_start_valueMethod(PikaObj *self, Args *args){
+    int res = pika_lvgl_bar_get_start_value(self);
+    method_returnInt(args, res);
+}
+
+void pika_lvgl_bar_get_valueMethod(PikaObj *self, Args *args){
+    int res = pika_lvgl_bar_get_value(self);
+    method_returnInt(args, res);
+}
+
+void pika_lvgl_bar_set_modeMethod(PikaObj *self, Args *args){
+    int mode = args_getInt(args, "mode");
+    pika_lvgl_bar_set_mode(self, mode);
+}
+
+void pika_lvgl_bar_set_rangeMethod(PikaObj *self, Args *args){
+    int min = args_getInt(args, "min");
+    int max = args_getInt(args, "max");
+    pika_lvgl_bar_set_range(self, min, max);
+}
+
+void pika_lvgl_bar_set_start_valueMethod(PikaObj *self, Args *args){
+    int start_value = args_getInt(args, "start_value");
+    int anim = args_getInt(args, "anim");
+    pika_lvgl_bar_set_start_value(self, start_value, anim);
+}
+
 void pika_lvgl_bar_set_valueMethod(PikaObj *self, Args *args){
     int value = args_getInt(args, "value");
     int anim = args_getInt(args, "anim");
@@ -2287,6 +2426,14 @@ void pika_lvgl_bar_set_valueMethod(PikaObj *self, Args *args){
 PikaObj *New_pika_lvgl_bar(Args *args){
     PikaObj *self = New_pika_lvgl_lv_obj(args);
     class_defineMethod(self, "__init__(parent:lv_obj)", pika_lvgl_bar___init__Method);
+    class_defineMethod(self, "get_max_value()->int", pika_lvgl_bar_get_max_valueMethod);
+    class_defineMethod(self, "get_min_value()->int", pika_lvgl_bar_get_min_valueMethod);
+    class_defineMethod(self, "get_mode()->int", pika_lvgl_bar_get_modeMethod);
+    class_defineMethod(self, "get_start_value()->int", pika_lvgl_bar_get_start_valueMethod);
+    class_defineMethod(self, "get_value()->int", pika_lvgl_bar_get_valueMethod);
+    class_defineMethod(self, "set_mode(mode:int)", pika_lvgl_bar_set_modeMethod);
+    class_defineMethod(self, "set_range(min:int,max:int)", pika_lvgl_bar_set_rangeMethod);
+    class_defineMethod(self, "set_start_value(start_value:int,anim:int)", pika_lvgl_bar_set_start_valueMethod);
     class_defineMethod(self, "set_value(value:int,anim:int)", pika_lvgl_bar_set_valueMethod);
     return self;
 }
@@ -2313,15 +2460,27 @@ void pika_lvgl_checkbox___init__Method(PikaObj *self, Args *args){
     pika_lvgl_checkbox___init__(self, parent);
 }
 
+void pika_lvgl_checkbox_get_textMethod(PikaObj *self, Args *args){
+    char* res = pika_lvgl_checkbox_get_text(self);
+    method_returnStr(args, res);
+}
+
 void pika_lvgl_checkbox_set_textMethod(PikaObj *self, Args *args){
     char* txt = args_getStr(args, "txt");
     pika_lvgl_checkbox_set_text(self, txt);
 }
 
+void pika_lvgl_checkbox_set_text_staticMethod(PikaObj *self, Args *args){
+    char* txt = args_getStr(args, "txt");
+    pika_lvgl_checkbox_set_text_static(self, txt);
+}
+
 PikaObj *New_pika_lvgl_checkbox(Args *args){
     PikaObj *self = New_pika_lvgl_lv_obj(args);
     class_defineMethod(self, "__init__(parent:lv_obj)", pika_lvgl_checkbox___init__Method);
+    class_defineMethod(self, "get_text()->str", pika_lvgl_checkbox_get_textMethod);
     class_defineMethod(self, "set_text(txt:str)", pika_lvgl_checkbox_set_textMethod);
+    class_defineMethod(self, "set_text_static(txt:str)", pika_lvgl_checkbox_set_text_staticMethod);
     return self;
 }
 
@@ -2333,15 +2492,128 @@ void pika_lvgl_dropdown___init__Method(PikaObj *self, Args *args){
     pika_lvgl_dropdown___init__(self, parent);
 }
 
+void pika_lvgl_dropdown_add_optionMethod(PikaObj *self, Args *args){
+    char* option = args_getStr(args, "option");
+    int pos = args_getInt(args, "pos");
+    pika_lvgl_dropdown_add_option(self, option, pos);
+}
+
+void pika_lvgl_dropdown_clear_optionsMethod(PikaObj *self, Args *args){
+    pika_lvgl_dropdown_clear_options(self);
+}
+
+void pika_lvgl_dropdown_closeMethod(PikaObj *self, Args *args){
+    pika_lvgl_dropdown_close(self);
+}
+
+void pika_lvgl_dropdown_get_dirMethod(PikaObj *self, Args *args){
+    int res = pika_lvgl_dropdown_get_dir(self);
+    method_returnInt(args, res);
+}
+
+void pika_lvgl_dropdown_get_option_cntMethod(PikaObj *self, Args *args){
+    int res = pika_lvgl_dropdown_get_option_cnt(self);
+    method_returnInt(args, res);
+}
+
+void pika_lvgl_dropdown_get_option_indexMethod(PikaObj *self, Args *args){
+    char* option = args_getStr(args, "option");
+    int res = pika_lvgl_dropdown_get_option_index(self, option);
+    method_returnInt(args, res);
+}
+
+void pika_lvgl_dropdown_get_optionsMethod(PikaObj *self, Args *args){
+    char* res = pika_lvgl_dropdown_get_options(self);
+    method_returnStr(args, res);
+}
+
+void pika_lvgl_dropdown_get_selectedMethod(PikaObj *self, Args *args){
+    int res = pika_lvgl_dropdown_get_selected(self);
+    method_returnInt(args, res);
+}
+
+void pika_lvgl_dropdown_get_selected_highlightMethod(PikaObj *self, Args *args){
+    int res = pika_lvgl_dropdown_get_selected_highlight(self);
+    method_returnInt(args, res);
+}
+
+void pika_lvgl_dropdown_get_selected_strMethod(PikaObj *self, Args *args){
+    char* res = pika_lvgl_dropdown_get_selected_str(self);
+    method_returnStr(args, res);
+}
+
+void pika_lvgl_dropdown_get_symbolMethod(PikaObj *self, Args *args){
+    int res = pika_lvgl_dropdown_get_symbol(self);
+    method_returnInt(args, res);
+}
+
+void pika_lvgl_dropdown_get_textMethod(PikaObj *self, Args *args){
+    char* res = pika_lvgl_dropdown_get_text(self);
+    method_returnStr(args, res);
+}
+
+void pika_lvgl_dropdown_is_openMethod(PikaObj *self, Args *args){
+    int res = pika_lvgl_dropdown_is_open(self);
+    method_returnInt(args, res);
+}
+
+void pika_lvgl_dropdown_openMethod(PikaObj *self, Args *args){
+    pika_lvgl_dropdown_open(self);
+}
+
+void pika_lvgl_dropdown_set_dirMethod(PikaObj *self, Args *args){
+    int dir = args_getInt(args, "dir");
+    pika_lvgl_dropdown_set_dir(self, dir);
+}
+
 void pika_lvgl_dropdown_set_optionsMethod(PikaObj *self, Args *args){
     char* options = args_getStr(args, "options");
     pika_lvgl_dropdown_set_options(self, options);
 }
 
+void pika_lvgl_dropdown_set_selectedMethod(PikaObj *self, Args *args){
+    int sel_opt = args_getInt(args, "sel_opt");
+    pika_lvgl_dropdown_set_selected(self, sel_opt);
+}
+
+void pika_lvgl_dropdown_set_selected_hightlightMethod(PikaObj *self, Args *args){
+    int en = args_getInt(args, "en");
+    pika_lvgl_dropdown_set_selected_hightlight(self, en);
+}
+
+void pika_lvgl_dropdown_set_symbolMethod(PikaObj *self, Args *args){
+    char* symbol = args_getStr(args, "symbol");
+    pika_lvgl_dropdown_set_symbol(self, symbol);
+}
+
+void pika_lvgl_dropdown_set_textMethod(PikaObj *self, Args *args){
+    char* txt = args_getStr(args, "txt");
+    pika_lvgl_dropdown_set_text(self, txt);
+}
+
 PikaObj *New_pika_lvgl_dropdown(Args *args){
     PikaObj *self = New_pika_lvgl_lv_obj(args);
     class_defineMethod(self, "__init__(parent:lv_obj)", pika_lvgl_dropdown___init__Method);
+    class_defineMethod(self, "add_option(option:str,pos:int)", pika_lvgl_dropdown_add_optionMethod);
+    class_defineMethod(self, "clear_options()", pika_lvgl_dropdown_clear_optionsMethod);
+    class_defineMethod(self, "close()", pika_lvgl_dropdown_closeMethod);
+    class_defineMethod(self, "get_dir()->int", pika_lvgl_dropdown_get_dirMethod);
+    class_defineMethod(self, "get_option_cnt()->int", pika_lvgl_dropdown_get_option_cntMethod);
+    class_defineMethod(self, "get_option_index(option:str)->int", pika_lvgl_dropdown_get_option_indexMethod);
+    class_defineMethod(self, "get_options()->str", pika_lvgl_dropdown_get_optionsMethod);
+    class_defineMethod(self, "get_selected()->int", pika_lvgl_dropdown_get_selectedMethod);
+    class_defineMethod(self, "get_selected_highlight()->int", pika_lvgl_dropdown_get_selected_highlightMethod);
+    class_defineMethod(self, "get_selected_str()->str", pika_lvgl_dropdown_get_selected_strMethod);
+    class_defineMethod(self, "get_symbol()->int", pika_lvgl_dropdown_get_symbolMethod);
+    class_defineMethod(self, "get_text()->str", pika_lvgl_dropdown_get_textMethod);
+    class_defineMethod(self, "is_open()->int", pika_lvgl_dropdown_is_openMethod);
+    class_defineMethod(self, "open()", pika_lvgl_dropdown_openMethod);
+    class_defineMethod(self, "set_dir(dir:int)", pika_lvgl_dropdown_set_dirMethod);
     class_defineMethod(self, "set_options(options:str)", pika_lvgl_dropdown_set_optionsMethod);
+    class_defineMethod(self, "set_selected(sel_opt:int)", pika_lvgl_dropdown_set_selectedMethod);
+    class_defineMethod(self, "set_selected_hightlight(en:int)", pika_lvgl_dropdown_set_selected_hightlightMethod);
+    class_defineMethod(self, "set_symbol(symbol:str)", pika_lvgl_dropdown_set_symbolMethod);
+    class_defineMethod(self, "set_text(txt:str)", pika_lvgl_dropdown_set_textMethod);
     return self;
 }
 
