@@ -16,7 +16,6 @@ int PikaStdDevice_PWM_getChannel(PikaObj *self);
 double PikaStdDevice_PWM_getDuty(PikaObj *self);
 int PikaStdDevice_PWM_getFrequency(PikaObj *self);
 char* PikaStdDevice_PWM_getName(PikaObj *self);
-void PikaStdDevice_PWM_init(PikaObj *self);
 void PikaStdDevice_PWM_platformDisable(PikaObj *self);
 void PikaStdDevice_PWM_platformEnable(PikaObj *self);
 void PikaStdDevice_PWM_platformSetDuty(PikaObj *self);

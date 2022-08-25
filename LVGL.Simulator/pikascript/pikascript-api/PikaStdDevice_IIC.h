@@ -12,7 +12,6 @@ PikaObj *New_PikaStdDevice_IIC(Args *args);
 void PikaStdDevice_IIC___init__(PikaObj *self);
 void PikaStdDevice_IIC_disable(PikaObj *self);
 void PikaStdDevice_IIC_enable(PikaObj *self);
-void PikaStdDevice_IIC_init(PikaObj *self);
 void PikaStdDevice_IIC_platformDisable(PikaObj *self);
 void PikaStdDevice_IIC_platformEnable(PikaObj *self);
 void PikaStdDevice_IIC_platformRead(PikaObj *self);

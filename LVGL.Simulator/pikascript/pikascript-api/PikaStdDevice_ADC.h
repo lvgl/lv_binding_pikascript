@@ -12,7 +12,6 @@ PikaObj *New_PikaStdDevice_ADC(Args *args);
 void PikaStdDevice_ADC___init__(PikaObj *self);
 void PikaStdDevice_ADC_disable(PikaObj *self);
 void PikaStdDevice_ADC_enable(PikaObj *self);
-void PikaStdDevice_ADC_init(PikaObj *self);
 void PikaStdDevice_ADC_platformDisable(PikaObj *self);
 void PikaStdDevice_ADC_platformEnable(PikaObj *self);
 void PikaStdDevice_ADC_platformRead(PikaObj *self);

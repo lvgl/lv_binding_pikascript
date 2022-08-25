@@ -16,7 +16,6 @@ int PikaStdDevice_GPIO_getId(PikaObj *self);
 char* PikaStdDevice_GPIO_getMode(PikaObj *self);
 char* PikaStdDevice_GPIO_getPin(PikaObj *self);
 void PikaStdDevice_GPIO_high(PikaObj *self);
-void PikaStdDevice_GPIO_init(PikaObj *self);
 void PikaStdDevice_GPIO_low(PikaObj *self);
 void PikaStdDevice_GPIO_platformDisable(PikaObj *self);
 void PikaStdDevice_GPIO_platformEnable(PikaObj *self);

@@ -12,7 +12,6 @@ PikaObj *New_PikaStdDevice_UART(Args *args);
 void PikaStdDevice_UART___init__(PikaObj *self);
 void PikaStdDevice_UART_disable(PikaObj *self);
 void PikaStdDevice_UART_enable(PikaObj *self);
-void PikaStdDevice_UART_init(PikaObj *self);
 void PikaStdDevice_UART_platformDisable(PikaObj *self);
 void PikaStdDevice_UART_platformEnable(PikaObj *self);
 void PikaStdDevice_UART_platformRead(PikaObj *self);
