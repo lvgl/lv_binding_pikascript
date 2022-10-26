@@ -40,6 +40,7 @@ typedef enum {
     ARG_TYPE_STRING,
     ARG_TYPE_BYTES,
     ARG_TYPE_POINTER,
+    ARG_TYPE_BIG_ARG_PTR,
     ARG_TYPE_OBJECT,
     ARG_TYPE_OBJECT_META,
     ARG_TYPE_OBJECT_NEW,
@@ -56,18 +57,34 @@ typedef enum {
 typedef void (*StructDeinitFun)(void* struct_);
 
 typedef struct Arg Arg;
+
 typedef union {
     Arg* next;
     uint8_t* buffer;
 } _arg_union;
+
 struct Arg {
     _arg_union _;
     uint32_t size;
-    uint8_t type;
-    PIKA_BOOL serialized;
+#if PIKA_ARG_CACHE_ENABLE
+    uint32_t heap_size;
+#endif
+    ArgType type;
+    uint8_t flag;
     Hash name_hash;
     uint8_t content[];
 };
+
+typedef struct ConstArg {
+    _arg_union _;
+    uint32_t size;
+#if PIKA_ARG_CACHE_ENABLE
+    uint32_t heap_size;
+#endif
+    ArgType type;
+    uint8_t flag;
+    Hash name_hash;
+}ConstArg;
 
 Arg* arg_getNext(Arg* self);
 uint32_t arg_getSize(Arg* self);
@@ -79,15 +96,15 @@ void arg_freeContent(Arg* self);
 
 Arg* arg_setName(Arg* self, char* name);
 Arg* arg_setContent(Arg* self, uint8_t* content, uint32_t size);
-Arg* arg_newContent(Arg* self, uint32_t size);
-Arg* arg_setType(Arg* self, ArgType type);
-Hash arg_getNameHash(Arg* self);
-ArgType arg_getType(Arg* self);
+Arg* arg_newContent(uint32_t size);
+#define arg_setType(__self, __type) ((__self)->type = (__type))
+#define arg_getNameHash(__self) ((__self)->name_hash)
+#define arg_getType(__self) ((ArgType)(__self)->type)
 uint32_t arg_getContentSize(Arg* self);
 Hash hash_time33(char* str);
 
 Arg* arg_setInt(Arg* self, char* name, int64_t val);
-Arg* arg_setFloat(Arg* self, char* name, double val);
+Arg* arg_setFloat(Arg* self, char* name, pika_float val);
 Arg* arg_setPtr(Arg* self, char* name, ArgType type, void* pointer);
 Arg* arg_setStr(Arg* self, char* name, char* string);
 Arg* arg_setNull(Arg* self);
@@ -101,7 +118,7 @@ Arg* arg_setBytes(Arg* self, char* name, uint8_t* src, size_t size);
 #define arg_newBytes(src, size) arg_setBytes(NULL, "", (src), (size))
 
 int64_t arg_getInt(Arg* self);
-double arg_getFloat(Arg* self);
+pika_float arg_getFloat(Arg* self);
 void* arg_getPtr(Arg* self);
 char* arg_getStr(Arg* self);
 uint8_t* arg_getBytes(Arg* self);
@@ -129,10 +146,36 @@ void arg_printBytes(Arg* self);
 Arg* arg_loadFile(Arg* self, char* filename);
 uint8_t argType_isObject(ArgType type);
 
+#define ARG_FLAG_SERIALIZED 0x01
+#define ARG_FLAG_KEYWORD 0x02
+#define ARG_FLAG_WEAK_REF 0x04
+
+#define ARG_FLAG_MAX 0x08
+
 #define arg_getNext(self) ((self)->_.next)
 #define arg_getSize(self) ((self)->size)
+#define arg_isSerialized(self) ((self)->flag & ARG_FLAG_SERIALIZED)
+#define arg_setSerialized(self, __serialized)                           \
+    do {                                                                \
+        (self)->flag = ((self)->flag & ~ARG_FLAG_SERIALIZED) |     \
+                       ((__serialized) ? ARG_FLAG_SERIALIZED : 0); \
+    } while (0)
+
+#define arg_getIsKeyword(self) ((self)->flag & ARG_FLAG_KEYWORD)
+#define arg_setIsKeyword(self, __isKeyword)                           \
+    do {                                                              \
+        (self)->flag = ((self)->flag & ~ARG_FLAG_KEYWORD) |    \
+                       ((__isKeyword) ? ARG_FLAG_KEYWORD : 0); \
+    } while (0)
+#define arg_getIsWeakRef(self) ((self)->flag & ARG_FLAG_WEAK_REF)
+#define arg_setIsWeakRef(self, __isWeakRef)                     \
+    do {                                                        \
+        (self)->flag = ((self)->flag & ~ARG_FLAG_WEAK_REF) |    \
+                       ((__isWeakRef) ? ARG_FLAG_WEAK_REF : 0); \
+    } while (0)
+
 #define arg_getContent(self) \
-    ((self)->serialized ? (self)->content : ((self)->_.buffer))
+    ((arg_isSerialized(self)) ? (self)->content : ((self)->_.buffer))
 #define arg_getNext(self) ((self)->_.next)
 #define arg_setNext(self, __next) ((self)->_.next = (__next))
 
@@ -153,3 +196,4 @@ uint8_t argType_isObject(ArgType type);
     arg_init_stack(&__name, __##__name##_buff, __size)
 
 void arg_init_stack(Arg* self, uint8_t* buffer, uint32_t size);
+PIKA_BOOL arg_isEqual(Arg* self, Arg* other);

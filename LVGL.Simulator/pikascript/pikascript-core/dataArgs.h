@@ -60,9 +60,9 @@ PIKA_RES args_setStr(Args* self, char* name, char* strIn);
 PIKA_RES args_setStrWithDefaultName(Args* self, char* strIn);
 char* args_getStr(Args* self, char* name);
 
-PIKA_RES args_setFloatWithDefaultName(Args* self, double argFloat);
-PIKA_RES args_setFloat(Args* self, char* name, double argFloat);
-double args_getFloat(Args* self, char* name);
+PIKA_RES args_setFloatWithDefaultName(Args* self, pika_float argFloat);
+PIKA_RES args_setFloat(Args* self, char* name, pika_float argFloat);
+pika_float args_getFloat(Args* self, char* name);
 
 PIKA_RES args_setRef(Args* self, char* name, void* argPointer);
 PIKA_RES args_setPtr(Args* self, char* name, void* argPointer);
@@ -110,6 +110,7 @@ PIKA_RES args_foreach(Args* self,
 
 char* args_getBuff(Args* self, int32_t size);
 PIKA_RES args_pushArg(Args* self, Arg* arg);
+PIKA_RES args_pushArg_name(Args* self, char* name, Arg* arg);
 Arg* args_getArgByidex(Args* self, int index);
 void* args_getHeapStruct(Args* self, char* name);
 PIKA_RES args_removeArg_notDeinitArg(Args* self, Arg* argNow);
@@ -163,7 +164,7 @@ PikaDict* New_dict(void);
 PIKA_RES list_append(PikaList* self, Arg* arg);
 PIKA_RES list_setArg(PikaList* self, int index, Arg* arg);
 int list_getInt(PikaList* self, int index);
-double list_getFloat(PikaList* self, int index);
+pika_float list_getFloat(PikaList* self, int index);
 char* list_getStr(PikaList* self, int index);
 void* list_getPtr(PikaList* self, int index);
 Arg* list_getArg(PikaList* self, int index);
@@ -185,7 +186,12 @@ char* strsFormatArg(Args* out_buffs, char* fmt, Arg* arg);
 PikaList* New_list(void);
 PikaTuple* New_tuple(void);
 PikaTuple* args_getTuple(Args* self, char* name);
+PikaDict* args_getDict(Args* self, char* name);
 
 char* strsFormatList(Args* out_buffs, char* fmt, PikaList* list);
+char* args_cacheStr(Args* self, char* str);
+PIKA_RES list_insert(PikaList* self, int index, Arg* arg);
+Arg* list_pop(PikaList* list);
+PIKA_RES list_remove(PikaList* list, Arg* arg);
 
 #endif

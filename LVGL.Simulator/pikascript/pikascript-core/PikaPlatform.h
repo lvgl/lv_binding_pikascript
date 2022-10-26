@@ -137,6 +137,8 @@ void* __platform_malloc(size_t size);
 void __platform_free(void* ptr);
 void* __platform_memset(void* mem, int ch, size_t size);
 void* __platform_memcpy(void* dir, const void* src, size_t size);
+int __platform_memcmp(const void* s1, const void* s2, size_t n);
+void* __platform_memmove(void* s1, void* s2, size_t n);
 
 void* __user_malloc(size_t size);
 void __user_free(void* ptr, size_t size);
@@ -160,5 +162,16 @@ long __platform_ftell(FILE* stream);
 void __platform_error_handle(void);
 
 void __pks_hook_instruct(void);
+PIKA_BOOL __pks_hook_arg_cache_filter(void* self);
+
+#if PIKA_FLOAT_TYPE_DOUBLE
+#define pika_float double
+#else
+#define pika_float float
+#endif
+
+#ifdef _WIN32
+#pragma warning(disable : 4996)
+#endif
 
 #endif

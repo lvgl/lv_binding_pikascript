@@ -38,12 +38,12 @@
  */
 
     /* optimize options */
-        #define PIKA_OPTIMIZE_SIZE 0
-        #define PIKA_OPTIMIZE_SPEED 1
+    #define PIKA_OPTIMIZE_SIZE 0
+    #define PIKA_OPTIMIZE_SPEED 1
 
     /* syntax support level */
-        #define PIKA_SYNTAX_LEVEL_MINIMAL 0
-        #define PIKA_SYNTAX_LEVEL_MAXIMAL 1
+    #define PIKA_SYNTAX_LEVEL_MINIMAL 0
+    #define PIKA_SYNTAX_LEVEL_MAXIMAL 1
 
     /* use user config */
     #ifdef PIKA_CONFIG_ENABLE
@@ -64,6 +64,12 @@
         #ifndef PIKA_SYNTAX_LEVEL
             #define PIKA_SYNTAX_LEVEL PIKA_SYNTAX_LEVEL_MINIMAL
         #endif
+
+
+        #ifndef PIKA_STRING_UTF8_ENABLE
+            #define PIKA_STRING_UTF8_ENABLE 0
+        #endif
+
     #endif
 
     /* default optimize */
@@ -85,6 +91,9 @@
     #elif PIKA_OPTIMIZE == PIKA_OPTIMIZE_SPEED
         #ifndef PIKA_METHOD_CACHE_ENABLE
             #define PIKA_METHOD_CACHE_ENABLE 1
+        #endif
+        #ifndef PIKA_ARG_CACHE_ENABLE
+            #define PIKA_ARG_CACHE_ENABLE 1
         #endif
     #endif
     
@@ -203,11 +212,11 @@
     #endif
 
     #ifndef PIKA_READ_FILE_BUFF_SIZE
-        #define PIKA_READ_FILE_BUFF_SIZE 0x1024 * 10
+        #define PIKA_READ_FILE_BUFF_SIZE 1024 * 10
     #endif
 
     #ifndef PIKA_INIT_STRING_ENABLE
-        #define PIKA_INIT_STRING_ENABLE 1
+        #define PIKA_INIT_STRING_ENABLE 0
     #endif
     
     #ifndef PIKA_SYNTAX_SLICE_ENABLE
@@ -288,6 +297,31 @@
 
     #ifndef PIKA_EXEC_ENABLE
         #define PIKA_EXEC_ENABLE 1
+    #endif
+
+    /* support for UTF-8 in PikaStdData_String */
+    #ifndef PIKA_STRING_UTF8_ENABLE
+        #define PIKA_STRING_UTF8_ENABLE 1
+    #endif
+    
+    #ifndef PIKA_PRINT_LLD_ENABLE
+        #define PIKA_PRINT_LLD_ENABLE 1
+    #endif
+
+    #ifndef PIKA_FLOAT_TYPE_DOUBLE
+        #define PIKA_FLOAT_TYPE_DOUBLE 1
+    #endif
+
+    #ifndef PIKA_ARG_CACHE_ENABLE
+        #define PIKA_ARG_CACHE_ENABLE 0
+    #endif
+
+    #ifndef PIKA_ARG_CACHE_POOL_SIZE
+        #define PIKA_ARG_CACHE_POOL_SIZE 32
+    #endif
+
+    #ifndef PIKA_ARG_CACHE_SIZE
+        #define PIKA_ARG_CACHE_SIZE sizeof(Arg) + 8
     #endif
 
     /* configuration validation */

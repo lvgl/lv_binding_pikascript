@@ -1,8 +1,14 @@
+#if defined(LV_LVGL_H_INCLUDE_SIMPLE)
 #include "lvgl.h"
+#else
+#include "../../lvgl.h"
+#endif
+
+#ifdef PIKASCRIPT
+
 #include "pika_lvgl_lv_timer_t.h"
 
 PikaEventListener* g_pika_lv_timer_event_listener;
-
 void __pika_timer_cb(lv_timer_t* timer) {
     PikaObj* eventHandleObj = pks_eventLisener_getEventHandleObj(
         g_pika_lv_timer_event_listener, (uint32_t)timer);
@@ -34,3 +40,4 @@ void pika_lvgl_lv_timer_t__del(PikaObj* self) {
     lv_timer_t* lv_timer = obj_getPtr(self, "lv_timer");
     lv_timer_del(lv_timer);
 }
+#endif

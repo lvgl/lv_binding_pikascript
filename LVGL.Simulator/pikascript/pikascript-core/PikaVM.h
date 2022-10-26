@@ -49,7 +49,6 @@ typedef enum { VM_PC_EXIT = -99999 } VM_PC;
 
 typedef enum {
     TRY_STATE_NONE = 0,
-    TRY_STATE_TOP,
     TRY_STATE_INNER,
 } TRY_STATE;
 
@@ -58,8 +57,8 @@ typedef enum {
     TRY_RESULT_RAISE,
 } TRY_RESULT;
 
-typedef struct TryInfo TryInfo;
-struct TryInfo {
+typedef struct RunState RunState;
+struct RunState {
     TRY_STATE try_state;
     TRY_RESULT try_result;
 };
@@ -77,9 +76,11 @@ struct VMState {
     uint8_t line_error_code;
     uint8_t try_error_code;
     uint32_t ins_cnt;
+    PIKA_BOOL in_super;
+    uint8_t super_invoke_deepth;
     PikaObj* lreg[PIKA_REGIST_SIZE];
     PIKA_BOOL ireg[PIKA_REGIST_SIZE];
-    TryInfo* try_info;
+    RunState* run_state;
 };
 
 typedef struct OperatorInfo OperatorInfo;
@@ -89,13 +90,24 @@ struct OperatorInfo {
     ArgType t2;
     Arg* a1;
     Arg* a2;
-    double f1;
-    double f2;
-    int i1;
-    int i2;
+    pika_float f1;
+    pika_float f2;
+    int64_t i1;
+    int64_t i2;
     Arg* res;
     int num;
     VMState* vm;
+};
+
+typedef enum VM_SIGNAL_CTRL {
+    VM_SIGNAL_CTRL_NONE = 0,
+    VM_SIGNAL_CTRL_EXIT,
+} VM_SIGNAL_CTRL;
+
+typedef struct VMSignal VMSignal;
+struct VMSignal {
+    VM_SIGNAL_CTRL signal_ctrl;
+    int vm_cnt;
 };
 
 VMParameters* pikaVM_run(PikaObj* self, char* pyLine);
@@ -149,6 +161,10 @@ void constPool_append(ConstPool* self, char* content);
 #define constPool_getByOffset(self, offset) \
     (char*)((uintptr_t)constPool_getStart((self)) + (uintptr_t)(offset))
 
+#define VMState_getConstWithInstructUnit(__vm, __ins_unit)        \
+    (constPool_getByOffset(&((__vm)->bytecode_frame->const_pool), \
+                           instructUnit_getConstPoolIndex(__ins_unit)))
+
 char* constPool_getNow(ConstPool* self);
 char* constPool_getNext(ConstPool* self);
 char* constPool_getByIndex(ConstPool* self, uint16_t index);
@@ -164,13 +180,31 @@ void instructArray_append(InstructArray* ins_array, InstructUnit* ins_unit);
 void instructUnit_init(InstructUnit* ins_unit);
 void instructUnit_print(InstructUnit* self);
 void instructArray_print(InstructArray* self);
-void byteCodeFrame_print(ByteCodeFrame* self);
-InstructUnit* instructArray_getByOffset(InstructArray* self, int32_t offset);
 
-#define instructUnit_getSize(InstructUnit_p_self) ((size_t)sizeof(InstructUnit))
+#define instructArray_getStart(InsturctArry_p_self) \
+    ((InsturctArry_p_self)->content_start)
+
 #define instructArray_getSize(InsturctArry_p_self) \
     ((size_t)(InsturctArry_p_self)->size)
-#define instructArray_getStart(InsturctArry_p_self) ((self)->content_start)
+
+#define VMState_getInstructArraySize(vm) \
+    (instructArray_getSize(&((vm)->bytecode_frame->instruct_array)))
+
+#define instructArray_getByOffset(__self, __offset)                \
+    ((InstructUnit*)((uintptr_t)instructArray_getStart((__self)) + \
+                     (uintptr_t)(__offset)))
+
+#define VMState_getInstructUnitWithOffset(vm, offset)                   \
+    (instructArray_getByOffset(&((vm)->bytecode_frame->instruct_array), \
+                               (vm)->pc + (offset)))
+
+#define VMState_getInstructNow(vm)                                      \
+    (instructArray_getByOffset(&((vm)->bytecode_frame->instruct_array), \
+                               (vm)->pc))
+
+void byteCodeFrame_print(ByteCodeFrame* self);
+
+#define instructUnit_getSize(InstructUnit_p_self) ((size_t)sizeof(InstructUnit))
 
 uint16_t constPool_getOffsetByData(ConstPool* self, char* data);
 void instructArray_printWithConst(InstructArray* self, ConstPool* const_pool);
@@ -193,5 +227,8 @@ void __vm_List_append(PikaObj* self, Arg* arg);
 void __vm_List___init__(PikaObj* self);
 void __vm_Dict_set(PikaObj* self, Arg* arg, char* key);
 void __vm_Dict___init__(PikaObj* self);
+VM_SIGNAL_CTRL VMSignal_getCtrl(void);
+void pks_vm_exit(void);
+void pks_vmSignal_setCtrlElear(void);
 
 #endif

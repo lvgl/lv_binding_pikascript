@@ -32,9 +32,11 @@
 PIKA_WEAK void __platform_disable_irq_handle(void) {
     /* disable irq to support thread */
 }
+
 PIKA_WEAK void __platform_enable_irq_handle(void) {
     /* disable irq to support thread */
 }
+
 PIKA_WEAK void* __platform_malloc(size_t size) {
     return malloc(size);
 }
@@ -57,6 +59,10 @@ PIKA_WEAK void __platform_error_handle() {
 
 PIKA_WEAK uint8_t __is_locked_pikaMemory(void) {
     return 0;
+}
+
+PIKA_WEAK int64_t __platform_getTick(void) {
+    return -1;
 }
 
 #ifndef __platform_printf
@@ -108,6 +114,14 @@ PIKA_WEAK void* __platform_memset(void* mem, int ch, size_t size) {
 
 PIKA_WEAK void* __platform_memcpy(void* dir, const void* src, size_t size) {
     return memcpy(dir, src, size);
+}
+
+PIKA_WEAK int __platform_memcmp(const void* s1, const void* s2, size_t n) {
+    return memcmp(s1, s2, n);
+}
+
+PIKA_WEAK void* __platform_memmove(void* s1, void* s2, size_t n) {
+    return memmove(s1, s2, n);
 }
 
 PIKA_WEAK char __platform_getchar(void) {
@@ -194,4 +208,8 @@ PIKA_WEAK long __platform_ftell(FILE* stream) {
 
 PIKA_WEAK void __pks_hook_instruct(void) {
     return;
+}
+
+PIKA_WEAK PIKA_BOOL __pks_hook_arg_cache_filter(void* self) {
+    return PIKA_TRUE;
 }

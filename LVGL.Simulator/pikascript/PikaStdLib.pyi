@@ -1,5 +1,6 @@
 from PikaObj import *
 
+
 class MemChecker:
     def max(self): ...
     def now(self): ...
@@ -16,9 +17,6 @@ class MemChecker:
 
 class SysObj:
     @staticmethod
-    def type(arg: any) -> any: ...
-
-    @staticmethod
     def int(arg: any) -> int: ...
 
     @staticmethod
@@ -31,20 +29,20 @@ class SysObj:
     def iter(arg: any) -> any: ...
 
     @staticmethod
-    def range(a1: int, a2: int) -> any: ...
+    def range(*ax) -> any: ...
 
     @staticmethod
-    def print(*val): ...
-
-    @staticmethod
-    @PIKA_C_MACRO_IF("!PIKA_NANO_ENABLE")
-    def printNoEnd(val: any): ...
+    def print(*val, **ops): ...
 
     @staticmethod
     def __setitem__(obj: any, key: any, val: any) -> any: ...
 
     @staticmethod
     def __getitem__(obj: any, key: any) -> any: ...
+
+    @staticmethod
+    @PIKA_C_MACRO_IF("!PIKA_NANO_ENABLE")
+    def type(arg: any) -> any: ...
 
     @staticmethod
     @PIKA_C_MACRO_IF("PIKA_BUILTIN_STRUCT_ENABLE")
@@ -55,11 +53,11 @@ class SysObj:
 
     @staticmethod
     @PIKA_C_MACRO_IF("PIKA_BUILTIN_STRUCT_ENABLE")
-    def list() -> any: ...
+    def list(*val) -> any: ...
 
     @staticmethod
     @PIKA_C_MACRO_IF("PIKA_BUILTIN_STRUCT_ENABLE")
-    def dict() -> any: ...
+    def dict(*val) -> any: ...
 
     @staticmethod
     @PIKA_C_MACRO_IF("!PIKA_NANO_ENABLE")
@@ -98,12 +96,28 @@ class SysObj:
     def exec(code: str): ...
 
     @staticmethod
+    @PIKA_C_MACRO_IF("PIKA_EXEC_ENABLE")
+    def eval(code: str) -> any: ...
+
+    @staticmethod
     @PIKA_C_MACRO_IF("!PIKA_NANO_ENABLE")
     def getattr(obj: object, name: str) -> any: ...
 
     @staticmethod
     @PIKA_C_MACRO_IF("!PIKA_NANO_ENABLE")
     def setattr(obj: object, name: str, val: any): ...
+
+    @staticmethod
+    @PIKA_C_MACRO_IF("!PIKA_NANO_ENABLE")
+    def hasattr(obj: object, name: str) -> int: ...
+
+    @staticmethod
+    @PIKA_C_MACRO_IF("!PIKA_NANO_ENABLE")
+    def exit(): ...
+
+    @staticmethod
+    @PIKA_C_MACRO_IF("!PIKA_NANO_ENABLE")
+    def input(*info) -> str: ...
 
 
 @PIKA_C_MACRO_IF("0")
@@ -114,4 +128,3 @@ class RangeObj:
 @PIKA_C_MACRO_IF("0")
 class StringObj:
     def __next__(self) -> any: ...
-

@@ -94,10 +94,8 @@ char* strsGetFirstToken(Args* buffs_p, char* strIn, char sign) {
     return strGetFirstToken(args_getBuff(buffs_p, size), strIn, sign);
 }
 
-char* strsPopToken(Args* buffs_p, char* tokens, char sign) {
-    int32_t size = strGetSize(tokens);
-    char* buff = args_getBuff(buffs_p, size);
-    return strPopToken(buff, tokens, sign);
+char* strsPopToken(Args* buffs_p, char** tokens, char sign) {
+    return strsCopy(buffs_p, strPopFirstToken(tokens, sign));
 }
 
 char* strsCopy(Args* buffs_p, char* source) {
@@ -127,7 +125,7 @@ Arg* arg_strAppend(Arg* arg_in, char* str_to_append) {
     pika_assert(NULL != str_to_append);
     Args buffs = {0};
     char* str_out = strsAppend(&buffs, arg_getStr(arg_in), str_to_append);
-    Arg* arg_out = arg_setStr(arg_in, "", str_out);
+    Arg* arg_out = arg_newStr(str_out);
     arg_deinit(arg_in);
     strsDeinit(&buffs);
     return arg_out;

@@ -65,7 +65,8 @@ char* strCut(char* strOut, char* strIn, char startSign, char endSign) {
 
 char* strDeleteChar(char* strOut, char* strIn, char ch) {
     int32_t iOut = 0;
-    for (uint32_t i = 0; i < strGetSize(strIn); i++) {
+    uint32_t size = strGetSize(strIn);
+    for (uint32_t i = 0; i < size; i++) {
         if (ch == strIn[i]) {
             continue;
         }
@@ -90,11 +91,12 @@ char* strAppendWithSize(char* strOut, char* pData, int32_t Size) {
 }
 
 int32_t strCountSign(char* strIn, char sign) {
-    int32_t count = 0;
-    for (uint32_t i = 0; i < strGetSize(strIn); i++) {
-        if (sign == strIn[i]) {
+    int count = 0;
+    while (*strIn) {
+        if (*strIn == sign) {
             count++;
         }
+        strIn++;
     }
     return count;
 }
@@ -109,6 +111,9 @@ size_t strGetSize(char* pData) {
 }
 
 char* strPointToLastToken(char* strIn, char sign) {
+    if(!strIsContain(strIn, sign)){
+        return strIn;
+    }
     int32_t size = strGetSize(strIn);
     for (int32_t i = size - 1; i > -1; i--) {
         if (strIn[i] == sign) {
@@ -148,30 +153,18 @@ char* strGetLastToken(char* strOut, char* strIn, char sign) {
     return strOut;
 }
 
-char* strPopToken(char* strOut, char* strIn, char sign) {
-    int32_t getSign = 0;
-    int32_t iPoped = 0;
-    int32_t iOut = 0;
-    int32_t size = strGetSize(strIn);
-    int32_t i = 0;
-    for (i = 0; i < size; i++) {
-        if (getSign) {
-            strIn[iPoped] = strIn[i];
-            iPoped++;
-            continue;
-        }
-        if (strIn[i] != sign) {
-            strOut[iOut++] = strIn[i];
-            continue;
-        }
-        if (strIn[i] == sign) {
-            getSign = 1;
-            continue;
-        }
+char* strPopFirstToken(char** strIn, char sign) {
+    char* strIn_ = *strIn;
+    char* pos = strchr(strIn_, sign);
+    if (pos != NULL) {
+        /* found the first sign */
+        *pos = 0;
+        *strIn = pos + 1;
+        return strIn_;
     }
-    strOut[iOut] = 0;
-    strIn[iPoped] = 0;
-    return strOut;
+    /* no found */
+    *strIn = strchr(strIn_, 0);
+    return strIn_;
 }
 
 char* strGetFirstToken(char* strOut, char* strIn, char sign) {
@@ -216,18 +209,19 @@ char* strRemovePrefix(char* inputStr, char* prefix, char* outputStr) {
     if (!strIsStartWith(inputStr, prefix)) {
         return NULL;
     }
-
-    for (uint32_t i = strGetSize(prefix); i < strGetSize(inputStr); i++) {
+    size_t len = strGetSize(inputStr);
+    for (uint32_t i = strGetSize(prefix); i < len; i++) {
         outputStr[i - strGetSize(prefix)] = inputStr[i];
     }
     return outputStr;
 }
 
 int32_t strIsContain(char* str, char ch) {
-    for (uint32_t i = 0; i < strGetSize(str); i++) {
-        if (str[i] == ch) {
+    while(*str){
+        if (*str == ch){
             return 1;
         }
+        str++;
     }
     return 0;
 }

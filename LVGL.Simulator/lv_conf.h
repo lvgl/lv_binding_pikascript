@@ -558,7 +558,7 @@
 #define LV_USE_FS_FATFS '\0'        /*Uses f_open, f_read, etc*/
 
 /*PNG decoder library*/
-#define LV_USE_PNG 0
+#define LV_USE_PNG 1
 
 /*BMP decoder library*/
 #define LV_USE_BMP 0

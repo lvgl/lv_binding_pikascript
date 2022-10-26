@@ -41,6 +41,12 @@
 typedef struct {
     uint32_t heapUsed;
     uint32_t heapUsedMax;
+#if PIKA_ARG_CACHE_ENABLE
+    uint8_t* cache_pool[PIKA_ARG_CACHE_POOL_SIZE];
+    uint32_t cache_pool_top;
+#endif
+    uint32_t alloc_times;
+    uint32_t alloc_times_cache;
 } PikaMemInfo;
 
 typedef uint8_t* BitMap;
@@ -60,13 +66,14 @@ struct Pool{
 };
 /* clang-format on */
 
+#define aline_by(size, aline) \
+    (((size) == 0) ? 0 : (((size)-1) / (aline) + 1) * (aline))
+
 void pikaFree(void* mem, uint32_t size);
 void* pikaMalloc(uint32_t size);
 uint32_t pikaMemNow(void);
 uint32_t pikaMemMax(void);
 void pikaMemMaxReset(void);
-
-uint32_t aline_by(uint32_t size, uint32_t aline);
 
 BitMap bitmap_init(uint32_t size);
 void bitmap_set(BitMap bitmap, uint32_t index, uint8_t bit);
@@ -76,6 +83,8 @@ void bitmap_deinit(BitMap bitmap);
 
 void mem_pool_deinit(void);
 void mem_pool_init(void);
+
+#define mem_align(_size) ((((_size) + 4 - 1) & ~(4 - 1)))
 
 #undef __DATA_MEMORY_CLASS_IMPLEMENT__
 #endif
